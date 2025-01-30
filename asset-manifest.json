@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/gps/static/css/main.75189aeb.css",
-    "main.js": "/gps/static/js/main.c28e34c5.js",
-    "static/js/462.3f55e175.chunk.js": "/gps/static/js/462.3f55e175.chunk.js",
-    "index.html": "/gps/index.html",
-    "main.75189aeb.css.map": "/gps/static/css/main.75189aeb.css.map",
-    "main.c28e34c5.js.map": "/gps/static/js/main.c28e34c5.js.map",
-    "462.3f55e175.chunk.js.map": "/gps/static/js/462.3f55e175.chunk.js.map"
+    "main.css": "/cartografiasocial/static/css/main.75189aeb.css",
+    "main.js": "/cartografiasocial/static/js/main.e462098d.js",
+    "static/js/462.3f55e175.chunk.js": "/cartografiasocial/static/js/462.3f55e175.chunk.js",
+    "index.html": "/cartografiasocial/index.html",
+    "main.75189aeb.css.map": "/cartografiasocial/static/css/main.75189aeb.css.map",
+    "main.e462098d.js.map": "/cartografiasocial/static/js/main.e462098d.js.map",
+    "462.3f55e175.chunk.js.map": "/cartografiasocial/static/js/462.3f55e175.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.75189aeb.css",
-    "static/js/main.c28e34c5.js"
+    "static/js/main.e462098d.js"
   ]
 }
