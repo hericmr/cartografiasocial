@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/cartografiasocial/static/css/main.61824f9e.css",
-    "main.js": "/cartografiasocial/static/js/main.e3aa0d88.js",
+    "main.css": "/cartografiasocial/static/css/main.c818e05c.css",
+    "main.js": "/cartografiasocial/static/js/main.1f5f048d.js",
     "static/js/488.bcb61101.chunk.js": "/cartografiasocial/static/js/488.bcb61101.chunk.js",
     "index.html": "/cartografiasocial/index.html",
-    "main.61824f9e.css.map": "/cartografiasocial/static/css/main.61824f9e.css.map",
-    "main.e3aa0d88.js.map": "/cartografiasocial/static/js/main.e3aa0d88.js.map",
+    "main.c818e05c.css.map": "/cartografiasocial/static/css/main.c818e05c.css.map",
+    "main.1f5f048d.js.map": "/cartografiasocial/static/js/main.1f5f048d.js.map",
     "488.bcb61101.chunk.js.map": "/cartografiasocial/static/js/488.bcb61101.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.61824f9e.css",
-    "static/js/main.e3aa0d88.js"
+    "static/css/main.c818e05c.css",
+    "static/js/main.1f5f048d.js"
   ]
 }
