@@ -55,6 +55,14 @@ const AddLocationPanel = ({ newLocation, setNewLocation, onSave, onClose, isLoad
     }
   };
 
+  const handleTipoChange = (tipo) => {
+    setNewLocation((prev) => ({
+      ...prev,
+      tipo: tipo,
+    }));
+    setDropdownOpen(false);
+  };
+
   return (
     <div 
       className="fixed top-16 right-0 sm:w-3/4 lg:w-[49%] bg-white rounded-xl shadow-lg z-[9999]"
@@ -212,14 +220,7 @@ const AddLocationPanel = ({ newLocation, setNewLocation, onSave, onClose, isLoad
                       <button
                         key={idx}
                         type="button"
-                        onClick={() => {
-                          setNewLocation((prev) => ({
-                            ...prev,
-                            tipo: opcao.value,
-                            titulo: opcao.label,
-                          }));
-                          setDropdownOpen(false);
-                        }}
+                        onClick={() => handleTipoChange(opcao.value)}
                         className={`w-full text-left p-2 hover:bg-gray-100 flex items-center ${opcao.cor} text-gray-800`}
                       >
                         {opcao.icone.startsWith("http") ? (
