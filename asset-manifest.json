@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/cartografiasocial/static/css/main.085279a9.css",
-    "main.js": "/cartografiasocial/static/js/main.e7a3d1e5.js",
-    "static/js/198.239c0edc.chunk.js": "/cartografiasocial/static/js/198.239c0edc.chunk.js",
-    "static/js/488.bcb61101.chunk.js": "/cartografiasocial/static/js/488.bcb61101.chunk.js",
-    "index.html": "/cartografiasocial/index.html",
-    "main.085279a9.css.map": "/cartografiasocial/static/css/main.085279a9.css.map",
-    "main.e7a3d1e5.js.map": "/cartografiasocial/static/js/main.e7a3d1e5.js.map",
-    "198.239c0edc.chunk.js.map": "/cartografiasocial/static/js/198.239c0edc.chunk.js.map",
-    "488.bcb61101.chunk.js.map": "/cartografiasocial/static/js/488.bcb61101.chunk.js.map"
+    "main.css": "/escolasindigenas/static/css/main.f7f33550.css",
+    "main.js": "/escolasindigenas/static/js/main.2c68e600.js",
+    "static/js/198.239c0edc.chunk.js": "/escolasindigenas/static/js/198.239c0edc.chunk.js",
+    "static/js/488.bcb61101.chunk.js": "/escolasindigenas/static/js/488.bcb61101.chunk.js",
+    "index.html": "/escolasindigenas/index.html",
+    "main.f7f33550.css.map": "/escolasindigenas/static/css/main.f7f33550.css.map",
+    "main.2c68e600.js.map": "/escolasindigenas/static/js/main.2c68e600.js.map",
+    "198.239c0edc.chunk.js.map": "/escolasindigenas/static/js/198.239c0edc.chunk.js.map",
+    "488.bcb61101.chunk.js.map": "/escolasindigenas/static/js/488.bcb61101.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.085279a9.css",
-    "static/js/main.e7a3d1e5.js"
+    "static/css/main.f7f33550.css",
+    "static/js/main.2c68e600.js"
   ]
 }
