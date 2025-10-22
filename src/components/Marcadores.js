@@ -1,7 +1,7 @@
 import React from "react";
 import { Marker, Tooltip } from "react-leaflet";
 import { motion } from "framer-motion"; 
-import { orangeIcon, orangeBairroIcon, blackIcon, violetIcon, redIcon, blueIcon, greenIcon, yellowIcon } from "./CustomIcon"; // Ícones personalizados
+import { orangeIcon, orangeBairroIcon, blackIcon, violetIcon, redIcon, blueIcon, greenIcon, yellowIcon, healthIcon } from "./CustomIcon"; // Ícones personalizados
 
 const Marcadores = ({ dataPoints, visibility, onClick }) => {
   const DataPointType = Object.freeze({
@@ -11,6 +11,7 @@ const Marcadores = ({ dataPoints, visibility, onClick }) => {
     COMUNIDADES: { icon: redIcon, enabled: visibility.comunidades },
     EDUCACAO:    { icon: violetIcon, enabled: visibility.educação },
     RELIGIAO:    { icon: blackIcon, enabled: visibility.religiao },
+    SAUDE:       { icon: healthIcon, enabled: visibility.saude },
     BAIRRO:      { icon: orangeBairroIcon, enabled: visibility.bairrosLaranja }, // Pontos dos bairros
   });
 
@@ -47,6 +48,9 @@ const Marcadores = ({ dataPoints, visibility, onClick }) => {
             break;
           case "religiao":
             dataPointType = DataPointType.RELIGIAO;
+            break;
+          case "saude":
+            dataPointType = DataPointType.SAUDE;
             break;
           case "bairro":
             dataPointType = DataPointType.BAIRRO; // Sempre usa o ícone laranja para pontos de bairro

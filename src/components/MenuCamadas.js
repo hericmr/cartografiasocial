@@ -47,6 +47,7 @@ const MenuCamadas = ({ estados, acoes }) => {
     { acao: acoes.toggleComunidades, estado: estados.comunidades, color: "#EF4444", label: "Comunidades", cor: "bg-red-600 hover:bg-red-500 text-white" },
     { acao: acoes.toggleEducação, estado: estados.educação, color: "#8B5CF6", label: "Educação", cor: "bg-purple-600 hover:bg-purple-500 text-white" },
     { acao: acoes.toggleReligiao, estado: estados.religiao, color: "#4B5563", label: "Religião", cor: "bg-gray-700 hover:bg-gray-600 text-white" },
+    { acao: acoes.toggleSaude, estado: estados.saude, color: "#00BCD4", label: "Saúde", cor: "bg-cyan-600 hover:bg-cyan-500 text-white" },
   ];
 
   return (

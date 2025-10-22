@@ -47,3 +47,4 @@ export const violetIcon = createIcon("#9C27B0");
 export const blackIcon = createIcon("#212121");
 export const orangeIcon = createIcon("#FF5722");
 export const orangeBairroIcon = createIcon("#FF9800");
+export const healthIcon = createIcon("#00BCD4"); // Cor ciano para saúde
