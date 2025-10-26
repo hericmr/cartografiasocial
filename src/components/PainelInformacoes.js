@@ -68,7 +68,7 @@ const PainelInformacoes = ({ painelInfo, closePainel }) => {
         flexDirection: "column",
       }}
     >
-      <PainelHeader titulo={painelInfo.titulo} closePainel={closePainel} />
+      <PainelHeader titulo={painelInfo.titulo} tipo={painelInfo.tipo} closePainel={closePainel} />
       
       <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-green-600/40 scrollbar-track-green-50/20">
         <div className="p-6 space-y-6">

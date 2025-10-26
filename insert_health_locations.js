@@ -6,7 +6,18 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Coordenadas genéricas para Santos, SP (serão organizadas posteriormente)
+// Coordenadas reais encontradas nos arquivos de progresso
+const realCoordinates = {
+  "Policlínica da Alemoa e Chico de Paula": [-23.9309176, -46.3689825],
+  "Policlínica Aparecida": [-23.9713854, -46.318503],
+  "Policlínica Areia Branca": [-23.9455469, -46.3836439],
+  "Policlínica Bom Retiro": [-23.9360414, -46.3808663],
+  "Policlínica Campo Grande": [-23.9551514, -46.353748],
+  "Policlínica Caneleira": [-23.9404095, -46.3145073],
+  "Hospital e Maternidade Municipal Dr. Silvério Fontes": [-23.9433185, -46.3877873]
+};
+
+// Coordenadas genéricas para locais sem coordenadas específicas
 const santosCoords = {
   centro: [-23.9608, -46.3331],
   zonaNoroeste: [-23.9500, -46.3500],
@@ -23,7 +34,7 @@ const healthLocations = [
     titulo: "Policlínica da Alemoa e Chico de Paula",
     tipo: "saude",
     descricao_detalhada: "R. Afonsina Proost de Souza s/nº, Alemoa. Tel: (13) 3299-7855. E-mail: usf-alemoa@santos.sp.gov.br. Horário de Funcionamento: De segunda a sexta-feira, das 7 às 17 horas",
-    localizacao: `${santosCoords.zonaNoroeste[0]},${santosCoords.zonaNoroeste[1]}`,
+    localizacao: `${realCoordinates["Policlínica da Alemoa e Chico de Paula"][0]},${realCoordinates["Policlínica da Alemoa e Chico de Paula"][1]}`,
     links: null,
     imagens: null,
     audio: null
@@ -32,7 +43,7 @@ const healthLocations = [
     titulo: "Policlínica Aparecida",
     tipo: "saude",
     descricao_detalhada: "Av. Pedro Lessa, 1728. Tel: (13) 3231-6548. E-mail: ubs-aparecida@santos.sp.gov.br. Horário de Funcionamento: De segunda a sexta-feira, das 7 às 17 horas",
-    localizacao: `${santosCoords.centro[0]},${santosCoords.centro[1]}`,
+    localizacao: `${realCoordinates["Policlínica Aparecida"][0]},${realCoordinates["Policlínica Aparecida"][1]}`,
     links: null,
     imagens: null,
     audio: null
@@ -41,7 +52,7 @@ const healthLocations = [
     titulo: "Policlínica Areia Branca",
     tipo: "saude",
     descricao_detalhada: "Rua Francisco Lourenço Gomes, 118. Tel: (13) 3291-5816. E-mail: usf-areiabranca@santos.sp.gov.br. Horário de Funcionamento: De segunda a sexta-feira, das 7 às 17 horas",
-    localizacao: `${santosCoords.zonaNoroeste[0]},${santosCoords.zonaNoroeste[1]}`,
+    localizacao: `${realCoordinates["Policlínica Areia Branca"][0]},${realCoordinates["Policlínica Areia Branca"][1]}`,
     links: null,
     imagens: null,
     audio: null
@@ -50,7 +61,7 @@ const healthLocations = [
     titulo: "Policlínica Bom Retiro",
     tipo: "saude",
     descricao_detalhada: "Rua João Fraccaroli, s/nº. Tel: (13) 3299-7669. E-mail: usf-bomretiro@santos.sp.gov.br. Horário de Funcionamento: De segunda a sexta-feira, das 7 às 17 horas",
-    localizacao: `${santosCoords.zonaNoroeste[0]},${santosCoords.zonaNoroeste[1]}`,
+    localizacao: `${realCoordinates["Policlínica Bom Retiro"][0]},${realCoordinates["Policlínica Bom Retiro"][1]}`,
     links: null,
     imagens: null,
     audio: null
@@ -59,7 +70,7 @@ const healthLocations = [
     titulo: "Policlínica Campo Grande",
     tipo: "saude",
     descricao_detalhada: "Rua Carvalho de Mendonça, 607. Tel: (13) 3239-3039. E-mail: ubs-campogrande@santos.sp.gov.br. Horário de Funcionamento: De segunda a sexta-feira, das 7 às 17 horas",
-    localizacao: `${santosCoords.centro[0]},${santosCoords.centro[1]}`,
+    localizacao: `${realCoordinates["Policlínica Campo Grande"][0]},${realCoordinates["Policlínica Campo Grande"][1]}`,
     links: null,
     imagens: null,
     audio: null
@@ -68,7 +79,7 @@ const healthLocations = [
     titulo: "Policlínica Caneleira",
     tipo: "saude",
     descricao_detalhada: "Rua Adriano de Campos Tourinho, 705 - Santa Maria. E-mail: usf-caneleira@santos.sp.gov.br. Horário de Funcionamento: De segunda a sexta-feira, das 7 às 17 horas",
-    localizacao: `${santosCoords.zonaNoroeste[0]},${santosCoords.zonaNoroeste[1]}`,
+    localizacao: `${realCoordinates["Policlínica Caneleira"][0]},${realCoordinates["Policlínica Caneleira"][1]}`,
     links: null,
     imagens: null,
     audio: null
@@ -550,6 +561,15 @@ const healthLocations = [
     tipo: "saude",
     descricao_detalhada: "Centro de reabilitação psicossocial para atendimento de pessoas com transtornos mentais",
     localizacao: `${santosCoords.centro[0]},${santosCoords.centro[1]}`,
+    links: null,
+    imagens: null,
+    audio: null
+  },
+  {
+    titulo: "Hospital e Maternidade Municipal Dr. Silvério Fontes",
+    tipo: "saude",
+    descricao_detalhada: "Rua Agamenon Magalhães s/nº - Castelo. Tel: (13) 3209-8000. Hospital municipal de referência para atendimento de emergência e maternidade",
+    localizacao: `${realCoordinates["Hospital e Maternidade Municipal Dr. Silvério Fontes"][0]},${realCoordinates["Hospital e Maternidade Municipal Dr. Silvério Fontes"][1]}`,
     links: null,
     imagens: null,
     audio: null

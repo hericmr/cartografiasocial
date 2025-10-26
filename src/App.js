@@ -7,6 +7,9 @@ import PainelInformacoes from "./components/PainelInformacoes";
 import AddLocationButton from "./components/AddLocationButton";
 import ConteudoCartografia from "./components/ConteudoCartografia";
 import AdminPanel from "./components/AdminPanel";
+import WelcomePanel from "./components/WelcomePanel";
+import ImageGallery from "./components/gallery/ImageGallery";
+import GalleryDemo from "./components/GalleryDemo";
 
 const LoadingScreen = () => (
   <div className="flex flex-col items-center justify-center min-h-screen bg-green-900 text-white">
@@ -24,6 +27,8 @@ const AppContent = () => {
   const [dataPoints, setDataPoints] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showWelcomePanel, setShowWelcomePanel] = useState(false);
+  const [welcomePanelConfig, setWelcomePanelConfig] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -139,6 +144,50 @@ const AppContent = () => {
     setDataPoints((prevDataPoints) => [...prevDataPoints, formattedLocation]);
   };
 
+  const fetchWelcomeConfig = async () => {
+    try {
+      console.log('🔍 [WELCOME] Iniciando busca por painel de boas-vindas...');
+      const { data, error } = await supabase
+        .from('welcome_panels')
+        .select('*')
+        .eq('is_active', true)
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .single();
+      
+      console.log('🔍 [WELCOME] Resposta do Supabase:', { data, error });
+      
+      if (error) throw error;
+
+      if (data) {
+        console.log('✅ [WELCOME] Painel encontrado:', data);
+        setWelcomePanelConfig(data);
+        
+        // Sempre mostrar o painel quando o site é aberto
+        console.log('🎉 [WELCOME] Mostrando painel de boas-vindas sempre!');
+        setShowWelcomePanel(true);
+      } else {
+        console.log('❌ [WELCOME] Nenhum painel ativo encontrado');
+      }
+    } catch (err) {
+      console.error('❌ [WELCOME] Erro ao carregar configurações do painel de boas-vindas:', err);
+    }
+  };
+
+  // Função para recarregar configurações do painel
+  const refreshWelcomeConfig = async () => {
+    console.log('🔄 [WELCOME] Recarregando configurações do painel...');
+    await fetchWelcomeConfig();
+  };
+
+  const closeWelcomePanel = () => {
+    console.log('🔒 [WELCOME] Fechando painel de boas-vindas');
+    setShowWelcomePanel(false);
+    localStorage.setItem('welcomePanelShown', 'true');
+  };
+
+
+
   useEffect(() => {
     const initializeApp = async () => {
       try {
@@ -151,6 +200,9 @@ const AppContent = () => {
         dataPoints = formatData(dataPoints);
         console.log("Dados formatados:", dataPoints);
         setDataPoints(dataPoints);
+        
+        // Carregar configurações do painel de boas-vindas
+        await fetchWelcomeConfig();
       } catch (err) {
         console.error("Erro ao buscar ou formatar dados:", err);
         setError(err.message);
@@ -160,6 +212,41 @@ const AppContent = () => {
     };
 
     initializeApp();
+
+    // Configurar listener para mudanças na tabela welcome_panels
+    const welcomePanelsSubscription = supabase
+      .channel('welcome_panels_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'welcome_panels'
+        },
+        (payload) => {
+          console.log('🔄 [WELCOME] Mudança detectada na tabela welcome_panels:', payload);
+          // Recarregar configurações quando houver mudanças
+          fetchWelcomeConfig();
+        }
+      )
+      .subscribe();
+
+    // Listener para evento customizado de atualização
+    const handleWelcomePanelUpdate = () => {
+      console.log('🔄 [WELCOME] Evento de atualização recebido, recarregando...');
+      fetchWelcomeConfig();
+    };
+
+    window.addEventListener('welcomePanelUpdated', handleWelcomePanelUpdate);
+    
+    // Expor função de refresh globalmente para debug
+    window.refreshWelcomePanel = refreshWelcomeConfig;
+
+    // Cleanup dos listeners
+    return () => {
+      welcomePanelsSubscription.unsubscribe();
+      window.removeEventListener('welcomePanelUpdated', handleWelcomePanelUpdate);
+    };
   }, []);
 
   if (loading) {
@@ -184,17 +271,28 @@ const AppContent = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar onConteudoClick={() => navigate('/conteudo')} />
+      
+      {/* Welcome Panel */}
+      {(() => {
+        console.log('🔍 [WELCOME] Renderizando - showWelcomePanel:', showWelcomePanel, 'welcomePanelConfig:', welcomePanelConfig);
+        return null;
+      })()}
+      {showWelcomePanel && welcomePanelConfig && (
+        <WelcomePanel 
+          isVisible={showWelcomePanel}
+          onClose={closeWelcomePanel}
+          onEdit={() => navigate('/admin?tab=welcome')}
+          config={welcomePanelConfig}
+        />
+      )}
+      
       <Routes>
         <Route 
           path="/" 
           element={
             <main className="flex-grow">
               <MapaSantos 
-                dataPoints={
-                  new URLSearchParams(location.search).get('panel')
-                    ? dataPoints // Se houver um panel na URL, mostra todos os pontos
-                    : dataPoints.filter(point => point.pontuacao >= 70) // Caso contrário, filtra por pontuação
-                } 
+                dataPoints={dataPoints} // Mostra todos os pontos sempre
               />
               <PainelInformacoes dataPoints={dataPoints} />
               <AddLocationButton onLocationAdded={handleLocationAdded} />
@@ -208,6 +306,14 @@ const AppContent = () => {
         <Route 
           path="/admin" 
           element={<AdminPanel />} 
+        />
+        <Route 
+          path="/galeria/:galleryId" 
+          element={<ImageGallery galleryId={window.location.pathname.split('/').pop()} />} 
+        />
+        <Route 
+          path="/galerias" 
+          element={<GalleryDemo />} 
         />
       </Routes>
     </div>

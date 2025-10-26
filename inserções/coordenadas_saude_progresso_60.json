@@ -1,0 +1,542 @@
+[
+  {
+    "nome": "Policlínica da Alemoa e Chico de Paula",
+    "endereco": "R. Afonsina Proost de Souza s/nº, Alemoa",
+    "telefone": "(13) 3299-7855",
+    "email": "E-mail: usf-alemoa@santos.sp.gov.br",
+    "latitude": -23.9309176,
+    "longitude": -46.3689825,
+    "status": "encontrado"
+  },
+  {
+    "nome": "Policlínica Aparecida",
+    "endereco": "Av. Pedro Lessa, 1728",
+    "telefone": "(13) 3231-6548",
+    "email": "E-mail: ubs-aparecida@santos.sp.gov.br",
+    "latitude": -23.9713854,
+    "longitude": -46.318503,
+    "status": "encontrado"
+  },
+  {
+    "nome": "Policlínica Areia Branca",
+    "endereco": "Rua Francisco Lourenço Gomes, 118",
+    "telefone": "(13) 3291-5816",
+    "email": "E-mail: usf-areiabranca@santos.sp.gov.br",
+    "latitude": -23.9455469,
+    "longitude": -46.3836439,
+    "status": "encontrado"
+  },
+  {
+    "nome": "Policlínica Bom Retiro",
+    "endereco": "Rua João Fraccaroli, s/nº",
+    "telefone": "(13) 3299-7669",
+    "email": "E-mail: usf-bomretiro@santos.sp.gov.br",
+    "latitude": -23.9360414,
+    "longitude": -46.3808663,
+    "status": "encontrado"
+  },
+  {
+    "nome": "Policlínica Campo Grande",
+    "endereco": "Rua Carvalho de Mendonça, 607",
+    "telefone": "(13) 3239-3039",
+    "email": "E-mail: ubs-campogrande@santos.sp.gov.br",
+    "latitude": -23.9551514,
+    "longitude": -46.353748,
+    "status": "encontrado"
+  },
+  {
+    "nome": "Policlínica Caneleira",
+    "endereco": "Rua Adriano de Campos Tourinho, 705 - Santa Maria",
+    "telefone": "",
+    "email": "",
+    "latitude": -23.9404095,
+    "longitude": -46.3145073,
+    "status": "encontrado"
+  },
+  {
+    "nome": "Policlínica Caruara",
+    "endereco": "Rua Andrade Soares s/nº – Área Continental",
+    "telefone": "(13) 3268-1358",
+    "email": "E-mail: usf-caruara@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Castelo",
+    "endereco": "Rua Francisco de Barros Melo, 184",
+    "telefone": "(13) 3299-5985",
+    "email": "E-mail: usf-castelo@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Conselheiro Nébias",
+    "endereco": "Av. Conselheiro Nébias, 457",
+    "telefone": "(13) 3222-3512",
+    "email": "E-mail: ubs-conselheironebias@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Embaré",
+    "endereco": "Praça Coronel Fernando Prestes, s/nº",
+    "telefone": "(13) 3228-3632",
+    "email": "E-mail: ubs-embare@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Estuário",
+    "endereco": "Avenida Afonso Pena, 541",
+    "telefone": "(13) 3228-3671",
+    "email": "E-mail: usf-estuario@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Gonzaga",
+    "endereco": "Rua Assis Correia, 17",
+    "telefone": "(13) 3284-0605",
+    "email": "E-mail: ubs-gonzaga@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Ilha Diana",
+    "endereco": "Avenida Principal s/nº",
+    "telefone": "(13) 3223-3620",
+    "email": "E-mail: usf-ilhadiana@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Jabaquara",
+    "endereco": "Rua Vasco da Gama, 32",
+    "telefone": "(13) 3228-3652",
+    "email": "E-mail: usf-jabaquara@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Pompeia / José Menino",
+    "endereco": "Rua Ceará, 11, Pompeia",
+    "telefone": "(13) 3239-5270",
+    "email": "E-mail: ubs-pompeiajm@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Marapé",
+    "endereco": "Rua São Judas Tadeu, s/nº",
+    "telefone": "(13) 3237-1758",
+    "email": "E-mail: ubs-marape@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Martins Fontes",
+    "endereco": "Rua Luiza Macuco, 40, Vila Mathias",
+    "telefone": "(13) 3232-2300",
+    "email": "E-mail: usf-martinsfontes@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Monte Cabrão",
+    "endereco": "Av. Principal s/nº – Área Continental",
+    "telefone": "(13) 3352-2001",
+    "email": "E-mail: usf-montecabrao@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Monte Serrat",
+    "endereco": "Praça Correa de Melo s/nº",
+    "telefone": "(13) 3221-8316",
+    "email": "E-mail: usf-monteserrat@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Morro José Menino",
+    "endereco": "Rua Doutor Carlos Alberto Curado, 77 A",
+    "telefone": "(13) 3251-9424",
+    "email": "E-mail: usf-josemenino@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica e Pronto Atendimento Nova Cintra",
+    "endereco": "Rua José Ozéas Barbosa s/n.º",
+    "telefone": "(13) 3258-6902",
+    "email": "E-mail: usf-novacintra@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Penha",
+    "endereco": "Rua Três, 150",
+    "telefone": "(13) 3296-2679",
+    "email": "E-mail: usf-penha@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Ponta da Praia",
+    "endereco": "Praça 1º de Maio s/nº",
+    "telefone": "(13) 3261–2762",
+    "email": "E-mail: ubs-pontadapraia@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Unidade de Cuidado do Porto",
+    "endereco": "Rua General Câmara, 507, Paquetá",
+    "telefone": "(13) 3233-3228",
+    "email": "E-mail: ubs-porto@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Rádio Clube",
+    "endereco": "Avenida Hugo Maia s/nº",
+    "telefone": "(13) 3299-8988",
+    "email": "E-mail: usf-radioclube@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica São Bento",
+    "endereco": "Rua das Pedras s/nº",
+    "telefone": "(13) 3222-3913",
+    "email": "E-mail: usf-saobento@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Santa Maria / São Jorge",
+    "endereco": "Rua Maestro Antônio Garofalo, 682 - Santa Maria",
+    "telefone": "",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica São Manoel",
+    "endereco": "Praça Nicolau Geraigire s/nº",
+    "telefone": "(13) 3299-5063",
+    "email": "E-mail: usf-saomanoel@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Piratininga",
+    "endereco": "Praça João de Moraes Chaves s/nº",
+    "telefone": "(13) 3223-4318",
+    "email": "E-mail: usf-piratininga@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Santa Maria",
+    "endereco": "Rua 10 s/nº – Morro Santa Maria",
+    "telefone": "(13) 3221-9510",
+    "email": "E-mail: usf-santamaria@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Valongo",
+    "endereco": "Rua Prof. Maria Neusa Cunha s/nº, Saboó",
+    "telefone": "(13) 3219-3110",
+    "email": "E-mail: usf-valongo@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Vila Gilda",
+    "endereco": "Avenida Brigadeiro Faria Lima, 1281",
+    "telefone": "",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Vila Mathias",
+    "endereco": "Rua Xavier Pinheiro, 284, Encruzilhada",
+    "telefone": "(13) 3222-4290",
+    "email": "E-mail: ubs-vilamathias@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Vila Nova",
+    "endereco": "Praça Iguatemi Martins nº 29/36",
+    "telefone": "(13) 3222-3998",
+    "email": "E-mail: usf-vilanova@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Vila Progresso",
+    "endereco": "Rua Três, casas 1 e 2 - Vila Telma – Morro Vila Progresso",
+    "telefone": "(13) 3258-7301",
+    "email": "E-mail: usf-vilaprogresso@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Ambulatório de Especialidades Nelson Teixeira – AMBESP",
+    "endereco": "Av. Manoel Tourinho, nº 395 – Macuco",
+    "telefone": "(13) 3228-3690",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Ambulatório de Especialidades Zona Noroeste - SEAMBESP - ZNO",
+    "endereco": "Av. Aprovada, 927 - Castelo, Santos - SP, 11087-180",
+    "telefone": "(13) 3203-2907",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Ambulatório de Tuberculose",
+    "endereco": "Rua Nabuco de Araújo, 36 - Boqueirão",
+    "telefone": "(13) 3222-1229",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Ambulatório do Programa Municipal de Atendimento Integral às Vítimas de Violência Sexual - PAIVAS",
+    "endereco": "Avenida Conselheiro Nébias, 267 - 1° andar",
+    "telefone": "(13) 99743-7928 e (13) 3235-6466.",
+    "email": "Email: paivas@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Centro de Especialidades Odontológicas da Zona da Orla e Intermediária",
+    "endereco": "Avenida Conselheiro Nébias n.º 267 – Vila Mathias",
+    "telefone": "(13) 3228-3650, (13) 3228-3660 e (13) 3228-3661",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Centro de Especialidades Odontológicas da Zona Noroeste",
+    "endereco": "Rua Ângelo Martins Melero, 436 – Caneleira",
+    "telefone": "(13) 3203-6124 e (13) 3291-4083",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Centro de Referência em Saúde Auditiva",
+    "endereco": "Av. Bernardino de Campos, 617 – Campo Grande",
+    "telefone": "(13) 3221-5295",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Centro de Reabilitação e Estimulação do Neurodesenvolvimento (CREN) – Clínica do Autista",
+    "endereco": "Rua Heitor Penteado, 80 – Marapé",
+    "telefone": "(13) 3349-7971",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Centro de Controle de Doenças Infectocontagiosas (HIV/Aids, sífilis e hepatites)",
+    "endereco": "Rua da Constituição 556 – Vila Mathias",
+    "telefone": "(13) 3229-8796",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Centro Especializado em Reabilitação Física e Intelectual – CER-II",
+    "endereco": "Rua Bulcão Viana, 855 – Bom Retiro",
+    "telefone": "(13) 3225-1728",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Instituto da Mulher e Gestante",
+    "endereco": "Av. Conselheiro Nébias nº 453 - Encruzilhada",
+    "telefone": "(13) 3222-1359 e (13) 3223-1133",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Seção de Atendimento à Rede e Prevenção em Saúde Bucal",
+    "endereco": "Avenida Conselheiro Nébias, 267 - Primeiro Andar",
+    "telefone": "(13) 3228-3658",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Seção Casa de Apoio e Solidariedade ao Paciente de Aids - Secasa",
+    "endereco": "Rua Luís de Camões, 192 - Vila Mathias",
+    "telefone": "(13) 3232-3192",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Seção de Recuperação e Fisioterapia da Zona da Orla/ Intermediária – SERFIS",
+    "endereco": "Av. Conselheiro Nébias n.º 267 – Vila Nova",
+    "telefone": "(13) 3223-5984 e (13) 3224-1221",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Centro de Atenção Psicossocial Álcool e outras Drogas",
+    "endereco": "Rua Monsenhor de Paula Rodrigues, nº 170 - Vila Belmiro",
+    "telefone": "(13) 3237-2681",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Centro de Atenção Psicossocial Álcool e outras Drogas Infanto Juvenil Tô Ligado",
+    "endereco": "Av. Conselheiro Nébias, 349 - Paquetá",
+    "telefone": "(13) 3221-8367",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Centro de Atenção Psicossocial Infantojuvenil da Zona Noroeste Entre Mentes",
+    "endereco": "Av. Praça Maria Coelho Lopes, nº395 - Santa Maria",
+    "telefone": "(13) 3299-7901",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Centro de Atenção Psicossocial Infantojuvenil #tamojunto (reúne os antigos Caps Orla e Central)",
+    "endereco": "Av. Pinheiro Machado, 769 - Campo Grande",
+    "telefone": "(13) 3271-8235 e (13) 3221-4944",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Centro de Atenção Psicossocial Centro",
+    "endereco": "Avenida Conselheiro Rodrigues Alves, 236 – Macuco",
+    "telefone": "(13) 3222-1217",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Centro de Atenção Psicossocial Orquidário",
+    "endereco": "Avenida Francisco Glicério, 661",
+    "telefone": "(13) 3251-2094",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Centro de Atenção Psicossocial Praia",
+    "endereco": "Av. Cel. Joaquim Montenegro, 329, Ponta da Praia",
+    "telefone": "(13) 3225-8137",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Centro de Atenção Psicossocial da Vila",
+    "endereco": "Av. Pinheiro Machado n.º 718 – Marapé",
+    "telefone": "(13) 3225-5796",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Centro de Atenção Psicossocial da Zona Noroeste",
+    "endereco": "Rua Bulcão Viana, 853 – Bom Retiro",
+    "telefone": "(13) 3299-4368",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Seção de Reabilitação Psicossocial",
+    "endereco": "Av. Conselheiro Nébias, 267 - Paquetá",
+    "telefone": "(13) 3221-1875",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Serviço de Residência Terapêutica I",
+    "endereco": "Rua Godofredo Fraga, 32",
+    "telefone": "(13) 3224-2528",
+    "email": "",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  }
+]

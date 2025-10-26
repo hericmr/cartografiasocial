@@ -79,6 +79,7 @@ const Navbar = () => {
             {isConteudoPage ? 'Voltar ao Mapa' : 'Ver Todo Conteúdo'}
           </button>
 
+
           {/* Logo Unifesp */}
           <a 
             href="https://www.unifesp.br/" 
@@ -173,6 +174,7 @@ const Navbar = () => {
               >
                 {isConteudoPage ? 'Voltar ao Mapa' : 'Ver Todo Conteúdo'}
               </button>
+
               
               <div className="flex items-center justify-center py-2">
                 <a 

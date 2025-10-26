@@ -1,17 +1,25 @@
 import React from "react";
 import { X } from "lucide-react";
+import CategoryMarker from "./CategoryMarker";
 
-const PainelHeader = ({ titulo, closePainel }) => {
+const PainelHeader = ({ titulo, tipo, closePainel }) => {
   return (
-    <header className="relative px-8 py-6 border-b border-green-100">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pr-12">
-        <h2 
-          id="painel-titulo"
-          className="text-3xl font-semibold text-gray-900 leading-tight tracking-normal"
-        >
-          {titulo}
-        </h2>
+    <header className="relative border-b border-green-100">
+      <div className="px-8 py-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pr-12">
+          <h2 
+            id="painel-titulo"
+            className="text-3xl font-semibold text-gray-900 leading-tight tracking-normal"
+          >
+            {titulo}
+          </h2>
+        </div>
       </div>
+      {tipo && (
+        <div className="px-0">
+          <CategoryMarker tipo={tipo} />
+        </div>
+      )}
 
       <button
         onClick={closePainel}

@@ -318,3 +318,392 @@ src/
    - Backup regular dos logs
 
 Este plano garante que o painel de edição siga as melhores práticas de segurança, usabilidade e performance, proporcionando uma experiência robusta e segura para os administradores do sistema.
+
+---
+
+# Plano de Implementação: Painel de Boas-vindas Customizável com Wikitext
+
+## Objetivo
+Implementar um painel de boas-vindas customizável que pode ser editado pelo administrador usando wikitext, permitindo formatação rica e conteúdo dinâmico.
+
+## Análise da Estrutura Atual
+
+### Componentes Identificados
+1. **App.js** - Roteamento principal com LoadingScreen
+2. **ConteudoCartografia.js** - Página de conteúdo com lista de locais
+3. **AdminPanel.js** - Painel administrativo existente
+4. **PainelInformacoes.js** - Painel lateral de informações dos locais
+
+### Oportunidades de Integração
+- O LoadingScreen atual pode ser substituído por um painel de boas-vindas mais rico
+- O AdminPanel pode ser expandido para incluir edição do painel de boas-vindas
+- A página inicial pode exibir o painel de boas-vindas antes de mostrar o mapa
+
+## Fase 1: Pesquisa e Seleção de Biblioteca Wikitext (Prioridade Alta)
+
+### 1.1 Opções de Biblioteca
+- **react-markdown** (já instalado) - Para Markdown básico
+- **@uiw/react-markdown-editor** - Editor visual de Markdown
+- **react-quill** (já instalado) - Editor WYSIWYG
+- **@tiptap/react** - Editor moderno e extensível
+- **wikitext-parser** - Parser específico para Wikitext
+
+### 1.2 Recomendação
+Usar **@tiptap/react** + **react-markdown** para:
+- Editor visual rico no painel administrativo
+- Renderização de Markdown no frontend
+- Suporte a formatação avançada
+- Extensões para wikitext específico
+
+## Fase 2: Estrutura de Banco de Dados (Prioridade Alta)
+
+### 2.1 Tabela de Configurações
+```sql
+CREATE TABLE site_configurations (
+  id SERIAL PRIMARY KEY,
+  key VARCHAR(100) UNIQUE NOT NULL,
+  value TEXT,
+  type VARCHAR(50) DEFAULT 'text', -- text, html, markdown, json
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Inserir configuração inicial
+INSERT INTO site_configurations (key, value, type) 
+VALUES ('welcome_panel_content', '# Bem-vindo à Cartografia Social\n\nEste é o painel de boas-vindas customizável.', 'markdown');
+```
+
+### 2.2 Campos de Configuração
+- `welcome_panel_content` - Conteúdo principal do painel
+- `welcome_panel_title` - Título do painel
+- `welcome_panel_enabled` - Se o painel está ativo
+- `welcome_panel_style` - Estilos customizados (JSON)
+
+## Fase 3: Componentes Frontend (Prioridade Alta)
+
+### 3.1 WelcomePanel Component
+```javascript
+// src/components/WelcomePanel.js
+import React from 'react';
+import ReactMarkdown from 'react-markdown';
+import { supabase } from '../supabaseClient';
+
+const WelcomePanel = ({ isVisible, onClose }) => {
+  const [content, setContent] = useState('');
+  const [title, setTitle] = useState('');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchWelcomeContent();
+  }, []);
+
+  const fetchWelcomeContent = async () => {
+    const { data } = await supabase
+      .from('site_configurations')
+      .select('*')
+      .eq('key', 'welcome_panel_content');
+    
+    if (data?.[0]) {
+      setContent(data[0].value);
+    }
+  };
+
+  if (!isVisible) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+      <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-2xl font-bold">{title}</h2>
+            <button onClick={onClose} className="text-gray-500 hover:text-gray-700">
+              ✕
+            </button>
+          </div>
+          <div className="prose prose-lg max-w-none">
+            <ReactMarkdown>{content}</ReactMarkdown>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+```
+
+### 3.2 WelcomePanelEditor Component
+```javascript
+// src/components/admin/WelcomePanelEditor.js
+import React, { useState, useEffect } from 'react';
+import { Editor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import { supabase } from '../../supabaseClient';
+
+const WelcomePanelEditor = () => {
+  const [content, setContent] = useState('');
+  const [title, setTitle] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  const editor = new Editor({
+    extensions: [StarterKit],
+    content: content,
+    onUpdate: ({ editor }) => {
+      setContent(editor.getHTML());
+    },
+  });
+
+  const saveContent = async () => {
+    setSaving(true);
+    try {
+      await supabase
+        .from('site_configurations')
+        .upsert([
+          { key: 'welcome_panel_content', value: content, type: 'markdown' },
+          { key: 'welcome_panel_title', value: title, type: 'text' }
+        ]);
+      alert('Conteúdo salvo com sucesso!');
+    } catch (error) {
+      console.error('Erro ao salvar:', error);
+      alert('Erro ao salvar conteúdo');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Título do Painel
+        </label>
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full p-3 border rounded-lg"
+          placeholder="Digite o título do painel de boas-vindas"
+        />
+      </div>
+      
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Conteúdo do Painel
+        </label>
+        <div className="border rounded-lg min-h-[400px]">
+          {/* Editor Tiptap será renderizado aqui */}
+        </div>
+      </div>
+
+      <div className="flex justify-end space-x-4">
+        <button
+          onClick={saveContent}
+          disabled={saving}
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+        >
+          {saving ? 'Salvando...' : 'Salvar Conteúdo'}
+        </button>
+      </div>
+    </div>
+  );
+};
+```
+
+## Fase 4: Integração com AdminPanel (Prioridade Média)
+
+### 4.1 Adicionar Aba de Configurações
+```javascript
+// Modificar AdminPanel.js
+const AdminPanel = () => {
+  const [activeTab, setActiveTab] = useState('locations');
+  
+  return (
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-2xl font-bold text-gray-800 mb-6">
+          Painel de Administração
+        </h1>
+        
+        {/* Tabs */}
+        <div className="bg-white rounded-lg shadow mb-6">
+          <div className="border-b border-gray-200">
+            <nav className="-mb-px flex space-x-8 px-6">
+              <button
+                onClick={() => setActiveTab('locations')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'locations'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Locais
+              </button>
+              <button
+                onClick={() => setActiveTab('welcome')}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === 'welcome'
+                    ? 'border-blue-500 text-blue-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                Painel de Boas-vindas
+              </button>
+            </nav>
+          </div>
+        </div>
+
+        {/* Conteúdo das Tabs */}
+        {activeTab === 'locations' && (
+          // Conteúdo atual do AdminPanel
+        )}
+        
+        {activeTab === 'welcome' && (
+          <WelcomePanelEditor />
+        )}
+      </div>
+    </div>
+  );
+};
+```
+
+## Fase 5: Integração com App Principal (Prioridade Média)
+
+### 5.1 Modificar App.js
+```javascript
+// Adicionar estado para controlar exibição do painel de boas-vindas
+const AppContent = () => {
+  const [showWelcomePanel, setShowWelcomePanel] = useState(false);
+  const [welcomePanelConfig, setWelcomePanelConfig] = useState(null);
+
+  useEffect(() => {
+    // Verificar se deve mostrar o painel de boas-vindas
+    const shouldShowWelcome = localStorage.getItem('welcomePanelShown') !== 'true';
+    if (shouldShowWelcome) {
+      fetchWelcomeConfig();
+    }
+  }, []);
+
+  const fetchWelcomeConfig = async () => {
+    const { data } = await supabase
+      .from('site_configurations')
+      .select('*')
+      .in('key', ['welcome_panel_content', 'welcome_panel_title', 'welcome_panel_enabled']);
+    
+    const config = data.reduce((acc, item) => {
+      acc[item.key] = item.value;
+      return acc;
+    }, {});
+
+    if (config.welcome_panel_enabled === 'true') {
+      setWelcomePanelConfig(config);
+      setShowWelcomePanel(true);
+    }
+  };
+
+  const closeWelcomePanel = () => {
+    setShowWelcomePanel(false);
+    localStorage.setItem('welcomePanelShown', 'true');
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Navbar onConteudoClick={() => navigate('/conteudo')} />
+      
+      {/* Welcome Panel */}
+      {showWelcomePanel && welcomePanelConfig && (
+        <WelcomePanel 
+          content={welcomePanelConfig.welcome_panel_content}
+          title={welcomePanelConfig.welcome_panel_title}
+          onClose={closeWelcomePanel}
+        />
+      )}
+      
+      <Routes>
+        {/* Rotas existentes */}
+      </Routes>
+    </div>
+  );
+};
+```
+
+## Fase 6: Dependências e Instalação (Prioridade Alta)
+
+### 6.1 Novas Dependências
+```json
+{
+  "dependencies": {
+    "@tiptap/react": "^2.1.0",
+    "@tiptap/starter-kit": "^2.1.0",
+    "@tiptap/extension-link": "^2.1.0",
+    "@tiptap/extension-image": "^2.1.0",
+    "react-markdown": "^9.0.3" // já instalado
+  }
+}
+```
+
+### 6.2 Scripts de Instalação
+```bash
+npm install @tiptap/react @tiptap/starter-kit @tiptap/extension-link @tiptap/extension-image
+```
+
+## Fase 7: Funcionalidades Avançadas (Prioridade Baixa)
+
+### 7.1 Personalização Visual
+- Seletor de temas para o painel
+- Configuração de cores e fontes
+- Layout responsivo customizável
+
+### 7.2 Funcionalidades de Wikitext
+- Suporte a links internos
+- Tabelas formatadas
+- Listas numeradas e com marcadores
+- Citações e blocos de código
+- Imagens com legendas
+
+### 7.3 Analytics e Controle
+- Contador de visualizações do painel
+- Controle de frequência de exibição
+- A/B testing de diferentes versões
+
+## Cronograma de Implementação
+
+### Semana 1: Base e Dependências
+- [ ] Instalar dependências do Tiptap
+- [ ] Criar tabela de configurações no Supabase
+- [ ] Implementar WelcomePanel básico
+
+### Semana 2: Editor Administrativo
+- [ ] Implementar WelcomePanelEditor
+- [ ] Integrar com AdminPanel existente
+- [ ] Testar funcionalidades de edição
+
+### Semana 3: Integração Frontend
+- [ ] Modificar App.js para exibir painel
+- [ ] Implementar controle de exibição
+- [ ] Testar fluxo completo
+
+### Semana 4: Refinamentos
+- [ ] Melhorar estilos e responsividade
+- [ ] Adicionar validações
+- [ ] Testes de integração
+
+## Métricas de Sucesso
+
+### Funcionalidade
+- [ ] Administrador pode editar conteúdo do painel
+- [ ] Painel é exibido na primeira visita
+- [ ] Conteúdo é salvo e carregado corretamente
+- [ ] Editor suporta formatação rica
+
+### Usabilidade
+- [ ] Interface intuitiva para edição
+- [ ] Preview em tempo real
+- [ ] Responsividade em dispositivos móveis
+- [ ] Performance adequada
+
+### Segurança
+- [ ] Validação de conteúdo HTML
+- [ ] Sanitização de inputs
+- [ ] Controle de acesso administrativo
+- [ ] Backup de configurações
+
+Este plano garante uma implementação gradual e robusta do painel de boas-vindas customizável, mantendo a compatibilidade com o sistema existente e proporcionando uma experiência rica para administradores e usuários.

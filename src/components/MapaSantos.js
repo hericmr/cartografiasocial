@@ -4,7 +4,6 @@ import Marcadores from "./Marcadores";
 import Bairros from "./Bairros";
 import MenuCamadas from "./MenuCamadas";
 import PainelInformacoes from "./PainelInformacoes";
-import detalhesIntro from "./detalhesInfo"; 
 import "./MapaSantos.css";
 
 // Função para converter título em slug
@@ -23,7 +22,7 @@ const MapaSantos = ({ dataPoints }) => {
 
   const urlParams = new URLSearchParams(window.location.search);
   const panel = urlParams.get('panel');
-  var initialPanel = detalhesIntro;
+  var initialPanel = null;
   if (panel && panel !== '' && dataPoints && dataPoints.length > 0) {
     const pointFound = dataPoints.find((item) => criarSlug(item.titulo) === panel);
     if (pointFound != null) {

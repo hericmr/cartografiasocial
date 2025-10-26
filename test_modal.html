@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Modal</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/react-markdown@9.0.1/dist/react-markdown.min.js"></script>
+    <script src="https://unpkg.com/lucide-react@0.263.1/dist/umd/lucide-react.js"></script>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        body { margin: 0; font-family: Arial, sans-serif; }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; padding: 20px; border-radius: 8px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; }
+        .close-btn { float: right; background: none; border: none; font-size: 24px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createClient } = supabase;
+        
+        // Configuração do Supabase
+        const supabaseUrl = 'https://kbekziboncpvjqffmhlx.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtiZWt6aWJvbmNwdmpxZmZtaGx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDEyNjc2OTYsImV4cCI6MjA1Njg0MzY5Nn0.FTtiCL3VKLdrcR9aKs3tF6AwgdoyKo604rMBdpWRLko';
+        
+        const supabaseClient = createClient(supabaseUrl, supabaseKey);
+        
+        function WelcomePanel({ isVisible, onClose }) {
+            const [content, setContent] = useState('');
+            const [title, setTitle] = useState('');
+            const [loading, setLoading] = useState(true);
+            const [error, setError] = useState(null);
+            
+            useEffect(() => {
+                if (isVisible) {
+                    fetchWelcomeContent();
+                }
+            }, [isVisible]);
+            
+            const fetchWelcomeContent = async () => {
+                try {
+                    console.log('🔍 Buscando conteúdo do painel...');
+                    setLoading(true);
+                    setError(null);
+                    
+                    const { data, error } = await supabaseClient
+                        .from('welcome_panels')
+                        .select('*')
+                        .eq('is_active', true)
+                        .order('updated_at', { ascending: false })
+                        .limit(1)
+                        .single();
+                    
+                    console.log('🔍 Resposta do Supabase:', { data, error });
+                    
+                    if (error) throw error;
+                    
+                    if (data) {
+                        console.log('✅ Conteúdo carregado:', data);
+                        setContent(data.content || '');
+                        setTitle(data.title || 'Bem-vindo');
+                    } else {
+                        console.log('❌ Nenhum painel ativo encontrado');
+                        onClose();
+                    }
+                } catch (err) {
+                    console.error('❌ Erro ao carregar conteúdo:', err);
+                    setError('Erro ao carregar o painel de boas-vindas');
+                } finally {
+                    setLoading(false);
+                }
+            };
+            
+            if (!isVisible) return null;
+            
+            if (loading) {
+                return (
+                    <div className="modal">
+                        <div className="modal-content">
+                            <div style={{textAlign: 'center', padding: '20px'}}>
+                                <div style={{width: '40px', height: '40px', border: '4px solid #f3f3f3', borderTop: '4px solid #3498db', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 20px'}}></div>
+                                <p>Carregando painel de boas-vindas...</p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+            
+            if (error) {
+                return (
+                    <div className="modal">
+                        <div className="modal-content">
+                            <div style={{textAlign: 'center', padding: '20px'}}>
+                                <h2 style={{color: '#e74c3c'}}>Erro</h2>
+                                <p>{error}</p>
+                                <button onClick={onClose} style={{padding: '10px 20px', backgroundColor: '#95a5a6', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer'}}>
+                                    Fechar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+            
+            return (
+                <div className="modal">
+                    <div className="modal-content">
+                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid #eee', paddingBottom: '10px'}}>
+                            <h2 style={{margin: 0, fontSize: '24px', fontWeight: 'bold'}}>{title}</h2>
+                            <button onClick={onClose} className="close-btn" style={{fontSize: '24px', background: 'none', border: 'none', cursor: 'pointer'}}>×</button>
+                        </div>
+                        
+                        <div style={{marginBottom: '20px'}}>
+                            <h3 style={{marginBottom: '10px'}}>Áudio:</h3>
+                            <audio controls style={{width: '100%'}}>
+                                <source src="/cartografiasocial/audio/intro.mp3" type="audio/mpeg" />
+                                Seu navegador não suporta o elemento de áudio.
+                            </audio>
+                        </div>
+                        
+                        <div style={{whiteSpace: 'pre-wrap', lineHeight: '1.6'}}>
+                            {content}
+                        </div>
+                        
+                        <div style={{marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #eee', textAlign: 'center'}}>
+                            <button onClick={onClose} style={{padding: '10px 30px', backgroundColor: '#3498db', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '16px'}}>
+                                Começar a explorar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+        
+        function App() {
+            const [showWelcome, setShowWelcome] = useState(false);
+            const [welcomeConfig, setWelcomeConfig] = useState(null);
+            
+            useEffect(() => {
+                fetchWelcomeConfig();
+            }, []);
+            
+            const fetchWelcomeConfig = async () => {
+                try {
+                    console.log('🔍 Buscando configuração do painel...');
+                    const { data, error } = await supabaseClient
+                        .from('welcome_panels')
+                        .select('*')
+                        .eq('is_active', true)
+                        .order('updated_at', { ascending: false })
+                        .limit(1)
+                        .single();
+                    
+                    console.log('🔍 Resposta:', { data, error });
+                    
+                    if (error) throw error;
+                    
+                    if (data) {
+                        console.log('✅ Configuração carregada:', data);
+                        setWelcomeConfig(data);
+                        setShowWelcome(true);
+                    }
+                } catch (err) {
+                    console.error('❌ Erro ao carregar configuração:', err);
+                }
+            };
+            
+            const closeWelcome = () => {
+                setShowWelcome(false);
+            };
+            
+            return (
+                <div>
+                    <h1>Teste do Modal de Boas-vindas</h1>
+                    <p>Se o modal não aparecer, verifique o console do navegador.</p>
+                    <button onClick={() => setShowWelcome(true)} style={{padding: '10px 20px', backgroundColor: '#27ae60', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer'}}>
+                        Mostrar Modal
+                    </button>
+                    
+                    {showWelcome && welcomeConfig && (
+                        <WelcomePanel 
+                            isVisible={showWelcome}
+                            onClose={closeWelcome}
+                        />
+                    )}
+                </div>
+            );
+        }
+        
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+    
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</body>
+</html>

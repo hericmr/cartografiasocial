@@ -1,384 +1,73 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { supabase } from '../../supabaseClient';
+import { X } from 'lucide-react';
+import { useEditLocationPanel } from '../../hooks/useEditLocationPanel';
 import MapSection from "../AddLocationPanel/components/MapSection";
 import InputField from "../AddLocationPanel/components/InputField";
 import RichTextEditor from "../AddLocationPanel/components/RichTextEditor";
-import { opcoes } from "../AddLocationPanel/constants";
-import { Upload, X } from 'lucide-react';
+import AlertSection from "./components/AlertSection";
+import BasicInfoSection from "./components/BasicInfoSection";
+import MediaSection from "./components/MediaSection";
+import PreviewSection from "./components/PreviewSection";
+import ActionSection from "./components/ActionSection";
 
 const EditLocationPanel = ({ location, onClose, onSave }) => {
-  const [editedLocation, setEditedLocation] = useState({
-    ...location,
-    latitude: location.localizacao ? location.localizacao.split(',')[0] : '',
-    longitude: location.localizacao ? location.localizacao.split(',')[1] : '',
-  });
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [showConfirmation, setShowConfirmation] = useState(false);
-  const [errors, setErrors] = useState({});
-  const [isSaving, setIsSaving] = useState(false);
-  const [mediaState, setMediaState] = useState({
-    selectedImages: [],
-    imageUrls: [],
-    uploadingImages: false,
-    uploadError: "",
-  });
-
-  const [audioState, setAudioState] = useState({
-    isRecording: false,
-    audioBlob: null,
-    isPlaying: false,
-    uploadingAudio: false
-  });
-
-  // Refs para áudio
-  const mediaRecorderRef = useRef(null);
-  const audioChunksRef = useRef([]);
-  const audioPlayerRef = useRef(null);
-
-  // Inicializa as imagens existentes
-  React.useEffect(() => {
-    if (location.imagens) {
-      const existingImages = location.imagens.split(',').filter(url => url);
-      setMediaState(prev => ({
-        ...prev,
-        imageUrls: existingImages
-      }));
-    }
-  }, [location.imagens]);
-
-  // Funções de áudio
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorderRef.current = new MediaRecorder(stream);
-      audioChunksRef.current = [];
-
-      mediaRecorderRef.current.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data);
-        }
-      };
-
-      mediaRecorderRef.current.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
-        setAudioState(prev => ({ ...prev, audioBlob }));
-        stream.getTracks().forEach(track => track.stop());
-      };
-
-      mediaRecorderRef.current.start();
-      setAudioState(prev => ({ ...prev, isRecording: true }));
-    } catch (error) {
-      console.error('Erro ao iniciar gravação:', error);
-      setMediaState(prev => ({
-        ...prev,
-        uploadError: "Erro ao acessar o microfone. Verifique as permissões."
-      }));
-    }
-  };
-
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && audioState.isRecording) {
-      mediaRecorderRef.current.stop();
-      setAudioState(prev => ({ ...prev, isRecording: false }));
-    }
-  };
-
-  const handleAudioPlayback = () => {
-    if (!audioState.audioBlob) return;
-
-    if (audioState.isPlaying) {
-      audioPlayerRef.current?.pause();
-      setAudioState(prev => ({ ...prev, isPlaying: false }));
-    } else {
-      const audioUrl = URL.createObjectURL(audioState.audioBlob);
-      audioPlayerRef.current.src = audioUrl;
-      audioPlayerRef.current.play();
-      setAudioState(prev => ({ ...prev, isPlaying: true }));
-    }
-  };
-
-  const handleUploadAudio = async () => {
-    if (!audioState.audioBlob) return;
-
-    setAudioState(prev => ({ ...prev, uploadingAudio: true }));
-    setMediaState(prev => ({ ...prev, uploadError: "" }));
-
-    try {
-      const fileName = `audio_${Math.random().toString(36).substring(2)}.wav`;
-      const filePath = `audios/${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('media')
-        .upload(filePath, audioState.audioBlob);
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('media')
-        .getPublicUrl(filePath);
-
-      setEditedLocation(prev => ({
-        ...prev,
-        audio: publicUrl
-      }));
-
-      setAudioState(prev => ({
-        ...prev,
-        audioBlob: null,
-        isPlaying: false,
-        uploadingAudio: false
-      }));
-    } catch (error) {
-      console.error('Erro no upload do áudio:', error);
-      setMediaState(prev => ({
-        ...prev,
-        uploadError: "Erro ao fazer upload do áudio. Tente novamente."
-      }));
-      setAudioState(prev => ({ ...prev, uploadingAudio: false }));
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    if (!editedLocation.titulo) newErrors.titulo = "Título é obrigatório.";
-    if (!editedLocation.latitude || !editedLocation.longitude) newErrors.localizacao = "Localização é obrigatória.";
-    if (!editedLocation.descricao_detalhada) newErrors.descricao_detalhada = "Descrição detalhada é obrigatória.";
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (validateForm()) {
-      // Limpa e valida as URLs das imagens
-      const cleanLocation = {
-        ...editedLocation,
-        imagens: editedLocation.imagens
-          ? editedLocation.imagens
-              .split(',')
-              .map(url => url.trim())
-              .filter(url => {
-                try {
-                  new URL(url);
-                  return true;
-                } catch {
-                  return false;
-                }
-              })
-              .join(',')
-          : ''
-      };
-      onSave(cleanLocation);
-      setShowConfirmation(true);
-      setTimeout(() => {
-        setShowConfirmation(false);
-      }, 3000);
-    }
-  };
-
-  const handleTipoChange = (tipo) => {
-    setEditedLocation((prev) => ({
-      ...prev,
-      tipo: tipo,
-    }));
-    setDropdownOpen(false);
-  };
-
-  const handleImageSelect = async (event) => {
-    const files = Array.from(event.target.files);
-    if (files.length === 0) return;
-
-    const validFiles = files.filter(file => {
-      const isValidType = ['image/jpeg', 'image/png', 'image/jpg'].includes(file.type);
-      const isValidSize = file.size <= 5 * 1024 * 1024; // 5MB
-      return isValidType && isValidSize;
-    });
-
-    if (validFiles.length !== files.length) {
-      setMediaState(prev => ({
-        ...prev,
-        uploadError: "Alguns arquivos foram ignorados. Use apenas imagens JPG/PNG até 5MB."
-      }));
-    }
-
-    setMediaState(prev => ({
-      ...prev,
-      selectedImages: [...prev.selectedImages, ...validFiles]
-    }));
-
-    validFiles.forEach(file => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setMediaState(prev => ({
-          ...prev,
-          imageUrls: [...prev.imageUrls, reader.result]
-        }));
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-
-  const handleUploadImages = async () => {
-    if (mediaState.selectedImages.length === 0) return;
-
-    setMediaState(prev => ({ ...prev, uploadingImages: true, uploadError: "" }));
-    const uploadedUrls = [];
-
-    try {
-      for (const file of mediaState.selectedImages) {
-        const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-        const filePath = `locations/${fileName}`;
-
-        const { error: uploadError } = await supabase.storage
-          .from('media')
-          .upload(filePath, file);
-
-        if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = supabase.storage
-          .from('media')
-          .getPublicUrl(filePath);
-
-        uploadedUrls.push(publicUrl);
-      }
-
-      // Combina as URLs existentes com as novas
-      const existingUrls = editedLocation.imagens ? editedLocation.imagens.split(',').filter(url => url) : [];
-      const allUrls = [...existingUrls, ...uploadedUrls];
-
-      setEditedLocation(prev => ({
-        ...prev,
-        imagens: allUrls.join(',')
-      }));
-
-      setMediaState(prev => ({
-        ...prev,
-        selectedImages: [],
-        imageUrls: allUrls
-      }));
-    } catch (error) {
-      console.error('Erro no upload:', error);
-      setMediaState(prev => ({
-        ...prev,
-        uploadError: "Erro ao fazer upload das imagens. Tente novamente."
-      }));
-    } finally {
-      setMediaState(prev => ({ ...prev, uploadingImages: false }));
-    }
-  };
-
-  const removeImage = (index) => {
-    const newImageUrls = mediaState.imageUrls.filter((_, i) => i !== index);
-    setMediaState(prev => ({
-      ...prev,
-      imageUrls: newImageUrls
-    }));
-    setEditedLocation(prev => ({
-      ...prev,
-      imagens: newImageUrls.join(',')
-    }));
-  };
+  const {
+    editedLocation,
+    setEditedLocation,
+    dropdownOpen,
+    setDropdownOpen,
+    showConfirmation,
+    errors,
+    isSaving,
+    showPreview,
+    setShowPreview,
+    mediaState,
+    audioState,
+    handleImageSelect,
+    handleUploadImages,
+    removeImage,
+    startRecording,
+    stopRecording,
+    handleAudioPlayback,
+    handleUploadAudio,
+    handleTipoChange,
+    handleSubmit
+  } = useEditLocationPanel(location);
 
   return (
-    <div
-      className="fixed top-16 right-0 sm:w-3/4 lg:w-[49%] bg-white rounded-xl shadow-lg z-[9999] text-gray-800"
-      style={{
-        height: 'calc(100vh - 4rem)',
-        maxHeight: 'calc(100vh - 4rem)',
-        display: "flex",
-        flexDirection: "column"
-      }}
-    >
-      <div className="flex-1 overflow-y-auto">
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-gray-900">Editar Local</h2>
-            <button
-              onClick={onClose}
-              className="text-gray-600 hover:text-gray-900 text-lg"
-              aria-label="Fechar painel"
-            >
-              ✖
-            </button>
-          </div>
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            <InputField
-              label="Título"
-              id="titulo"
-              type="text"
-              value={editedLocation.titulo || ""}
-              onChange={(e) =>
-                setEditedLocation((prev) => ({
-                  ...prev,
-                  titulo: e.target.value,
-                }))
-              }
-              placeholder="Digite o título do local"
-              error={errors.titulo}
-            />
-            <div>
-              <label className="block font-medium text-gray-800">
-                Tipo de Marcador <span className="text-red-500">*</span>
-              </label>
-              <div className="relative" style={{ zIndex: 99999999 }}>
-                <button
-                  type="button"
-                  onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="w-full border rounded p-2 flex items-center justify-between text-gray-800 bg-white hover:bg-gray-50"
-                >
-                  <span>
-                    {editedLocation.tipo || "Selecione o tipo de marcador"}
-                  </span>
-                  <svg
-                    className="w-4 h-4 text-gray-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </button>
-                {dropdownOpen && (
-                  <div
-                    className="absolute w-full bg-white border rounded shadow-lg"
-                    style={{
-                      top: '100%',
-                      left: 0,
-                      zIndex: 99999999,
-                      maxHeight: '300px',
-                      overflowY: 'auto'
-                    }}
-                  >
-                    {opcoes.map((opcao, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => handleTipoChange(opcao.value)}
-                        className={`w-full text-left p-2 hover:bg-gray-50 flex items-center ${opcao.cor} text-gray-800`}
-                      >
-                        {opcao.icone.startsWith("http") ? (
-                          <img
-                            src={opcao.icone}
-                            alt={opcao.label}
-                            className="w-6 h-6 mr-2"
-                          />
-                        ) : (
-                          <span className="mr-2">{opcao.icone}</span>
-                        )}
-                        <span>{opcao.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
+    <div className="bg-white rounded-lg shadow-lg border border-gray-200">
+      {/* Header */}
+      <div className="border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+        <div>
+          <h2 className="text-xl font-bold text-gray-800">Editar Local</h2>
+          <p className="text-sm text-gray-600 mt-1">Personalize as informações do local selecionado</p>
+        </div>
+        <button
+          onClick={onClose}
+          className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+          title="Fechar painel"
+        >
+          <X className="w-5 h-5" />
+        </button>
+      </div>
+
+      {/* Content */}
+      <div className="p-6 max-h-[calc(100vh-200px)] overflow-y-auto">
+        <AlertSection errors={errors} showConfirmation={showConfirmation} />
+
+        <form className="space-y-6" onSubmit={(e) => handleSubmit(e, onSave)}>
+          <BasicInfoSection
+            editedLocation={editedLocation}
+            setEditedLocation={setEditedLocation}
+            dropdownOpen={dropdownOpen}
+            setDropdownOpen={setDropdownOpen}
+            handleTipoChange={handleTipoChange}
+            errors={errors}
+          />
+          {/* Localização */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Localização</h3>
             <MapSection
               newLocation={editedLocation}
               setNewLocation={setEditedLocation}
@@ -388,110 +77,48 @@ const EditLocationPanel = ({ location, onClose, onSave }) => {
               handleUploadAudio={handleUploadAudio}
               mediaState={mediaState}
               audioState={audioState}
-              setMediaState={setMediaState}
-              setAudioState={setAudioState}
             />
-            <div className="space-y-2">
-              <RichTextEditor
-                value={editedLocation.descricao_detalhada}
-                onChange={(value) => setEditedLocation(prev => ({ ...prev, descricao_detalhada: value }))}
-                error={errors.descricao_detalhada}
-              />
-            </div>
+          </div>
+
+          {/* Descrição */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Descrição Detalhada</h3>
+            <RichTextEditor
+              value={editedLocation.descricao_detalhada}
+              onChange={(value) => setEditedLocation(prev => ({ ...prev, descricao_detalhada: value }))}
+              error={errors.descricao_detalhada}
+            />
+          </div>
+
+          {/* Links */}
+          <div className="bg-white rounded-lg border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Links Relacionados</h3>
             <InputField
-              label="Links"
+              label="URL do Link"
               id="links"
               type="url"
               value={editedLocation.links || ""}
               onChange={(e) => setEditedLocation(prev => ({...prev, links: e.target.value}))}
               placeholder="Cole um link aqui (http://...)"
             />
+          </div>
 
-            {/* Seção de Upload de Imagens */}
-            <div className="space-y-4">
-              <label className="block font-medium text-gray-800">
-                Imagens
-              </label>
-              <div className="space-y-4">
-                {/* Grid de imagens existentes */}
-                {mediaState.imageUrls.length > 0 && (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                    {mediaState.imageUrls.map((url, index) => (
-                      <div key={index} className="relative group">
-                        <img
-                          src={url}
-                          alt={`Imagem ${index + 1}`}
-                          className="w-full h-32 object-cover rounded-lg"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removeImage(index)}
-                          className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
+          <MediaSection
+            mediaState={mediaState}
+            handleImageSelect={handleImageSelect}
+            handleUploadImages={handleUploadImages}
+            removeImage={removeImage}
+          />
 
-                {/* Upload de novas imagens */}
-                <div className="flex items-center gap-4">
-                  <label className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg cursor-pointer hover:bg-blue-600 transition-colors">
-                    <Upload className="w-4 h-4" />
-                    <span>Adicionar Imagens</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      className="hidden"
-                      onChange={handleImageSelect}
-                    />
-                  </label>
-                  {mediaState.selectedImages.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={handleUploadImages}
-                      disabled={mediaState.uploadingImages}
-                      className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:bg-green-300"
-                    >
-                      {mediaState.uploadingImages ? "Enviando..." : "Enviar Imagens"}
-                    </button>
-                  )}
-                </div>
-                {mediaState.uploadError && (
-                  <p className="text-red-500 text-sm">{mediaState.uploadError}</p>
-                )}
-              </div>
-            </div>
+          <PreviewSection
+            editedLocation={editedLocation}
+            mediaState={mediaState}
+            showPreview={showPreview}
+            setShowPreview={setShowPreview}
+          />
 
-            <div className="mt-4 flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={onClose}
-                className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 text-gray-800"
-                disabled={isSaving}
-              >
-                Cancelar
-              </button>
-              <button
-                type="submit"
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:bg-green-300"
-                disabled={isSaving}
-              >
-                {isSaving ? "Salvando..." : "Salvar"}
-              </button>
-            </div>
-            {/* Mensagem de erro geral */}
-            {errors.submit && (
-              <p className="text-red-500 text-sm mt-2">{errors.submit}</p>
-            )}
-            {/* Mensagem de confirmação */}
-            {showConfirmation && (
-              <div className="text-green-600 text-sm mt-2 animate-fade-in">✔ Local atualizado com sucesso!</div>
-            )}
-          </form>
-        </div>
+          <ActionSection isSaving={isSaving} onClose={onClose} />
+        </form>
       </div>
     </div>
   );

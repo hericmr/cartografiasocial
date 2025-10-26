@@ -1,0 +1,182 @@
+[
+  {
+    "nome": "Policlínica da Alemoa e Chico de Paula",
+    "endereco": "R. Afonsina Proost de Souza s/nº, Alemoa",
+    "telefone": "(13) 3299-7855",
+    "email": "E-mail: usf-alemoa@santos.sp.gov.br",
+    "latitude": -23.9309176,
+    "longitude": -46.3689825,
+    "status": "encontrado"
+  },
+  {
+    "nome": "Policlínica Aparecida",
+    "endereco": "Av. Pedro Lessa, 1728",
+    "telefone": "(13) 3231-6548",
+    "email": "E-mail: ubs-aparecida@santos.sp.gov.br",
+    "latitude": -23.9713854,
+    "longitude": -46.318503,
+    "status": "encontrado"
+  },
+  {
+    "nome": "Policlínica Areia Branca",
+    "endereco": "Rua Francisco Lourenço Gomes, 118",
+    "telefone": "(13) 3291-5816",
+    "email": "E-mail: usf-areiabranca@santos.sp.gov.br",
+    "latitude": -23.9455469,
+    "longitude": -46.3836439,
+    "status": "encontrado"
+  },
+  {
+    "nome": "Policlínica Bom Retiro",
+    "endereco": "Rua João Fraccaroli, s/nº",
+    "telefone": "(13) 3299-7669",
+    "email": "E-mail: usf-bomretiro@santos.sp.gov.br",
+    "latitude": -23.9360414,
+    "longitude": -46.3808663,
+    "status": "encontrado"
+  },
+  {
+    "nome": "Policlínica Campo Grande",
+    "endereco": "Rua Carvalho de Mendonça, 607",
+    "telefone": "(13) 3239-3039",
+    "email": "E-mail: ubs-campogrande@santos.sp.gov.br",
+    "latitude": -23.9551514,
+    "longitude": -46.353748,
+    "status": "encontrado"
+  },
+  {
+    "nome": "Policlínica Caneleira",
+    "endereco": "Rua Adriano de Campos Tourinho, 705 - Santa Maria",
+    "telefone": "",
+    "email": "",
+    "latitude": -23.9404095,
+    "longitude": -46.3145073,
+    "status": "encontrado"
+  },
+  {
+    "nome": "Policlínica Caruara",
+    "endereco": "Rua Andrade Soares s/nº – Área Continental",
+    "telefone": "(13) 3268-1358",
+    "email": "E-mail: usf-caruara@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Castelo",
+    "endereco": "Rua Francisco de Barros Melo, 184",
+    "telefone": "(13) 3299-5985",
+    "email": "E-mail: usf-castelo@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Conselheiro Nébias",
+    "endereco": "Av. Conselheiro Nébias, 457",
+    "telefone": "(13) 3222-3512",
+    "email": "E-mail: ubs-conselheironebias@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Embaré",
+    "endereco": "Praça Coronel Fernando Prestes, s/nº",
+    "telefone": "(13) 3228-3632",
+    "email": "E-mail: ubs-embare@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Estuário",
+    "endereco": "Avenida Afonso Pena, 541",
+    "telefone": "(13) 3228-3671",
+    "email": "E-mail: usf-estuario@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Gonzaga",
+    "endereco": "Rua Assis Correia, 17",
+    "telefone": "(13) 3284-0605",
+    "email": "E-mail: ubs-gonzaga@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Ilha Diana",
+    "endereco": "Avenida Principal s/nº",
+    "telefone": "(13) 3223-3620",
+    "email": "E-mail: usf-ilhadiana@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Jabaquara",
+    "endereco": "Rua Vasco da Gama, 32",
+    "telefone": "(13) 3228-3652",
+    "email": "E-mail: usf-jabaquara@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Pompeia / José Menino",
+    "endereco": "Rua Ceará, 11, Pompeia",
+    "telefone": "(13) 3239-5270",
+    "email": "E-mail: ubs-pompeiajm@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Marapé",
+    "endereco": "Rua São Judas Tadeu, s/nº",
+    "telefone": "(13) 3237-1758",
+    "email": "E-mail: ubs-marape@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Martins Fontes",
+    "endereco": "Rua Luiza Macuco, 40, Vila Mathias",
+    "telefone": "(13) 3232-2300",
+    "email": "E-mail: usf-martinsfontes@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Monte Cabrão",
+    "endereco": "Av. Principal s/nº – Área Continental",
+    "telefone": "(13) 3352-2001",
+    "email": "E-mail: usf-montecabrao@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Monte Serrat",
+    "endereco": "Praça Correa de Melo s/nº",
+    "telefone": "(13) 3221-8316",
+    "email": "E-mail: usf-monteserrat@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  },
+  {
+    "nome": "Policlínica Morro José Menino",
+    "endereco": "Rua Doutor Carlos Alberto Curado, 77 A",
+    "telefone": "(13) 3251-9424",
+    "email": "E-mail: usf-josemenino@santos.sp.gov.br",
+    "latitude": null,
+    "longitude": null,
+    "status": "não encontrado"
+  }
+]
