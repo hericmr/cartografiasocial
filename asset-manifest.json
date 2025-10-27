@@ -1,17 +1,17 @@
 {
   "files": {
-    "main.css": "/cartografiasocial/static/css/main.31d04144.css",
-    "main.js": "/cartografiasocial/static/js/main.04d17643.js",
+    "main.css": "/cartografiasocial/static/css/main.7b8f3d9e.css",
+    "main.js": "/cartografiasocial/static/js/main.14fc214f.js",
     "static/js/198.06b54d5b.chunk.js": "/cartografiasocial/static/js/198.06b54d5b.chunk.js",
     "static/js/488.507c0173.chunk.js": "/cartografiasocial/static/js/488.507c0173.chunk.js",
     "index.html": "/cartografiasocial/index.html",
-    "main.31d04144.css.map": "/cartografiasocial/static/css/main.31d04144.css.map",
-    "main.04d17643.js.map": "/cartografiasocial/static/js/main.04d17643.js.map",
+    "main.7b8f3d9e.css.map": "/cartografiasocial/static/css/main.7b8f3d9e.css.map",
+    "main.14fc214f.js.map": "/cartografiasocial/static/js/main.14fc214f.js.map",
     "198.06b54d5b.chunk.js.map": "/cartografiasocial/static/js/198.06b54d5b.chunk.js.map",
     "488.507c0173.chunk.js.map": "/cartografiasocial/static/js/488.507c0173.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.31d04144.css",
-    "static/js/main.04d17643.js"
+    "static/css/main.7b8f3d9e.css",
+    "static/js/main.14fc214f.js"
   ]
 }
