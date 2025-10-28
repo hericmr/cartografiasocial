@@ -14,6 +14,10 @@ const ImageGallery = ({ galleryId, className = '' }) => {
     setShowModal(true);
   };
 
+  const handleImageSelect = (index) => {
+    setSelectedImageIndex(index);
+  };
+
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedImageIndex(null);
@@ -94,6 +98,7 @@ const ImageGallery = ({ galleryId, className = '' }) => {
           onClose={handleCloseModal}
           onPrevious={handlePrevious}
           onNext={handleNext}
+          onImageSelect={handleImageSelect}
         />
       )}
     </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import MapaBase from "./MapaBase";
-import Marcadores from "./Marcadores";
+import MarcadoresSimples from "./MarcadoresSimples";
 import Bairros from "./Bairros";
 import MenuCamadas from "./MenuCamadas";
 import PainelInformacoes from "./PainelInformacoes";
@@ -101,7 +101,7 @@ const MapaSantos = ({ dataPoints }) => {
     <div className="relative h-screen">
       <MapaBase>
         {visibilidade.bairros && geojsonData && <Bairros data={geojsonData} style={geoJSONStyle} />}
-        {dataPoints && <Marcadores dataPoints={dataPoints} visibility={visibilidade} onClick={abrirPainel} />}
+        {dataPoints && <MarcadoresSimples dataPoints={dataPoints} visibility={visibilidade} onClick={abrirPainel} />}
       </MapaBase>
 
       {painelInfo && <PainelInformacoes painelInfo={painelInfo} closePainel={fecharPainel} />}

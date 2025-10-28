@@ -1,21 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const InputField = ({ label, id, type, value, onChange, placeholder, error, required }) => (
+const InputField = ({ label, id, type, value, onChange, placeholder, error, required, helpText, step }) => (
   <div>
-    <label className="block font-medium" htmlFor={id}>
-      {label} {required && <span className="text-red-500">*</span>}
+    <label className="block font-medium" htmlFor={String(id)}>
+      {String(label)} {required && <span className="text-red-500">*</span>}
     </label>
-    {error && <p className="text-red-500 text-sm">{error}</p>}
+    {error && <p className="text-red-500 text-sm">{String(error)}</p>}
     <input
-      id={id}
-      type={type}
+      id={String(id)}
+      type={type ? String(type) : "text"}
+      step={step}
       className="w-full border rounded p-2 text-black"
-      placeholder={placeholder}
-      value={value}
+      placeholder={placeholder ? String(placeholder) : undefined}
+      value={value ? String(value) : ""}
       onChange={onChange}
-      required={required}
+      required={Boolean(required)}
     />
+    {helpText && <p className="text-gray-500 text-sm mt-1">{String(helpText)}</p>}
   </div>
 );
 
@@ -27,7 +29,9 @@ InputField.propTypes = {
   onChange: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
   error: PropTypes.string,
-  required: PropTypes.bool
+  required: PropTypes.bool,
+  helpText: PropTypes.string,
+  step: PropTypes.string
 };
 
 InputField.defaultProps = {

@@ -2,6 +2,34 @@ import React from 'react';
 import InputField from '../../AddLocationPanel/components/InputField';
 import { opcoes } from '../../AddLocationPanel/constants';
 
+// Componente de ícone simples para o dropdown
+const IconComponent = ({ color, size = 24 }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    viewBox="0 0 24 24" 
+    width={size} 
+    height={size}
+    className="flex-shrink-0"
+  >
+    <path 
+      fill={color} 
+      d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+    />
+    <circle cx="12" cy="9" r="3" fill="white" />
+  </svg>
+);
+
+// Mapeamento de cores para os ícones
+const iconColorMap = {
+  assistencia: "#4CAF50",
+  lazer: "#2196F3", 
+  historico: "#FFC107",
+  comunidades: "#F44336",
+  educação: "#9C27B0",
+  religiao: "#212121",
+  bairro: "#FF5722"
+};
+
 const BasicInfoSection = ({ 
   editedLocation, 
   setEditedLocation, 
@@ -19,15 +47,16 @@ const BasicInfoSection = ({
             label="Título"
             id="titulo"
             type="text"
-            value={editedLocation.titulo || ""}
-            onChange={(e) =>
+            value={typeof editedLocation.titulo === 'string' ? editedLocation.titulo : ""}
+            onChange={(e) => {
+              const value = e.target.value;
               setEditedLocation((prev) => ({
                 ...prev,
-                titulo: e.target.value,
-              }))
-            }
+                titulo: typeof value === 'string' ? value : String(value),
+              }));
+            }}
             placeholder="Digite o título do local"
-            error={errors.titulo}
+            error={errors.titulo ? String(errors.titulo) : undefined}
           />
         </div>
         <div>
@@ -41,7 +70,13 @@ const BasicInfoSection = ({
               className="w-full border border-gray-300 rounded-lg p-3 flex items-center justify-between text-gray-800 bg-white hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <span>
-                {editedLocation.tipo || "Selecione o tipo de marcador"}
+                {(() => {
+                  if (typeof editedLocation.tipo !== 'string') {
+                    return "Selecione o tipo de marcador";
+                  }
+                  const opcaoSelecionada = opcoes.find(opcao => opcao.value === editedLocation.tipo);
+                  return opcaoSelecionada ? opcaoSelecionada.label : editedLocation.tipo;
+                })()}
               </span>
               <svg
                 className="w-4 h-4 text-gray-600"
@@ -66,22 +101,16 @@ const BasicInfoSection = ({
                     onClick={() => handleTipoChange(opcao.value)}
                     className={`w-full text-left p-3 hover:bg-gray-50 flex items-center ${opcao.cor} text-gray-800 border-b border-gray-100 last:border-b-0`}
                   >
-                    {opcao.icone.startsWith("http") ? (
-                      <img
-                        src={opcao.icone}
-                        alt={opcao.label}
-                        className="w-6 h-6 mr-3"
-                      />
-                    ) : (
-                      <span className="mr-3 text-lg">{opcao.icone}</span>
-                    )}
+                    <div className="w-6 h-6 mr-3 flex items-center justify-center">
+                      <IconComponent color={iconColorMap[opcao.value] || "#666"} size={24} />
+                    </div>
                     <span className="font-medium">{opcao.label}</span>
                   </button>
                 ))}
               </div>
             )}
           </div>
-          {errors.tipo && <p className="text-red-500 text-sm mt-1">{errors.tipo}</p>}
+          {errors.tipo && <p className="text-red-500 text-sm mt-1">{String(errors.tipo)}</p>}
         </div>
       </div>
     </div>

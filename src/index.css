@@ -5,7 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: hidden; /* Impede a rolagem */
+  /* Removido overflow: hidden para permitir rolagem no painel admin */
 }
 
 
@@ -19,7 +19,37 @@ code {
 @tailwind components;
 @tailwind utilities;
 
+/* Fonte personalizada Mistake Note */
+@font-face {
+  font-family: 'Mistake Note';
+  src: url('./Mistake Note.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Garantir que a rolagem funcione no painel admin */
+.admin-panel {
+  overflow-y: auto !important;
+  height: 100vh;
+}
+
+.admin-panel body {
+  overflow: auto !important;
+}
+
 .tailwind-popup .leaflet-popup-content-wrapper {
   border-radius: 0.5rem; /* Rounded corners */
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Tailwind-like shadow */
+}
+
+
+/* Estilos para marcadores */
+.leaflet-marker-icon {
+  transition: all 0.3s ease;
+}
+
+.leaflet-marker-icon:hover {
+  transform: scale(1.1);
+  z-index: 1000;
 }

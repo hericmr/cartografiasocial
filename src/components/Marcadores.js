@@ -30,36 +30,63 @@ const Marcadores = ({ dataPoints, visibility, onClick }) => {
         }
 
         let dataPointType;
-        switch (ponto.tipo.toLowerCase()) {
+        const tipo = ponto.tipo.toLowerCase();
+        
+        // Mapeamento expandido de tipos com ícones Phosphor
+        switch (tipo) {
           case "assistencia":
             dataPointType = DataPointType.ASSISTENCIA;
             break;
           case "historico":
+          case "histórico":
+          case "patrimônio histórico":
+          case "marco histórico":
+          case "histórico / fonte":
+          case "fortificação":
+          case "engenharia":
             dataPointType = DataPointType.HISTORICO;
             break;
           case "lazer":
+          case "cultura":
+          case "cultura / teatro":
+          case "cultura / natureza / comunitário":
+          case "cultural":
+          case "cultura alternativa / bar / música":
+          case "história / arquitetura / cultura":
+          case "turismo":
+          case "museu":
+          case "monumento":
+          case "memorial":
+          case "esportivo / cultural":
+          case "mirante / esporte":
+          case "esporte":
             dataPointType = DataPointType.LAZER;
             break;
           case "comunidades":
+          case "ilha":
             dataPointType = DataPointType.COMUNIDADES;
             break;
           case "educação":
+          case "educacao":
             dataPointType = DataPointType.EDUCACAO;
             break;
           case "religiao":
+          case "religioso":
+          case "igreja":
             dataPointType = DataPointType.RELIGIAO;
             break;
           case "saude":
+          case "saúde":
             dataPointType = DataPointType.SAUDE;
             break;
           case "bairro":
-            dataPointType = DataPointType.BAIRRO; // Sempre usa o ícone laranja para pontos de bairro
+            dataPointType = DataPointType.BAIRRO;
             break;
           default:
-            console.warn(`Tipo desconhecido: ${ponto.tipo}, usando ícone padrão.`);
-            return null;
+            console.warn(`Tipo desconhecido: ${ponto.tipo}, usando ícone de lazer como fallback.`);
+            dataPointType = DataPointType.LAZER; // Fallback para lazer em vez de retornar null
         }
-
+        
         if (!dataPointType.enabled) return null;
 
         if (isNaN(ponto.latitude) || isNaN(ponto.longitude)) {

@@ -10,6 +10,33 @@ const GalleryAdminPanel = () => {
   const [selectedGallery, setSelectedGallery] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Garantir que a rolagem esteja habilitada no painel admin
+  useEffect(() => {
+    // Forçar overflow auto no body para o painel admin
+    document.body.style.overflow = 'auto';
+    document.body.style.height = 'auto';
+    
+    return () => {
+      // Restaurar o estado original quando sair do componente
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+    };
+  }, []);
+
+  // Monitorar mudanças no overflow do body e corrigir se necessário
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (document.body.style.overflow === 'hidden') {
+        document.body.style.overflow = 'auto';
+      }
+    };
+
+    // Verificar a cada 100ms se o overflow foi alterado
+    const interval = setInterval(checkOverflow, 100);
+    
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     fetchGalleries();
   }, []);
@@ -72,7 +99,7 @@ const GalleryAdminPanel = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="admin-panel min-h-screen bg-gray-100 p-6 overflow-y-auto">
       <div className="max-w-7xl mx-auto">
         <div className="bg-white rounded-lg shadow mb-6">
           <div className="px-6 py-4 border-b border-gray-200">

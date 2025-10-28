@@ -6,6 +6,7 @@ export const useEditLocationForm = (initialLocation) => {
     ...initialLocation,
     latitude: initialLocation.localizacao ? initialLocation.localizacao.split(',')[0] : '',
     longitude: initialLocation.localizacao ? initialLocation.localizacao.split(',')[1] : '',
+    tipo: typeof initialLocation.tipo === 'string' ? initialLocation.tipo : '',
   });
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -49,6 +50,7 @@ export const useEditLocationForm = (initialLocation) => {
     if (!editedLocation.titulo) newErrors.titulo = "Título é obrigatório.";
     if (!editedLocation.latitude || !editedLocation.longitude) newErrors.localizacao = "Localização é obrigatória.";
     if (!editedLocation.descricao_detalhada) newErrors.descricao_detalhada = "Descrição detalhada é obrigatória.";
+    if (!editedLocation.tipo || typeof editedLocation.tipo !== 'string') newErrors.tipo = "Tipo de marcador é obrigatório.";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -85,7 +87,7 @@ export const useEditLocationForm = (initialLocation) => {
   const handleTipoChange = (tipo) => {
     setEditedLocation((prev) => ({
       ...prev,
-      tipo: tipo,
+      tipo: typeof tipo === 'string' ? tipo : String(tipo),
     }));
     setDropdownOpen(false);
   };

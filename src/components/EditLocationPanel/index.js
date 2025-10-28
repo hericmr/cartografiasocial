@@ -7,6 +7,7 @@ import InputField from "../AddLocationPanel/components/InputField";
 import RichTextEditor from "../AddLocationPanel/components/RichTextEditor";
 import AlertSection from "./components/AlertSection";
 import BasicInfoSection from "./components/BasicInfoSection";
+import CoordinateFields from "./components/CoordinateFields";
 import MediaSection from "./components/MediaSection";
 import PreviewSection from "./components/PreviewSection";
 import ActionSection from "./components/ActionSection";
@@ -65,9 +66,17 @@ const EditLocationPanel = ({ location, onClose, onSave }) => {
             handleTipoChange={handleTipoChange}
             errors={errors}
           />
+          
+          {/* Coordenadas */}
+          <CoordinateFields
+            editedLocation={editedLocation}
+            setEditedLocation={setEditedLocation}
+            errors={errors}
+          />
+          
           {/* Localização */}
           <div className="bg-white rounded-lg border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Localização</h3>
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">Mapa</h3>
             <MapSection
               newLocation={editedLocation}
               setNewLocation={setEditedLocation}

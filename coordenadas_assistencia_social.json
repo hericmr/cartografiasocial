@@ -1,0 +1,344 @@
+[
+  {
+    "nome": "CENTROS DE REFERÊNCIA DA ASSISTÊNCIA SOCIAL (CRAS)",
+    "endereco": "R. Cel. Feliciano Narciso Bicudo, 655 - Jd. São Manoel",
+    "telefone": "3299-1010 / 3219-5201",
+    "email": "",
+    "latitude": -23.9277706,
+    "longitude": -46.3940664,
+    "status": "encontrado"
+  },
+  {
+    "nome": "SECRAS ZOI",
+    "endereco": "Avenida Afonso Pena, 185 - Macuco",
+    "telefone": "3221-6942 / 3203-2903 / 3221-6520",
+    "email": "",
+    "latitude": -23.9615602,
+    "longitude": -46.3258407,
+    "status": "encontrado"
+  },
+  {
+    "nome": "NÚCLEOS DE INTEGRAÇÃO EM ASSISTÊNCIA SOCIAL (NIAS)",
+    "endereco": "Rua Andrade Soares, 31",
+    "telefone": "3268-1307 / 99605-0462",
+    "email": "",
+    "latitude": -23.8834473,
+    "longitude": -46.2018155,
+    "status": "encontrado"
+  },
+  {
+    "nome": "CENTROS DE REFERÊNCIA ESPECIALIZADOS DA ASSISTÊNCIA SOCIAL (CREAS)",
+    "endereco": "",
+    "telefone": "",
+    "email": "",
+    "latitude": -23.9413414,
+    "longitude": -46.5023082,
+    "status": "encontrado"
+  },
+  {
+    "nome": "CREAS ZNO",
+    "endereco": "Rua Cananeia, 269",
+    "telefone": "13-3216-1213 / 13-3216-1162",
+    "email": "",
+    "latitude": -23.9320903,
+    "longitude": -46.3640438,
+    "status": "encontrado"
+  },
+  {
+    "nome": "CREAS ZL",
+    "endereco": "Av. Conselheiro Nébias, 452",
+    "telefone": "3223-4079 / 3221-8525",
+    "email": "",
+    "latitude": -23.9484428,
+    "longitude": -46.3333961,
+    "status": "encontrado"
+  },
+  {
+    "nome": "OUTROS SERVIÇOS VINCULADOS",
+    "endereco": "",
+    "telefone": "",
+    "email": "",
+    "latitude": -9.1675687,
+    "longitude": -101.9264645,
+    "status": "encontrado"
+  },
+  {
+    "nome": "CASA DIA - CD MJ",
+    "endereco": "R. Evaristo da Veiga, 207",
+    "telefone": "3223-9586",
+    "email": "",
+    "latitude": -23.9580594,
+    "longitude": -46.3509949,
+    "status": "encontrado"
+  },
+  {
+    "nome": "NAI",
+    "endereco": "Av. Francisco Manoel, 252",
+    "telefone": "3223-2333",
+    "email": "",
+    "latitude": -23.9433377,
+    "longitude": -46.3443065,
+    "status": "encontrado"
+  },
+  {
+    "nome": "ACOLHIMENTO DE CRIANÇAS E ADOLESCENTES",
+    "endereco": "",
+    "telefone": "",
+    "email": "",
+    "latitude": -23.9619457,
+    "longitude": -46.4186258,
+    "status": "encontrado"
+  },
+  {
+    "nome": "ANÁLIA FRANCO",
+    "endereco": "Rua Pedro Américo, nº 288",
+    "telefone": "",
+    "email": "",
+    "latitude": -23.5896709,
+    "longitude": -47.2581059,
+    "status": "encontrado"
+  },
+  {
+    "nome": "CASA DA CRIANÇA",
+    "endereco": "Av. Conselheiro Rodrigues Alves, 120",
+    "telefone": "3222-4500",
+    "email": "",
+    "latitude": -23.9563013,
+    "longitude": -46.3229426,
+    "status": "encontrado"
+  },
+  {
+    "nome": "VÓ BENEDITA",
+    "endereco": "Rua Carlos Caldeira, 675",
+    "telefone": "3299-5415",
+    "email": "",
+    "latitude": -23.943731,
+    "longitude": -46.3805584,
+    "status": "encontrado"
+  },
+  {
+    "nome": "VÓ BENEDITA 2",
+    "endereco": "Rua João Francoli, 855",
+    "telefone": "",
+    "email": "",
+    "latitude": -23.9408297,
+    "longitude": -46.3852025,
+    "status": "encontrado"
+  },
+  {
+    "nome": "SEACOLHE CA",
+    "endereco": "Rua Júlio de Mesquita, nº 74/78",
+    "telefone": "3222-8010",
+    "email": "",
+    "latitude": -23.9393012,
+    "longitude": -46.3301749,
+    "status": "encontrado"
+  },
+  {
+    "nome": "FAMÍLIA ACOLHEDORA E APADRINHAMENTO AFETIVO",
+    "endereco": "",
+    "telefone": "",
+    "email": "",
+    "latitude": -23.9656965,
+    "longitude": -46.3588757,
+    "status": "encontrado"
+  },
+  {
+    "nome": "SEFAMAC",
+    "endereco": "Av. Pinheiro Machado, 73",
+    "telefone": "13-3251-9333",
+    "email": "",
+    "latitude": -23.9453681,
+    "longitude": -46.3432955,
+    "status": "encontrado"
+  },
+  {
+    "nome": "ACOLHIMENTO DE MULHERES",
+    "endereco": "",
+    "telefone": "",
+    "email": "",
+    "latitude": -23.9482151,
+    "longitude": -46.3372439,
+    "status": "encontrado"
+  },
+  {
+    "nome": "CASA DE PASSAGEM – SEAPRO MVV",
+    "endereco": "",
+    "telefone": "",
+    "email": "",
+    "latitude": -23.943884,
+    "longitude": -46.3422063,
+    "status": "encontrado"
+  },
+  {
+    "nome": "SEAPRO MVV",
+    "endereco": "",
+    "telefone": "",
+    "email": "",
+    "latitude": -23.9454849,
+    "longitude": -46.3465984,
+    "status": "encontrado"
+  },
+  {
+    "nome": "REPÚBLICAS",
+    "endereco": "",
+    "telefone": "",
+    "email": "",
+    "latitude": -23.9581348,
+    "longitude": -46.3544209,
+    "status": "encontrado"
+  },
+  {
+    "nome": "SEREP",
+    "endereco": "Rua Miguel Presgrave, nº 26",
+    "telefone": "3251-9333",
+    "email": "",
+    "latitude": -23.9616205,
+    "longitude": -46.332463,
+    "status": "encontrado"
+  },
+  {
+    "nome": "REP. DE JOVENS",
+    "endereco": "AV. Senador Dantas, 290",
+    "telefone": "3251-0653",
+    "email": "",
+    "latitude": -23.9608642,
+    "longitude": -46.3242323,
+    "status": "encontrado"
+  },
+  {
+    "nome": "REP. BEM VIVER",
+    "endereco": "Rua João Guerra, 316",
+    "telefone": "3223-1426",
+    "email": "",
+    "latitude": -23.9539815,
+    "longitude": -46.3539772,
+    "status": "encontrado"
+  },
+  {
+    "nome": "REP. VITÓRIA",
+    "endereco": "Rua Prudente de Moraes, 48/50",
+    "telefone": "3223-2148",
+    "email": "",
+    "latitude": -23.9449676,
+    "longitude": -46.3504523,
+    "status": "encontrado"
+  },
+  {
+    "nome": "REP. RENASCER",
+    "endereco": "RUA PRUDENTE DE MORAES Nº 48/50",
+    "telefone": "3232-2160",
+    "email": "",
+    "latitude": -23.9593406,
+    "longitude": -46.3554554,
+    "status": "encontrado"
+  },
+  {
+    "nome": "ACOLHIMENTO PARA PESSOAS COM DEFICIÊNCIA – RESIDÊNCIA INCLUSIVA",
+    "endereco": "",
+    "telefone": "",
+    "email": "",
+    "latitude": -23.9595693,
+    "longitude": -46.4165861,
+    "status": "encontrado"
+  },
+  {
+    "nome": "CASA DO PARAPLÉGICO",
+    "endereco": "Rua Nabuco de Araújo, nº 690",
+    "telefone": "3236-6006 / 13-3273-2531",
+    "email": "",
+    "latitude": -23.9730665,
+    "longitude": -46.3140559,
+    "status": "encontrado"
+  },
+  {
+    "nome": "CASA DO PARAPLÉGICO 2",
+    "endereco": "Av. Pinheiro Machado, 446",
+    "telefone": "",
+    "email": "",
+    "latitude": -23.9730665,
+    "longitude": -46.3140559,
+    "status": "encontrado"
+  },
+  {
+    "nome": "CENTRO POP",
+    "endereco": "Rua Amador Bueno, 446",
+    "telefone": "3219-4449 / 3221-8712",
+    "email": "",
+    "latitude": -23.9378596,
+    "longitude": -46.3293998,
+    "status": "encontrado"
+  },
+  {
+    "nome": "ACOLHIMENTOS INSTITUCIONAIS PARA PESSOAS EM SITUAÇÃO DE RUA",
+    "endereco": "",
+    "telefone": "",
+    "email": "",
+    "latitude": -23.9373303,
+    "longitude": -46.3502178,
+    "status": "encontrado"
+  },
+  {
+    "nome": "SEACOLHE AIF",
+    "endereco": "Rua Bittencourt, 309/311",
+    "telefone": "3231-3127",
+    "email": "",
+    "latitude": -23.9393012,
+    "longitude": -46.3301749,
+    "status": "encontrado"
+  },
+  {
+    "nome": "ABRIGO EMERGENCIAL",
+    "endereco": "Rua Gal Câmara, 249",
+    "telefone": "",
+    "email": "",
+    "latitude": -23.9343827,
+    "longitude": -46.3332969,
+    "status": "encontrado"
+  },
+  {
+    "nome": "CASA ÊXODO",
+    "endereco": "Cons. Saraiva, nº 13",
+    "telefone": "",
+    "email": "",
+    "latitude": -23.9430178,
+    "longitude": -46.3352819,
+    "status": "encontrado"
+  },
+  {
+    "nome": "ALBERGUE NOTURNO",
+    "endereco": "Rua Bras Cubas, nº 189",
+    "telefone": "3232-3771",
+    "email": "",
+    "latitude": -23.9428576,
+    "longitude": -46.3348978,
+    "status": "encontrado"
+  },
+  {
+    "nome": "ACOLHIMENTO INSTITUCIONAL PARA ADULTOS E FAMÍLIAS",
+    "endereco": "",
+    "telefone": "",
+    "email": "",
+    "latitude": -23.939332,
+    "longitude": -46.3301897,
+    "status": "encontrado"
+  },
+  {
+    "nome": "SEABRIGO AIF",
+    "endereco": "Av. Manoel Tourinho, 352",
+    "telefone": "3221-8711",
+    "email": "",
+    "latitude": -23.9568415,
+    "longitude": -46.3291129,
+    "status": "encontrado"
+  },
+  {
+    "nome": "CASA DAS ANAS",
+    "endereco": "Rua Paraná, 219",
+    "telefone": "3041-1849",
+    "email": "",
+    "latitude": -23.9474688,
+    "longitude": -46.3306685,
+    "status": "encontrado"
+  }
+]

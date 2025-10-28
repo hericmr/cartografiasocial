@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { IconWrapper, getLocationIcon, getActionIcon } from "./icons";
 
 const MenuCamadas = ({ estados, acoes }) => {
   const [menuAberto, setMenuAberto] = useState(true);
@@ -28,15 +29,22 @@ const MenuCamadas = ({ estados, acoes }) => {
     focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50 mb-1.5
   `;
 
-  const MarkerIcon = ({ color }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-5 h-5">
-      <path
-        fill={color}
-        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"
-      />
-      <circle cx="12" cy="9" r="3" fill="white"/>
-    </svg>
-  );
+  // Mapeamento de ícones para cada tipo de camada
+  const getLayerIcon = (label) => {
+    const iconMap = {
+      "Limites dos Bairros": { name: "Map", variant: "regular", color: "#9CA3AF" },
+      "Bairros": { name: "MapPin", variant: "fill", color: "#FF5722" },
+      "Assistência": { name: "HandsClapping", variant: "fill", color: "#10B981" },
+      "Históricos": { name: "Clock", variant: "fill", color: "#FBBF24" },
+      "Lazer": { name: "GameController", variant: "fill", color: "#3B82F6" },
+      "Comunidades": { name: "Users", variant: "fill", color: "#EF4444" },
+      "Educação": { name: "GraduationCap", variant: "fill", color: "#8B5CF6" },
+      "Religião": { name: "Church", variant: "fill", color: "#4B5563" },
+      "Saúde": { name: "FirstAid", variant: "fill", color: "#00BCD4" }
+    };
+    
+    return iconMap[label] || { name: "MapPin", variant: "regular", color: "#6B7280" };
+  };
 
   const opcoes = [
     { acao: acoes.toggleBairros, estado: estados.bairros, color: "#9CA3AF", label: "Limites dos Bairros", cor: "bg-gray-700 hover:bg-gray-600 text-white" },
@@ -59,7 +67,12 @@ const MenuCamadas = ({ estados, acoes }) => {
           className="p-2 w-10 h-10 bg-green-900/90 text-white rounded-full shadow-lg hover:bg-green-800 transition-all flex items-center justify-center text-sm"
           aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
         >
-          {menuAberto ? "✖" : "☰"}
+          <IconWrapper
+            name={menuAberto ? "X" : "List"}
+            variant="regular"
+            size="sm"
+            color="white"
+          />
         </button>
       )}
 
@@ -68,17 +81,25 @@ const MenuCamadas = ({ estados, acoes }) => {
         <div className={menuClasses}>
           {/* Seção de Camadas */}
           <div className="col-span-2">
-            {opcoes.map(({ acao, estado, color, label, cor }, index) => (
-              <button
-                key={index}
-                onClick={acao}
-                className={botaoClasses(estado, cor)}
-              >
-                <MarkerIcon color={color} />
-                <span className="flex-1 text-left text-sm font-medium text-white">{label}</span>
-                <span className={`w-2 h-2 rounded-full ${estado ? 'bg-green-300' : 'bg-gray-500'}`}></span>
-              </button>
-            ))}
+            {opcoes.map(({ acao, estado, color, label, cor }, index) => {
+              const iconConfig = getLayerIcon(label);
+              return (
+                <button
+                  key={index}
+                  onClick={acao}
+                  className={botaoClasses(estado, cor)}
+                >
+                  <IconWrapper
+                    name={iconConfig.name}
+                    variant={iconConfig.variant}
+                    color={iconConfig.color}
+                    size="md"
+                  />
+                  <span className="flex-1 text-left text-sm font-medium text-white">{label}</span>
+                  <span className={`w-2 h-2 rounded-full ${estado ? 'bg-green-300' : 'bg-gray-500'}`}></span>
+                </button>
+              );
+            })}
           </div>
 
           {/* Botão de Minimizar (Mobile) */}
@@ -88,7 +109,12 @@ const MenuCamadas = ({ estados, acoes }) => {
               className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 bg-green-700/90 hover:bg-green-600/90 col-span-2 mt-2 text-sm text-white"
               aria-label="Minimizar menu"
             >
-              <span>➖</span>
+              <IconWrapper
+                name="Minus"
+                variant="regular"
+                size="sm"
+                color="white"
+              />
               <span className="font-medium">Minimizar</span>
             </button>
           )}
@@ -102,7 +128,12 @@ const MenuCamadas = ({ estados, acoes }) => {
           className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-800 text-white p-3 rounded-full shadow-lg hover:bg-green-700 hover:shadow-xl transition-all duration-200 z-20 text-sm"
           aria-label="Abrir menu"
         >
-          ☰
+          <IconWrapper
+            name="List"
+            variant="regular"
+            size="md"
+            color="white"
+          />
         </button>
       )}
     </div>

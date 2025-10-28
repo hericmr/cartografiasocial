@@ -29,18 +29,15 @@ const WelcomePanelSimple = ({ isVisible, onClose }) => {
         <div className="p-6">
           {/* Áudio */}
           <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center justify-center w-12 h-12 bg-blue-600 text-white rounded-full">
+            <div className="flex items-center space-x-3 mb-3">
+              <div className="flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-full">
                 ▶️
               </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-800 mb-1">Sobre o site</h3>
-                <p className="text-sm text-gray-600">Ouça a apresentação completa do projeto</p>
-              </div>
-              <div className="text-blue-600">🔊</div>
+              <p className="text-sm text-gray-600">Ouça a apresentação completa do projeto</p>
+              <div className="text-blue-600 ml-auto">🔊</div>
             </div>
             <audio
-              className="w-full mt-3"
+              className="w-full"
               controls
             >
               <source src="/cartografiasocial/audio/intro.mp3" type="audio/mpeg" />
@@ -116,10 +113,7 @@ const WelcomePanelSimple = ({ isVisible, onClose }) => {
           </div>
 
           {/* Footer */}
-          <div className="mt-8 pt-6 border-t border-gray-200 flex justify-between items-center">
-            <div className="text-sm text-gray-500">
-              Este painel pode ser personalizado pelos administradores
-            </div>
+          <div className="mt-8 pt-6 border-t border-gray-200 flex justify-end items-center">
             <button
               onClick={onClose}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"

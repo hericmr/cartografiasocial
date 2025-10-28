@@ -54,6 +54,33 @@ const AdminPanel = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('locations');
 
+  // Garantir que a rolagem esteja habilitada no painel admin
+  useEffect(() => {
+    // Forçar overflow auto no body para o painel admin
+    document.body.style.overflow = 'auto';
+    document.body.style.height = 'auto';
+    
+    return () => {
+      // Restaurar o estado original quando sair do componente
+      document.body.style.overflow = '';
+      document.body.style.height = '';
+    };
+  }, []);
+
+  // Monitorar mudanças no overflow do body e corrigir se necessário
+  useEffect(() => {
+    const checkOverflow = () => {
+      if (document.body.style.overflow === 'hidden') {
+        document.body.style.overflow = 'auto';
+      }
+    };
+
+    // Verificar a cada 100ms se o overflow foi alterado
+    const interval = setInterval(checkOverflow, 100);
+    
+    return () => clearInterval(interval);
+  }, []);
+
   // Buscar todos os locais
   useEffect(() => {
     const fetchLocations = async () => {
@@ -154,7 +181,7 @@ const AdminPanel = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="admin-panel min-h-screen bg-gray-100 p-6 overflow-y-auto">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-2xl font-bold text-gray-800 mb-6">Painel de Administração</h1>
         

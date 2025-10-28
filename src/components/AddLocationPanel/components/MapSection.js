@@ -277,10 +277,17 @@ const MapSection = ({ newLocation, setNewLocation, error }) => {
           Localização <span className="text-red-500">*</span>
         </label>
         <ErrorMessage message={error || locationState.error} />
-        <p className="mb-2">
-          {newLocation.latitude || "Não selecionado"},{" "}
-          {newLocation.longitude || "Não selecionado"}
-        </p>
+        <div className="mb-2 p-2 bg-gray-50 rounded-lg">
+          <p className="text-sm text-gray-600">
+            <strong>Coordenadas atuais:</strong>
+          </p>
+          <p className="text-sm font-mono">
+            {newLocation.latitude !== undefined && newLocation.longitude !== undefined
+              ? `${parseFloat(newLocation.latitude).toFixed(6)}, ${parseFloat(newLocation.longitude).toFixed(6)}`
+              : "Não selecionado"
+            }
+          </p>
+        </div>
 
         <button
           type="button"

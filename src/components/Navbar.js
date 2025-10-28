@@ -1,22 +1,29 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import AddLocationButton from './AddLocationButton';
-import { Settings, ChevronDown, Shield, Menu, X, LayoutGrid } from 'lucide-react';
+import AdminLoginModal from './AdminLoginModal';
+import SearchModal from './SearchModal';
+import { useSearch } from '../contexts/SearchContext';
+import { Settings, ChevronDown, Shield, Menu, X, LayoutGrid, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
     
 const Navbar = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const { openSearch } = useSearch();
 
   const handleAdminClick = () => {
-    const enteredPassword = prompt("Digite a senha de administrador:");
-    if (enteredPassword === process.env.REACT_APP_ADMIN_PASSWORD) {
-      setIsAdmin(true);
-      setShowAdminPanel(false);
-    }
+    setShowLoginModal(true);
+  };
+
+  const handleLoginSuccess = () => {
+    setIsAdmin(true);
+    setShowAdminPanel(false);
+    setShowLoginModal(false);
   };
 
   const isConteudoPage = location.pathname === '/conteudo';
@@ -45,6 +52,7 @@ const Navbar = () => {
             onClick={() => navigate('/')}
             className="text-sm sm:text-base md:text-xl lg:text-2xl font-bold tracking-wide cursor-pointer truncate 
                      hover:text-green-100 transition-colors duration-200 border-b-2 border-transparent hover:border-green-400"
+            style={{ fontFamily: "'Mistake Note', cursive" }}
           >
             Cartografia Social de Santos
           </h1>
@@ -69,6 +77,17 @@ const Navbar = () => {
 
         {/* Links de Navegação e Logos - Versão Desktop */}
         <div className="hidden md:flex items-center space-x-6">
+          {/* Botão de Busca */}
+          <button
+            onClick={openSearch}
+            className="p-2 rounded-full hover:bg-green-800/50 transition-all duration-200 group
+                     focus:outline-none focus:ring-2 focus:ring-green-400 active:scale-95"
+            aria-label="Buscar no site"
+            title="Buscar no site"
+          >
+            <Search className="w-5 h-5 text-white/70 group-hover:text-white transition-colors duration-200" />
+          </button>
+
           {/* Botão Ver Conteúdo/Voltar */}
           <button
             onClick={() => navigate(isConteudoPage ? '/' : '/conteudo')}
@@ -166,6 +185,20 @@ const Navbar = () => {
             className="md:hidden bg-gradient-to-b from-green-900/95 to-green-800/95 backdrop-blur-md border-t border-green-800/30"
           >
             <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
+              {/* Botão de Busca Mobile */}
+              <button
+                onClick={() => {
+                  openSearch();
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full py-2.5 text-sm font-medium text-white bg-green-800/50 hover:bg-green-700/50 
+                         rounded-lg transition-all duration-200 flex items-center justify-center gap-2
+                         focus:outline-none focus:ring-2 focus:ring-green-400 active:scale-95"
+              >
+                <Search className="w-4 h-4" />
+                Buscar no site
+              </button>
+
               <button
                 onClick={() => handleNavigation(isConteudoPage ? '/' : '/conteudo')}
                 className="w-full py-2.5 text-sm font-medium text-white bg-green-800/50 hover:bg-green-700/50 
@@ -230,6 +263,16 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Modal de Login Admin */}
+      <AdminLoginModal
+        isOpen={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onSuccess={handleLoginSuccess}
+      />
+
+      {/* Modal de Busca */}
+      <SearchModal />
     </header>
   );
 };

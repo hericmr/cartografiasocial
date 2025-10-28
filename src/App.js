@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { supabase } from './supabaseClient';
+import { SearchProvider } from './contexts/SearchContext';
 import MapaSantos from "./components/MapaSantos";
 import Navbar from "./components/Navbar";
 import PainelInformacoes from "./components/PainelInformacoes";
@@ -269,54 +270,56 @@ const AppContent = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar onConteudoClick={() => navigate('/conteudo')} />
-      
-      {/* Welcome Panel */}
-      {(() => {
-        console.log('🔍 [WELCOME] Renderizando - showWelcomePanel:', showWelcomePanel, 'welcomePanelConfig:', welcomePanelConfig);
-        return null;
-      })()}
-      {showWelcomePanel && welcomePanelConfig && (
-        <WelcomePanel 
-          isVisible={showWelcomePanel}
-          onClose={closeWelcomePanel}
-          onEdit={() => navigate('/admin?tab=welcome')}
-          config={welcomePanelConfig}
-        />
-      )}
-      
-      <Routes>
-        <Route 
-          path="/" 
-          element={
-            <main className="flex-grow">
-              <MapaSantos 
-                dataPoints={dataPoints} // Mostra todos os pontos sempre
-              />
-              <PainelInformacoes dataPoints={dataPoints} />
-              <AddLocationButton onLocationAdded={handleLocationAdded} />
-            </main>
-          } 
-        />
-        <Route 
-          path="/conteudo" 
-          element={<ConteudoCartografia locations={dataPoints} />} 
-        />
-        <Route 
-          path="/admin" 
-          element={<AdminPanel />} 
-        />
-        <Route 
-          path="/galeria/:galleryId" 
-          element={<ImageGallery galleryId={window.location.pathname.split('/').pop()} />} 
-        />
-        <Route 
-          path="/galerias" 
-          element={<GalleryDemo />} 
-        />
-      </Routes>
-    </div>
+    <SearchProvider>
+      <div className="min-h-screen flex flex-col">
+        <Navbar onConteudoClick={() => navigate('/conteudo')} />
+        
+        {/* Welcome Panel */}
+        {(() => {
+          console.log('🔍 [WELCOME] Renderizando - showWelcomePanel:', showWelcomePanel, 'welcomePanelConfig:', welcomePanelConfig);
+          return null;
+        })()}
+        {showWelcomePanel && welcomePanelConfig && (
+          <WelcomePanel 
+            isVisible={showWelcomePanel}
+            onClose={closeWelcomePanel}
+            onEdit={() => navigate('/admin?tab=welcome')}
+            config={welcomePanelConfig}
+          />
+        )}
+        
+        <Routes>
+          <Route 
+            path="/" 
+            element={
+              <main className="flex-grow">
+                <MapaSantos 
+                  dataPoints={dataPoints} // Mostra todos os pontos sempre
+                />
+                <PainelInformacoes dataPoints={dataPoints} />
+                <AddLocationButton onLocationAdded={handleLocationAdded} />
+              </main>
+            } 
+          />
+          <Route 
+            path="/conteudo" 
+            element={<ConteudoCartografia locations={dataPoints} />} 
+          />
+          <Route 
+            path="/admin" 
+            element={<AdminPanel />} 
+          />
+          <Route 
+            path="/galeria/:galleryId" 
+            element={<ImageGallery galleryId={window.location.pathname.split('/').pop()} />} 
+          />
+          <Route 
+            path="/galerias" 
+            element={<GalleryDemo />} 
+          />
+        </Routes>
+      </div>
+    </SearchProvider>
   );
 };
 

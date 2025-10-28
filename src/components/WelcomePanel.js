@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Settings, Eye, Play, Pause, Volume2 } from 'lucide-react';
+import { X, Eye, Play, Pause, Volume2 } from 'lucide-react';
 
 const WelcomePanel = ({ isVisible, onClose, onEdit, config }) => {
   console.log('🎭 [WELCOME_PANEL] Componente renderizado - isVisible:', isVisible, 'config:', config);
@@ -164,15 +164,6 @@ const WelcomePanel = ({ isVisible, onClose, onEdit, config }) => {
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
           <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
           <div className="flex items-center space-x-2">
-            {onEdit && (
-              <button
-                onClick={onEdit}
-                className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                title="Editar painel"
-              >
-                <Settings className="w-5 h-5" />
-              </button>
-            )}
             <button
               onClick={handleClose}
               className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
@@ -183,27 +174,35 @@ const WelcomePanel = ({ isVisible, onClose, onEdit, config }) => {
           </div>
         </div>
 
+        {/* Header com primeira imagem */}
+        {images.length > 0 && (
+          <div className="relative w-full h-64 md:h-80 overflow-hidden">
+            <img
+              src={images[0]}
+              alt="Imagem principal"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
+
         {/* Content */}
         <div className="p-6">
           {/* Áudio */}
           <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3 mb-3">
               <button
                 onClick={toggleAudio}
-                className="flex items-center justify-center w-12 h-12 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
+                className="flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
               >
-                {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6 ml-1" />}
+                {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-1" />}
               </button>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-800 mb-1">Sobre o site</h3>
-                <p className="text-sm text-gray-600">Ouça a apresentação completa do projeto</p>
-              </div>
-              <Volume2 className="w-5 h-5 text-blue-600" />
+              <p className="text-sm text-gray-600">Ouça a apresentação completa do projeto</p>
+              <Volume2 className="w-5 h-5 text-blue-600 ml-auto" />
             </div>
             <audio
               ref={setAudioRef}
               onEnded={handleAudioEnded}
-              className="w-full mt-3"
+              className="w-full"
               controls
             >
               <source src="/cartografiasocial/audio/intro.mp3" type="audio/mpeg" />
@@ -245,10 +244,7 @@ const WelcomePanel = ({ isVisible, onClose, onEdit, config }) => {
           </div>
 
           {/* Footer */}
-          <div className="mt-8 pt-6 border-t border-gray-200 flex justify-between items-center">
-            <div className="text-sm text-gray-500">
-              Este painel pode ser personalizado pelos administradores
-            </div>
+          <div className="mt-8 pt-6 border-t border-gray-200 flex justify-end items-center">
             <button
               onClick={handleClose}
               className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
