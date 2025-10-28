@@ -3,28 +3,36 @@ import React, { useState } from "react";
 const PainelMedia = ({ imagens = [], video, titulo, descricao_detalhada }) => {
   const [zoomedImage, setZoomedImage] = useState(null);
 
+  // Filtrar imagens para exibir apenas as que não são a primeira (que vai no header)
+  const imagensParaGaleria = imagens.length > 1 ? imagens.slice(1) : [];
+
   const renderizarImagens = () => {
-    if (imagens.length === 1) {
+    // Se não há imagens para a galeria (apenas 1 imagem total), não exibir nada
+    if (imagensParaGaleria.length === 0) {
+      return null;
+    }
+    
+    if (imagensParaGaleria.length === 1) {
       // Versão melhorada para uma única imagem: centralizada com largura adequada
       return (
         <div className="flex justify-center">
           <img
-            src={imagens[0]}
-            alt={`${titulo} - 1`}
+            src={imagensParaGaleria[0]}
+            alt={`${titulo} - 2`}
             className="max-w-full max-h-96 object-contain rounded-lg shadow-md transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
-            onClick={() => setZoomedImage(imagens[0])}
+            onClick={() => setZoomedImage(imagensParaGaleria[0])}
           />
         </div>
       );
-    } else if (imagens.length === 2) {
+    } else if (imagensParaGaleria.length === 2) {
       // Se houver duas imagens, exibir em um grid de 2 colunas
       return (
         <div className="grid grid-cols-2 gap-4">
-          {imagens.map((img, index) => (
+          {imagensParaGaleria.map((img, index) => (
             <img
               key={index}
               src={img}
-              alt={`${titulo} - ${index + 1}`}
+              alt={`${titulo} - ${index + 2}`}
               className="w-full h-64 object-cover rounded-lg shadow-md transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
               onClick={() => setZoomedImage(img)}
             />
@@ -35,11 +43,11 @@ const PainelMedia = ({ imagens = [], video, titulo, descricao_detalhada }) => {
       // Se houver mais de duas imagens, exibir em um grid de 3 colunas
       return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {imagens.map((img, index) => (
+          {imagensParaGaleria.map((img, index) => (
             <img
               key={index}
               src={img}
-              alt={`${titulo} - ${index + 1}`}
+              alt={`${titulo} - ${index + 2}`}
               className="w-full h-48 object-cover rounded-lg shadow-md transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
               onClick={() => setZoomedImage(img)}
             />
@@ -79,7 +87,12 @@ const PainelMedia = ({ imagens = [], video, titulo, descricao_detalhada }) => {
 
   return (
     <div className="mb-6">
-      {imagens.length > 0 && <div className="mb-4">{renderizarImagens()}</div>}
+      {imagensParaGaleria.length > 0 && (
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold text-gray-800 mb-3">Galeria de Imagens</h3>
+          {renderizarImagens()}
+        </div>
+      )}
       
       {video && (
         <div className="mb-6 flex justify-center">

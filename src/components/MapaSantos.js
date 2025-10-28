@@ -48,12 +48,20 @@ const MapaSantos = ({ dataPoints }) => {
   useEffect(() => {
     const fetchGeoJSON = async () => {
       try {
-        const response = await fetch(
-          "https://raw.githubusercontent.com/hericmr/gps/main/public/bairros.geojson"
-        );
-        if (!response.ok) throw new Error(`Erro ao carregar GeoJSON: HTTP status ${response.status}`);
-        const data = await response.json();
-        setGeojsonData(data);
+        // Tenta carregar do arquivo local primeiro (funciona em produção)
+        const response = await fetch("/bairros.geojson");
+        if (!response.ok) {
+          // Fallback para URL externa se o arquivo local não estiver disponível
+          const fallbackResponse = await fetch(
+            "https://raw.githubusercontent.com/hericmr/gps/main/public/bairros.geojson"
+          );
+          if (!fallbackResponse.ok) throw new Error(`Erro ao carregar GeoJSON: HTTP status ${fallbackResponse.status}`);
+          const data = await fallbackResponse.json();
+          setGeojsonData(data);
+        } else {
+          const data = await response.json();
+          setGeojsonData(data);
+        }
       } catch (error) {
         console.error("Erro ao carregar GeoJSON:", error);
       }
