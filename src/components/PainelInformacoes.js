@@ -70,18 +70,18 @@ const PainelInformacoes = ({ painelInfo, closePainel }) => {
     >
       <PainelHeader titulo={painelInfo.titulo} tipo={painelInfo.tipo} closePainel={closePainel} />
       
-      {/* Header com primeira imagem - similar ao Welcome Modal */}
-      {painelInfo.imagens && painelInfo.imagens.length > 0 && (
-        <div className="relative w-full h-64 md:h-80 lg:h-96 overflow-hidden">
-          <img
-            src={painelInfo.imagens[0]}
-            alt={`${painelInfo.titulo} - Imagem principal`}
-            className="w-full h-full object-cover"
-          />
-        </div>
-      )}
-      
       <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-green-600/40 scrollbar-track-green-50/20">
+        {/* Header com primeira imagem - similar ao Welcome Modal */}
+        {painelInfo.imagens && painelInfo.imagens.length > 0 && (
+          <div className="relative w-full h-64 md:h-80 lg:h-96 overflow-hidden">
+            <img
+              src={painelInfo.imagens[0]}
+              alt={`${painelInfo.titulo} - Imagem principal`}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
+        
         <div className="p-6 space-y-6">
           {painelInfo.audioUrl && typeof painelInfo.audioUrl === 'string' && painelInfo.audioUrl.trim() !== "" && (
             <div className="flex justify-end -mt-2 mb-4">
