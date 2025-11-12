@@ -82,26 +82,28 @@ const AdminPanel = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Buscar todos os locais
+  // Função para buscar todos os locais
+  const fetchLocations = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('locations3')
+        .select('*')
+        .order('titulo', { ascending: true });
+
+      if (error) throw error;
+      setLocations(data);
+      setError(null);
+    } catch (err) {
+      console.error('Erro ao buscar locais:', err);
+      setError('Não foi possível carregar os locais. Por favor, tente novamente.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Buscar todos os locais ao carregar o componente
   useEffect(() => {
-    const fetchLocations = async () => {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from('locations3')
-          .select('*')
-          .order('titulo', { ascending: true });
-
-        if (error) throw error;
-        setLocations(data);
-      } catch (err) {
-        console.error('Erro ao buscar locais:', err);
-        setError('Não foi possível carregar os locais. Por favor, tente novamente.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchLocations();
   }, []);
 
@@ -205,8 +207,8 @@ const AdminPanel = () => {
       setEditingLocation(null);
       setIsPanelOpen(false);
       
-      // Recarregar a página para atualizar os dados
-      window.location.reload();
+      // Recarregar os dados sem recarregar a página inteira
+      await fetchLocations();
     } catch (err) {
       console.error('Erro ao salvar local:', err);
       setError(`Não foi possível ${isCreateMode ? 'criar' : 'atualizar'} o local. Por favor, tente novamente.`);
