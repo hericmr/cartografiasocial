@@ -349,6 +349,93 @@ export default function Homepage({ dataPoints = [] }) {
         </div>
       </section>
 
+      {/* Seção de Locais Específicos */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {(() => {
+              // Lista de títulos dos locais a serem exibidos
+              const featuredTitles = ['Trabulsi', 'Cemitério do Paquetá', 'Casa da Frontaria Azulejada', 'Aparecida', 'Boqueirão', 'Praça Palmares'];
+              
+              // Buscar os locais correspondentes
+              const featuredSpecific = featuredTitles
+                .map(title => dataPoints.find(p => p.titulo === title))
+                .filter(Boolean)
+                .slice(0, 6);
+
+              return featuredSpecific.map((location, index) => {
+                const imageUrl = location.imagens 
+                  ? (Array.isArray(location.imagens) ? location.imagens[0] : location.imagens.split(',')[0])
+                  : null;
+                const imageCount = location.imagens 
+                  ? (Array.isArray(location.imagens) ? location.imagens.length : location.imagens.split(',').filter(Boolean).length)
+                  : 0;
+                const hasAudio = !!location.audioUrl;
+                
+                // Criar slug para o link
+                const slug = location.titulo
+                  .toLowerCase()
+                  .normalize('NFD')
+                  .replace(/[\u0300-\u036f]/g, '')
+                  .replace(/[^a-z0-9]+/g, '-')
+                  .replace(/^-+|-+$/g, '');
+
+                return (
+                  <motion.div
+                    key={location.id || location.titulo}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: index * 0.1 }}
+                    className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow cursor-pointer group"
+                    onClick={() => navigate(`/mapa?panel=${slug}`)}
+                  >
+                    {imageUrl && (
+                      <div className="relative h-48 overflow-hidden">
+                        <img 
+                          src={imageUrl} 
+                          alt={location.titulo}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <div className="absolute bottom-4 left-4 right-4">
+                          <h3 className="text-white font-bold text-lg line-clamp-2">{location.titulo}</h3>
+                        </div>
+                      </div>
+                    )}
+                    <div className="p-4">
+                      {!imageUrl && (
+                        <h3 className="text-green-900 font-bold text-lg mb-2 line-clamp-2">{location.titulo}</h3>
+                      )}
+                      <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+                        {location.descricao || location.descricao_detalhada?.replace(/<[^>]*>/g, '').substring(0, 100) || 'Sem descrição'}
+                      </p>
+                      <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-4 text-gray-500">
+                          {imageCount > 0 && (
+                            <span className="flex items-center gap-1">
+                              <Camera className="w-4 h-4" /> {imageCount}
+                            </span>
+                          )}
+                          {hasAudio && (
+                            <span className="flex items-center gap-1">
+                              <Music className="w-4 h-4" />
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-green-600 font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
+                          Ver mais <ArrowRight className="w-4 h-4" />
+                        </span>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              });
+            })()}
+          </div>
+        </div>
+      </section>
+
       {/* Image Separator 1 */}
       {images.length > 0 && (
         <ImageSeparator src={images[0]} alt="Registro visual 1" index={0} />
