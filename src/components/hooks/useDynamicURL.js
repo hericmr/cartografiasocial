@@ -1,16 +1,26 @@
 import { useEffect } from "react";
+import slugify from "slugify";
 
 export const useDynamicURL = (painelInfo, gerarLinkCustomizado) => {
   useEffect(() => {
-    if (painelInfo) {
-      const url = gerarLinkCustomizado();
-      // Usar replaceState para não criar uma nova entrada no histórico quando o painel já está aberto
-      // Isso evita problemas com o botão voltar do navegador
-      const currentUrl = window.location.href;
-      if (!currentUrl.includes('?panel=')) {
-        window.history.pushState({}, "", url);
-      } else {
-        window.history.replaceState({}, "", url);
+    if (painelInfo && gerarLinkCustomizado) {
+      try {
+        const url = gerarLinkCustomizado();
+        const currentParams = new URLSearchParams(window.location.search);
+        const currentPanel = currentParams.get('panel');
+        
+        // Criar slug do painel atual usando a mesma função do useShare
+        const newPanelSlug = slugify(painelInfo.titulo, { lower: true, remove: /[*+~.()'"!:@]/g });
+        
+        // Se o painel na URL é diferente do atual, usar pushState para criar nova entrada no histórico
+        if (!currentPanel || currentPanel !== newPanelSlug) {
+          window.history.pushState({ panel: newPanelSlug }, "", url);
+        } else {
+          // Se já está na URL correta, apenas garantir que está sincronizado
+          window.history.replaceState({ panel: newPanelSlug }, "", url);
+        }
+      } catch (error) {
+        console.error('Erro ao atualizar URL:', error);
       }
     }
   }, [painelInfo, gerarLinkCustomizado]);
