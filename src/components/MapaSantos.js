@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
+import slugify from "slugify";
 import MapaBase from "./MapaBase";
 import MarcadoresClusterizados from "./MarcadoresClusterizados";
 import Bairros from "./Bairros";
@@ -20,29 +21,13 @@ const LoadingScreen = () => (
   </div>
 );
 
-// Função para converter título em slug
+// Função para converter título em slug (usando a mesma função do useShare para consistência)
 const criarSlug = (texto) => {
-  return texto
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove acentos
-    .replace(/[^a-z0-9]+/g, '-')     // Substitui caracteres especiais por hífen
-    .replace(/^-+|-+$/g, '')         // Remove hífens do início e fim
-    .trim();
+  return slugify(texto, { lower: true, remove: /[*+~.()'"!:@]/g });
 };
 
 const MapaSantos = ({ dataPoints }) => {
   console.log("DataPoints recebidos:", dataPoints); // Verifique os dados recebidos
-
-  const urlParams = new URLSearchParams(window.location.search);
-  const panel = urlParams.get('panel');
-  var initialPanel = null;
-  if (panel && panel !== '' && dataPoints && dataPoints.length > 0) {
-    const pointFound = dataPoints.find((item) => criarSlug(item.titulo) === panel);
-    if (pointFound != null) {
-      initialPanel = pointFound;
-    }
-  }
 
   const [geojsonData, setGeojsonData] = useState(null);
   const [mapReady, setMapReady] = useState(false);
@@ -59,7 +44,7 @@ const MapaSantos = ({ dataPoints }) => {
     saude: true,
     bairro: true,
   });
-  const [painelInfo, setPainelInfo] = useState(initialPanel);
+  const [painelInfo, setPainelInfo] = useState(null);
 
   useEffect(() => {
     const fetchGeoJSON = async () => {
@@ -85,12 +70,58 @@ const MapaSantos = ({ dataPoints }) => {
     fetchGeoJSON();
   }, []);
 
+  // Função para abrir painel baseado no parâmetro da URL
+  const abrirPainelDaURL = useCallback(() => {
+    if (!dataPoints || dataPoints.length === 0) return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const panel = urlParams.get('panel');
+    
+    if (panel && panel !== '') {
+      const pointFound = dataPoints.find((item) => criarSlug(item.titulo) === panel);
+      if (pointFound) {
+        setPainelInfo(pointFound);
+      } else {
+        // Se o painel não foi encontrado, remover da URL
+        setPainelInfo(null);
+      }
+    } else {
+      // Se não há parâmetro panel, fechar o painel
+      setPainelInfo(null);
+    }
+  }, [dataPoints]);
+
+  // Abrir painel baseado no parâmetro da URL quando os dados estiverem disponíveis
+  useEffect(() => {
+    abrirPainelDaURL();
+  }, [abrirPainelDaURL]);
+
+  // Ouvir mudanças na URL (botão voltar/avançar do navegador)
+  useEffect(() => {
+    const handlePopState = () => {
+      abrirPainelDaURL();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, [abrirPainelDaURL]);
+
   const abrirPainel = useCallback((info) => {
     setPainelInfo(info);
+    // A URL será atualizada automaticamente pelo hook useDynamicURL no PainelInformacoes
   }, []);
 
   const fecharPainel = useCallback(() => {
     setPainelInfo(null);
+    // Remover parâmetro panel da URL
+    const params = new URLSearchParams(window.location.search);
+    params.delete('panel');
+    const newUrl = params.toString() 
+      ? `${window.location.pathname}?${params.toString()}`
+      : window.location.pathname;
+    window.history.pushState({}, '', newUrl);
   }, []);
 
   const geoJSONStyle = {
