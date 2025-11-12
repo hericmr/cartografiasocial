@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import AddLocationButton from './AddLocationButton';
 import AdminLoginModal from './AdminLoginModal';
@@ -8,6 +8,10 @@ import { Settings, ChevronDown, Shield, Menu, X, LayoutGrid, Search } from 'luci
 import { motion, AnimatePresence } from 'framer-motion';
     
 const Navbar = () => {
+  const logoCartografiaUrl = useMemo(
+    () => `${process.env.PUBLIC_URL || ''}/logo_cartografia_2.png`,
+    []
+  );
   const [isAdmin, setIsAdmin] = useState(false);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -26,7 +30,9 @@ const Navbar = () => {
     setShowLoginModal(false);
   };
 
-  const isConteudoPage = location.pathname === '/conteudo';
+  const isMapaPage = location.pathname === '/mapa';
+  const isSobrePage = location.pathname === '/sobre';
+  const isHomePage = location.pathname === '/';
   
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -38,31 +44,28 @@ const Navbar = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-b from-green-900/95 to-green-900/85 backdrop-blur-md text-white shadow-lg">
-      <nav className="container mx-auto px-4 h-16 flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-50 text-white shadow-lg">
+      {/* Barra azul marinho escura */}
+      <div className="bg-blue-950 w-full h-16">
+        <nav className="container mx-auto px-4 h-full flex items-center justify-between">
         {/* Logo e Título */}
-        <div className="flex items-center space-x-3 group">
+        <button
+          onClick={() => navigate('/')}
+          className="flex items-center space-x-3 group focus:outline-none"
+          aria-label="Ir para a página inicial"
+        >
           <img
-            src="/cartografiasocial/favicon.ico"
-            alt="Ícone do mapa"
-            className="h-7 sm:h-8 w-auto transform group-hover:scale-105 transition-transform duration-200"
-            aria-label="Ícone do mapa"
+            src={logoCartografiaUrl}
+            alt="Cartografia Social de Santos"
+            className="h-9 sm:h-10 md:h-12 w-auto transform group-hover:scale-105 transition-transform duration-200 drop-shadow-lg"
           />
-          <h1
-            onClick={() => navigate('/')}
-            className="text-sm sm:text-base md:text-xl lg:text-2xl font-bold tracking-wide cursor-pointer truncate 
-                     hover:text-green-100 transition-colors duration-200 border-b-2 border-transparent hover:border-green-400"
-            style={{ fontFamily: "'Mistake Note', cursive" }}
-          >
-            Cartografia Social de Santos
-          </h1>
-        </div>
+        </button>
 
         {/* Versão Mobile - Menu Hambúrguer */}
         <div className="md:hidden flex items-center">
           <button
             onClick={toggleMobileMenu}
-            className="p-2 rounded-full hover:bg-green-800/50 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-green-400"
+            className="p-2 rounded-full hover:bg-blue-800/50 transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400"
             aria-label="Menu principal"
           >
             <motion.div
@@ -80,22 +83,36 @@ const Navbar = () => {
           {/* Botão de Busca */}
           <button
             onClick={openSearch}
-            className="p-2 rounded-full hover:bg-green-800/50 transition-all duration-200 group
-                     focus:outline-none focus:ring-2 focus:ring-green-400 active:scale-95"
+            className="p-2 rounded-full hover:bg-blue-800/50 transition-all duration-200 group
+                     focus:outline-none focus:ring-2 focus:ring-blue-400 active:scale-95"
             aria-label="Buscar no site"
             title="Buscar no site"
           >
             <Search className="w-5 h-5 text-white/70 group-hover:text-white transition-colors duration-200" />
           </button>
 
-          {/* Botão Ver Conteúdo/Voltar */}
+          {/* Botão Ver Mapa */}
+          {!isMapaPage && (
+            <button
+              onClick={() => navigate('/mapa')}
+              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-500 
+                       transition-all duration-200 rounded-lg hover:shadow-md active:scale-95
+                       focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              Ver Mapa
+            </button>
+          )}
+
+          {/* Botão Sobre */}
           <button
-            onClick={() => navigate(isConteudoPage ? '/' : '/conteudo')}
-            className="px-4 py-2 text-sm font-medium text-white bg-green-800/50 hover:bg-green-700/50 
-                     transition-all duration-200 rounded-lg hover:shadow-md active:scale-95
-                     focus:outline-none focus:ring-2 focus:ring-green-400"
+            onClick={() => navigate('/sobre')}
+            className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+              isSobrePage
+                ? 'bg-blue-600 text-white hover:bg-blue-500 hover:shadow-md'
+                : 'text-white bg-blue-800/50 hover:bg-blue-700/50 hover:shadow-md'
+            }`}
           >
-            {isConteudoPage ? 'Voltar ao Mapa' : 'Ver Todo Conteúdo'}
+            Sobre o projeto
           </button>
 
 
@@ -120,8 +137,8 @@ const Navbar = () => {
           {!isAdmin ? (
             <button
               onClick={handleAdminClick}
-              className="p-2 rounded-full hover:bg-green-800/50 transition-all duration-200 group
-                       focus:outline-none focus:ring-2 focus:ring-green-400 active:scale-95"
+              className="p-2 rounded-full hover:bg-blue-800/50 transition-all duration-200 group
+                       focus:outline-none focus:ring-2 focus:ring-blue-400 active:scale-95"
               aria-label="Configurações de administrador"
             >
               <Settings className="w-5 h-5 text-white/70 group-hover:text-white transition-colors duration-200" />
@@ -131,8 +148,8 @@ const Navbar = () => {
               <button
                 onClick={() => setShowAdminPanel(!showAdminPanel)}
                 className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-white 
-                         bg-green-800/50 hover:bg-green-700/50 rounded-lg transition-all duration-200
-                         focus:outline-none focus:ring-2 focus:ring-green-400 active:scale-95"
+                         bg-blue-800/50 hover:bg-blue-700/50 rounded-lg transition-all duration-200
+                         focus:outline-none focus:ring-2 focus:ring-blue-400 active:scale-95"
               >
                 <Shield className="w-4 h-4" />
                 <span>Admin</span>
@@ -172,8 +189,9 @@ const Navbar = () => {
             </div>
           )}
         </div>
-      </nav>
-
+        </nav>
+      </div>
+      
       {/* Menu Mobile Expandido */}
       <AnimatePresence>
         {mobileMenuOpen && (
@@ -182,7 +200,7 @@ const Navbar = () => {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="md:hidden bg-gradient-to-b from-green-900/95 to-green-800/95 backdrop-blur-md border-t border-green-800/30"
+            className="md:hidden bg-blue-950 border-t border-blue-900/30"
           >
             <div className="container mx-auto px-4 py-4 flex flex-col space-y-4">
               {/* Botão de Busca Mobile */}
@@ -191,21 +209,36 @@ const Navbar = () => {
                   openSearch();
                   setMobileMenuOpen(false);
                 }}
-                className="w-full py-2.5 text-sm font-medium text-white bg-green-800/50 hover:bg-green-700/50 
+                className="w-full py-2.5 text-sm font-medium text-white bg-blue-800/50 hover:bg-blue-700/50 
                          rounded-lg transition-all duration-200 flex items-center justify-center gap-2
-                         focus:outline-none focus:ring-2 focus:ring-green-400 active:scale-95"
+                         focus:outline-none focus:ring-2 focus:ring-blue-400 active:scale-95"
               >
                 <Search className="w-4 h-4" />
                 Buscar no site
               </button>
 
+              {/* Botão Ver Mapa Mobile */}
+              {!isMapaPage && (
+                <button
+                  onClick={() => handleNavigation('/mapa')}
+                  className="w-full py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-500 
+                           rounded-lg transition-all duration-200 active:scale-95
+                           focus:outline-none focus:ring-2 focus:ring-blue-400"
+                >
+                  Ver Mapa
+                </button>
+              )}
+
               <button
-                onClick={() => handleNavigation(isConteudoPage ? '/' : '/conteudo')}
-                className="w-full py-2.5 text-sm font-medium text-white bg-green-800/50 hover:bg-green-700/50 
-                         rounded-lg transition-all duration-200 active:scale-95
-                         focus:outline-none focus:ring-2 focus:ring-green-400"
+                onClick={() => handleNavigation('/sobre')}
+                className={`w-full py-2.5 text-sm font-medium rounded-lg transition-all duration-200 active:scale-95
+                         focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+                           isSobrePage
+                             ? 'text-white bg-blue-600 hover:bg-blue-500'
+                             : 'text-white bg-blue-800/50 hover:bg-blue-700/50'
+                         }`}
               >
-                {isConteudoPage ? 'Voltar ao Mapa' : 'Ver Todo Conteúdo'}
+                Sobre o projeto
               </button>
 
               
@@ -230,16 +263,16 @@ const Navbar = () => {
               {!isAdmin ? (
                 <button
                   onClick={handleAdminClick}
-                  className="w-full py-2.5 text-sm font-medium text-white bg-green-800/50 hover:bg-green-700/50 
+                  className="w-full py-2.5 text-sm font-medium text-white bg-blue-800/50 hover:bg-blue-700/50 
                            rounded-lg transition-all duration-200 flex items-center justify-center gap-2
-                           focus:outline-none focus:ring-2 focus:ring-green-400 active:scale-95"
+                           focus:outline-none focus:ring-2 focus:ring-blue-400 active:scale-95"
                 >
                   <Settings className="w-4 h-4" />
                   Área administrativa
                 </button>
               ) : (
                 <>
-                  <div className="w-full py-2 px-4 text-sm font-medium text-white/90 text-center border-t border-green-800/30">
+                  <div className="w-full py-2 px-4 text-sm font-medium text-white/90 text-center border-t border-blue-800/30">
                     <span className="flex items-center justify-center gap-2">
                       <Shield className="w-4 h-4" />
                       Acesso de Administrador
@@ -249,9 +282,9 @@ const Navbar = () => {
                     <AddLocationButton />
                     <button
                       onClick={() => handleNavigation('/admin')}
-                      className="w-full py-2.5 text-sm text-white bg-green-800/50 hover:bg-green-700/50 
+                      className="w-full py-2.5 text-sm text-white bg-blue-800/50 hover:bg-blue-700/50 
                                rounded-lg transition-all duration-200 flex items-center justify-center gap-2
-                               focus:outline-none focus:ring-2 focus:ring-green-400 active:scale-95"
+                               focus:outline-none focus:ring-2 focus:ring-blue-400 active:scale-95"
                     >
                       <LayoutGrid className="h-4 w-4" />
                       Painel de Administração

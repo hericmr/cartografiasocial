@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { orangeIcon, blackIcon, violetIcon, redIcon, blueIcon, greenIcon, yellowIcon } from './CustomIcon';
 import ContentModal from './ContentModal';
-import ContentCarousel from './ContentCarousel';
-import { Search, Filter, Grid, List, Heart, Star, Clock, Eye, Play, Volume2 } from 'lucide-react';
+import { Search, Filter, Heart, Clock, Eye, Volume2, MapPin, ArrowRight } from 'lucide-react';
 
 const CATEGORIAS = {
   'lazer': { cor: 'blue-700', bgCor: 'bg-blue-200', borderCor: 'border-blue-200', icone: blueIcon, label: 'Lazer' },
@@ -17,13 +16,10 @@ const CATEGORIAS = {
 const ConteudoCartografia = ({ locations }) => {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState('todos');
   const [termoBusca, setTermoBusca] = useState('');
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' ou 'list'
   const [sortBy, setSortBy] = useState('titulo'); // 'titulo', 'pontuacao', 'tipo'
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [selectedContent, setSelectedContent] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [showCarousel, setShowCarousel] = useState(false);
-  const [carouselStartIndex, setCarouselStartIndex] = useState(0);
   const [favorites, setFavorites] = useState([]);
   const [recentlyViewed, setRecentlyViewed] = useState([]);
 
@@ -34,17 +30,6 @@ const ConteudoCartografia = ({ locations }) => {
     setFavorites(savedFavorites);
     setRecentlyViewed(savedRecentlyViewed);
   }, []);
-
-  // Função para converter título em slug
-  const criarSlug = (texto) => {
-    return texto
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') // Remove acentos
-      .replace(/[^a-z0-9]+/g, '-')     // Substitui caracteres especiais por hífen
-      .replace(/^-+|-+$/g, '')         // Remove hífens do início e fim
-      .trim();
-  };
 
   // Adicionar aos favoritos
   const toggleFavorite = (localId) => {
@@ -74,59 +59,6 @@ const ConteudoCartografia = ({ locations }) => {
   const closeContentModal = () => {
     setShowModal(false);
     setSelectedContent(null);
-  };
-
-  // Abrir carrossel
-  const openCarousel = (startIndex = 0) => {
-    setCarouselStartIndex(startIndex);
-    setShowCarousel(true);
-  };
-
-  // Fechar carrossel
-  const closeCarousel = () => {
-    setShowCarousel(false);
-    setCarouselStartIndex(0);
-  };
-
-  // Obter locais filtrados para o carrossel
-  const getFilteredLocations = () => {
-    let filteredLocations = locations;
-
-    // Aplicar filtros
-    if (categoriaSelecionada !== 'todos') {
-      filteredLocations = filteredLocations.filter(local => 
-        local.tipo?.toLowerCase() === categoriaSelecionada.toLowerCase()
-      );
-    }
-
-    if (termoBusca) {
-      const termo = termoBusca.toLowerCase();
-      filteredLocations = filteredLocations.filter(local => 
-        local.titulo?.toLowerCase().includes(termo) ||
-        local.descricao_detalhada?.toLowerCase().includes(termo) ||
-        local.descricao?.toLowerCase().includes(termo)
-      );
-    }
-
-    if (showFavoritesOnly) {
-      filteredLocations = filteredLocations.filter(local => favorites.includes(local.id));
-    }
-
-    // Aplicar ordenação
-    filteredLocations.sort((a, b) => {
-      switch (sortBy) {
-        case 'titulo':
-          return (a.titulo || '').localeCompare(b.titulo || '');
-        case 'pontuacao':
-          return (b.pontuacaoPercentual || 0) - (a.pontuacaoPercentual || 0);
-        case 'tipo':
-          return (a.tipo || '').localeCompare(b.tipo || '');
-        default:
-          return 0;
-      }
-    });
-
-    return filteredLocations;
   };
 
   // Agrupa os locais por categoria
@@ -187,12 +119,143 @@ const ConteudoCartografia = ({ locations }) => {
     return (
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-6 h-6">
         <path
-          fill={`currentColor`}
+          fill="currentColor"
           className={`text-${categoriaInfo.cor}`}
           d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"
         />
-        <circle cx="12" cy="9" r="3" fill="white"/>
+        <circle cx="12" cy="9" r="3" fill="white" />
       </svg>
+    );
+  };
+
+  const LocationHighlightCard = ({ local, categoriaInfo }) => {
+    const isFavorite = favorites.includes(local.id);
+
+    const abrirModalComBloqueio = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      abrirLocal(local);
+    };
+
+    const descricaoLimpa = local.descricao_detalhada
+      ? local.descricao_detalhada.replace(/<[^>]*>/g, '').substring(0, 140)
+      : local.descricao?.substring(0, 140);
+
+    const categoriaLabel = categoriaInfo?.label || local.tipo || 'Sem categoria';
+    const tipoKey = (local.tipo || '').toLowerCase();
+
+    const badgeBg =
+      {
+        'lazer': 'bg-blue-500/90',
+        'assistencia': 'bg-green-600/90',
+        'histórico': 'bg-yellow-500/90',
+        'historico': 'bg-yellow-500/90',
+        'comunidades': 'bg-red-500/90',
+        'educação': 'bg-violet-600/90',
+        'educacao': 'bg-violet-600/90',
+        'religiao': 'bg-gray-700/90',
+        'religião': 'bg-gray-700/90',
+        'bairro': 'bg-orange-500/90'
+      }[tipoKey] || 'bg-green-600/90';
+
+    return (
+      <div
+        className="group relative flex w-full flex-col overflow-hidden rounded-3xl border border-green-100 bg-white shadow-lg transition-all hover:-translate-y-1 hover:shadow-2xl"
+        onClick={() => abrirLocal(local)}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            abrirLocal(local);
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-label={`Ver detalhes de ${local.titulo}`}
+      >
+        <div className="relative h-56 w-full overflow-hidden">
+          {local.imagens && local.imagens.length > 0 ? (
+            <>
+              <img
+                src={local.imagens[0]}
+                alt={`Imagem de ${local.titulo}`}
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            </>
+          ) : (
+            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-green-700 via-green-800 to-green-900 text-white">
+              <MapPin className="h-12 w-12 opacity-60" />
+            </div>
+          )}
+
+          <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-green-900 shadow">
+            {renderIconeSVG(local.tipo || 'outros')}
+            <span>{categoriaLabel}</span>
+          </div>
+
+          <div className="absolute right-4 top-4 flex items-center gap-2">
+            <button
+              className={`flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white transition-colors hover:bg-black/60 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white ${
+                isFavorite ? 'text-red-400' : 'text-white'
+              }`}
+              onClick={(event) => {
+                event.stopPropagation();
+                toggleFavorite(local.id);
+              }}
+              aria-label={isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+              aria-pressed={isFavorite}
+            >
+              <Heart className={`h-4 w-4 ${isFavorite ? 'fill-current' : ''}`} />
+            </button>
+          </div>
+
+          {local.imagens && local.imagens.length > 1 && (
+            <div className="absolute bottom-4 right-4 flex items-center gap-2 rounded-full bg-black/40 px-3 py-1 text-xs text-white">
+              <Eye className="h-3 w-3" />
+              <span>{local.imagens.length} fotos</span>
+            </div>
+          )}
+        </div>
+
+        <div className="flex flex-1 flex-col gap-4 p-6">
+          <div>
+            <h3 className="text-lg font-semibold text-green-900 transition-colors group-hover:text-green-700">
+              {local.titulo}
+            </h3>
+            <p className="mt-2 text-sm text-gray-600">
+              {descricaoLimpa}
+              {descricaoLimpa && descricaoLimpa.length >= 140 ? '…' : ''}
+            </p>
+          </div>
+
+          <div className="mt-auto flex items-center justify-between text-sm">
+            <div className="flex items-center gap-3 text-gray-500">
+              {local.audioUrl && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600">
+                  <Volume2 className="h-3.5 w-3.5" />
+                  Áudio
+                </span>
+              )}
+              {local.links && local.links.length > 0 && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600">
+                  <ArrowRight className="h-3.5 w-3.5" />
+                  Links
+                </span>
+              )}
+            </div>
+
+          </div>
+
+          <button
+            className={`inline-flex items-center justify-center gap-2 rounded-full px-4 py-2 text-sm font-semibold text-white transition-colors ${badgeBg} hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white`}
+            onClick={abrirModalComBloqueio}
+          >
+            Ver detalhes
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
     );
   };
 
@@ -235,67 +298,32 @@ const ConteudoCartografia = ({ locations }) => {
             </div>
 
             {/* Segunda linha: Controles adicionais */}
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+            <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
               <div className="flex items-center space-x-4">
                 {/* Filtro de favoritos */}
-                <label className="flex items-center space-x-2 cursor-pointer">
+                <label className="flex cursor-pointer items-center space-x-2">
                   <input
                     type="checkbox"
                     checked={showFavoritesOnly}
                     onChange={(e) => setShowFavoritesOnly(e.target.checked)}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                   />
-                  <Heart className={`w-5 h-5 ${showFavoritesOnly ? 'text-red-500 fill-current' : 'text-gray-400'}`} />
+                  <Heart className={`h-5 w-5 ${showFavoritesOnly ? 'text-red-500 fill-current' : 'text-gray-400'}`} />
                   <span className="text-sm text-gray-600">Apenas favoritos</span>
                 </label>
 
                 {/* Ordenação */}
                 <div className="flex items-center space-x-2">
-                  <Filter className="w-5 h-5 text-gray-400" />
+                  <Filter className="h-5 w-5 text-gray-400" />
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="text-sm border rounded px-3 py-1 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="rounded border px-3 py-1 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
                   >
                     <option value="titulo">Ordenar por título</option>
                     <option value="pontuacao">Ordenar por completude</option>
                     <option value="tipo">Ordenar por tipo</option>
                   </select>
-                </div>
-              </div>
-
-              <div className="flex items-center space-x-2 ml-auto">
-                {/* Botão do carrossel */}
-                <button
-                  onClick={() => openCarousel(0)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors focus:ring-2 focus:ring-purple-500 focus:outline-none"
-                  title="Abrir carrossel de apresentação"
-                  aria-label="Abrir carrossel de apresentação dos locais"
-                >
-                  <Play className="w-4 h-4" />
-                  <span className="text-sm">Carrossel</span>
-                </button>
-
-                {/* Modo de visualização */}
-                <div className="flex border rounded-lg overflow-hidden">
-                  <button
-                    onClick={() => setViewMode('grid')}
-                    className={`p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none ${viewMode === 'grid' ? 'bg-blue-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
-                    title="Visualização em grade"
-                    aria-label="Alternar para visualização em grade"
-                    aria-pressed={viewMode === 'grid'}
-                  >
-                    <Grid className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => setViewMode('list')}
-                    className={`p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none ${viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
-                    title="Visualização em lista"
-                    aria-label="Alternar para visualização em lista"
-                    aria-pressed={viewMode === 'list'}
-                  >
-                    <List className="w-5 h-5" />
-                  </button>
                 </div>
               </div>
             </div>
@@ -337,7 +365,6 @@ const ConteudoCartografia = ({ locations }) => {
               const categoriaInfo = CATEGORIAS[categoria.toLowerCase()];
               const bgColor = categoriaInfo?.bgCor || 'bg-white';
               const textColor = categoriaInfo?.cor || 'gray-800';
-              const borderColor = categoriaInfo?.borderCor || 'border-gray-200';
 
               return (
                 <div key={categoria} className={`${bgColor} rounded-lg shadow-lg p-6 transition-all hover:shadow-xl`}>
@@ -351,113 +378,13 @@ const ConteudoCartografia = ({ locations }) => {
                     </span>
                   </div>
                   
-                  <div className={viewMode === 'grid' 
-                    ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6" 
-                    : "space-y-3 sm:space-y-4"
-                  }>
+                  <div className="flex flex-col gap-6">
                     {locaisFiltrados.map((local) => (
-                      <div
+                      <LocationHighlightCard
                         key={local.id}
-                        onClick={() => abrirLocal(local)}
-                        className={`cursor-pointer border ${borderColor} rounded-lg p-5 hover:bg-white transition-all duration-200 hover:shadow-md group focus-within:ring-2 focus-within:ring-blue-500 focus-within:outline-none ${
-                          viewMode === 'list' ? 'flex items-start space-x-4' : ''
-                        }`}
-                        role="button"
-                        tabIndex={0}
-                        aria-label={`Ver detalhes de ${local.titulo}`}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            abrirLocal(local);
-                          }
-                        }}
-                      >
-                        {/* Imagem */}
-                        {local.imagens && local.imagens.length > 0 && (
-                          <div className={`${viewMode === 'list' ? 'w-32 h-24 flex-shrink-0' : 'mb-4'}`}>
-                            <img
-                              src={local.imagens[0]}
-                              alt={`Imagem de ${local.titulo}`}
-                              className={`w-full ${viewMode === 'list' ? 'h-24' : 'h-48'} object-cover rounded-lg shadow-sm`}
-                              loading="lazy"
-                            />
-                          </div>
-                        )}
-
-                        {/* Conteúdo */}
-                        <div className={`${viewMode === 'list' ? 'flex-1' : ''}`}>
-                          <div className="flex items-start justify-between mb-2">
-                            <h3 className={`font-medium text-${textColor} group-hover:text-${textColor} transition-colors ${
-                              viewMode === 'list' ? 'text-lg' : ''
-                            }`}>
-                              {local.titulo}
-                            </h3>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleFavorite(local.id);
-                              }}
-                              className={`p-1 rounded-full transition-colors focus:ring-2 focus:ring-red-500 focus:outline-none ${
-                                favorites.includes(local.id)
-                                  ? 'text-red-500 hover:text-red-600'
-                                  : 'text-gray-400 hover:text-red-500'
-                              }`}
-                              title={favorites.includes(local.id) ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
-                              aria-label={favorites.includes(local.id) ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
-                              aria-pressed={favorites.includes(local.id)}
-                            >
-                              <Heart className={`w-4 h-4 ${favorites.includes(local.id) ? 'fill-current' : ''}`} />
-                            </button>
-                          </div>
-
-                          <p className={`text-gray-600 text-sm ${viewMode === 'list' ? 'line-clamp-2' : 'line-clamp-3'}`}>
-                            {local.descricao_detalhada?.replace(/<[^>]*>/g, '').substring(0, viewMode === 'list' ? 150 : 200)}...
-                          </p>
-
-                          {/* Informações adicionais */}
-                          <div className="mt-3 flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
-                              <span className={`text-xs px-2 py-1 rounded-full bg-${textColor.replace('-700', '-100')} text-${textColor}`}>
-                                {categoriaInfo?.label || local.tipo}
-                              </span>
-                              {local.audioUrl && (
-                                <div className="flex items-center text-xs text-gray-500">
-                                  <Volume2 className="w-3 h-3 mr-1" />
-                                  Áudio
-                                </div>
-                              )}
-                              {local.imagens && local.imagens.length > 1 && (
-                                <div className="flex items-center text-xs text-gray-500">
-                                  <Eye className="w-3 h-3 mr-1" />
-                                  {local.imagens.length} fotos
-                                </div>
-                              )}
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                              <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                <div 
-                                  className={`h-full rounded-full transition-all duration-300 ${
-                                    local.pontuacaoPercentual >= 80 ? 'bg-green-500' :
-                                    local.pontuacaoPercentual >= 60 ? 'bg-yellow-500' :
-                                    'bg-red-500'
-                                  }`}
-                                  style={{ width: `${local.pontuacaoPercentual}%` }}
-                                />
-                              </div>
-                              <span className="text-xs text-gray-500">
-                                {local.pontuacaoPercentual}%
-                              </span>
-                            </div>
-                          </div>
-
-                          {viewMode === 'grid' && (
-                            <div className={`text-sm text-${textColor} opacity-0 group-hover:opacity-100 transition-opacity mt-2`}>
-                              Clique para ver mais →
-                            </div>
-                          )}
-                        </div>
-                      </div>
+                        local={local}
+                        categoriaInfo={categoriaInfo}
+                      />
                     ))}
                   </div>
                 </div>
@@ -472,14 +399,6 @@ const ConteudoCartografia = ({ locations }) => {
         onClose={closeContentModal}
         content={selectedContent}
         onNavigate={abrirLocal}
-      />
-
-      {/* Carrossel de conteúdo */}
-      <ContentCarousel
-        isVisible={showCarousel}
-        onClose={closeCarousel}
-        locations={getFilteredLocations()}
-        startIndex={carouselStartIndex}
       />
     </div>
   );

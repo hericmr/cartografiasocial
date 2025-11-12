@@ -1,9 +1,29 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { IconWrapper } from "./icons";
 
-const MenuCamadas = ({ estados, acoes }) => {
-  const [menuAberto, setMenuAberto] = useState(true);
+const MenuCamadas = ({ estados, acoes, menuAberto: externalMenuAberto, onMenuToggle }) => {
+  const [internalMenuAberto, setInternalMenuAberto] = useState(true);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  
+  // Use external state if provided, otherwise use internal state
+  const menuAberto = externalMenuAberto !== undefined ? externalMenuAberto : internalMenuAberto;
+  
+  // Handle menu toggle - if external control, use toggle function; otherwise use internal state
+  const setMenuAberto = (value) => {
+    if (onMenuToggle && externalMenuAberto !== undefined) {
+      // External control - if value is explicitly false, close; if true, open; otherwise toggle
+      if (value === false && menuAberto) {
+        onMenuToggle();
+      } else if (value === true && !menuAberto) {
+        onMenuToggle();
+      } else if (value === undefined) {
+        onMenuToggle();
+      }
+    } else {
+      // Internal control
+      setInternalMenuAberto(typeof value === 'boolean' ? value : !internalMenuAberto);
+    }
+  };
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 768);
@@ -62,23 +82,7 @@ const MenuCamadas = ({ estados, acoes }) => {
   const pointIds = ["assistencia", "historicos", "culturais", "comunidades", "educação", "religiao", "saude"];
 
   return (
-    <div className={`fixed ${isMobile ? "bottom-0 left-0 right-0" : "top-40 left-3"} z-10`}>
-      {/* Botão de Toggle (visível apenas no PC) */}
-      {!isMobile && (
-        <button
-          onClick={() => setMenuAberto(!menuAberto)}
-          className="p-2 w-10 h-10 bg-green-900/90 text-white rounded-full shadow-lg hover:bg-green-800 transition-all flex items-center justify-center text-sm"
-          aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
-        >
-          <IconWrapper
-            name={menuAberto ? "X" : "List"}
-            variant="regular"
-            size="sm"
-            color="white"
-          />
-        </button>
-      )}
-
+    <div className={`fixed ${isMobile ? "bottom-0 left-0 right-0" : "top-64 left-3"} z-10`}>
       {/* Menu de camadas */}
       {menuAberto && (
         <div className={menuClasses}>

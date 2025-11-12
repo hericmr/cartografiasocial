@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import AddLocationPanel from './AddLocationPanel';
 import { supabase } from '../supabaseClient';
 import { PlusCircle, Loader2 } from 'lucide-react';
+import { useAdminAuth } from '../hooks/useAdminAuth';
 
 const AddLocationButton = () => {
+  const { isAdmin } = useAdminAuth();
   const [isAddingLocation, setIsAddingLocation] = useState(false);
   const [newLocation, setNewLocation] = useState({
     latitude: "",
@@ -87,6 +89,11 @@ const AddLocationButton = () => {
     });
     setError("");
   };
+
+  // Não renderizar se o usuário não for admin
+  if (!isAdmin) {
+    return null;
+  }
 
   return (
     <>

@@ -17,13 +17,13 @@ const MarcadoresClusterizados = ({ dataPoints, visibility, onClick }) => {
     BAIRRO: { icon: orangeBairroIcon, enabled: visibility.bairrosLaranja, color: '#f97316' },
   });
 
-  // Função para mapear tipos de pontos
+  // Função para mapear tipos de pontos e retornar a chave da categoria
   const getDataPointType = (tipo) => {
     const tipoLower = tipo.toLowerCase();
     
     switch (tipoLower) {
       case "assistencia":
-        return DataPointType.ASSISTENCIA;
+        return { type: DataPointType.ASSISTENCIA, key: 'ASSISTENCIA' };
       case "historico":
       case "histórico":
       case "patrimônio histórico":
@@ -31,7 +31,7 @@ const MarcadoresClusterizados = ({ dataPoints, visibility, onClick }) => {
       case "histórico / fonte":
       case "fortificação":
       case "engenharia":
-        return DataPointType.HISTORICO;
+        return { type: DataPointType.HISTORICO, key: 'HISTORICO' };
       case "lazer":
       case "cultura":
       case "cultura / teatro":
@@ -46,36 +46,36 @@ const MarcadoresClusterizados = ({ dataPoints, visibility, onClick }) => {
       case "esportivo / cultural":
       case "mirante / esporte":
       case "esporte":
-        return DataPointType.LAZER;
+        return { type: DataPointType.LAZER, key: 'LAZER' };
       case "comunidades":
       case "ilha":
-        return DataPointType.COMUNIDADES;
+        return { type: DataPointType.COMUNIDADES, key: 'COMUNIDADES' };
       case "educação":
       case "educacao":
-        return DataPointType.EDUCACAO;
+        return { type: DataPointType.EDUCACAO, key: 'EDUCACAO' };
       case "religiao":
       case "religioso":
       case "igreja":
-        return DataPointType.RELIGIAO;
+        return { type: DataPointType.RELIGIAO, key: 'RELIGIAO' };
       case "saude":
       case "saúde":
-        return DataPointType.SAUDE;
+        return { type: DataPointType.SAUDE, key: 'SAUDE' };
       case "bairro":
-        return DataPointType.BAIRRO;
+        return { type: DataPointType.BAIRRO, key: 'BAIRRO' };
       default:
         console.warn(`Tipo desconhecido: ${tipo}, usando ícone de lazer como fallback.`);
-        return DataPointType.LAZER;
+        return { type: DataPointType.LAZER, key: 'LAZER' };
     }
   };
 
-  // Agrupar marcadores por tipo
+  // Agrupar marcadores por tipo (usando string como chave)
   const groupedMarkers = dataPoints.reduce((groups, ponto, index) => {
     if (!ponto.tipo) {
       console.warn(`Ponto sem tipo definido: ${ponto.titulo}`);
       return groups;
     }
 
-    const dataPointType = getDataPointType(ponto.tipo);
+    const { type: dataPointType, key: tipoKey } = getDataPointType(ponto.tipo);
     
     if (!dataPointType.enabled) return groups;
 
@@ -83,13 +83,12 @@ const MarcadoresClusterizados = ({ dataPoints, visibility, onClick }) => {
       console.warn(`Coordenadas inválidas para o ponto: ${ponto.titulo}`);
       return groups;
     }
-
-    const tipo = dataPointType;
-    if (!groups[tipo]) {
-      groups[tipo] = [];
+    
+    if (!groups[tipoKey]) {
+      groups[tipoKey] = [];
     }
     
-    groups[tipo].push({ ...ponto, index, dataPointType: tipo });
+    groups[tipoKey].push({ ...ponto, index, dataPointType });
     return groups;
   }, {});
 
@@ -123,7 +122,6 @@ const MarcadoresClusterizados = ({ dataPoints, visibility, onClick }) => {
         width: ${size}px;
         height: ${size}px;
         border-radius: 50%;
-        border: 3px solid white;
         box-shadow: 0 2px 10px rgba(0,0,0,0.3);
         display: flex;
         align-items: center;

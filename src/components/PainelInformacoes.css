@@ -1,0 +1,320 @@
+.mj-panel {
+  /* ArcGIS Map Journal-inspired panel look */
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 6px 12px rgba(0, 0, 0, 0.08);
+  border-top: 4px solid #059669; /* emerald-600 */
+}
+
+.mj-panel .mj-panel-content {
+  background: #ffffff;
+}
+
+/* Typography similar to Map Journal narrative */
+.mj-panel .mj-prose {
+  color: #2b2b2b;
+  line-height: 1.7;
+}
+
+.mj-panel .mj-prose h1,
+.mj-panel .mj-prose h2,
+.mj-panel .mj-prose h3,
+.mj-panel .mj-prose h4 {
+  color: #1f2a44;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 1.25em;
+}
+
+.mj-panel .mj-prose h2 {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding-bottom: 0.35em;
+}
+
+.mj-panel .mj-prose h4 {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  opacity: 0.9;
+}
+
+.mj-panel .mj-prose p {
+  margin: 0.75em 0 1em;
+}
+
+.mj-panel .mj-prose a {
+  color: #059669;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(5, 150, 105, 0.35);
+}
+
+.mj-panel .mj-prose a:hover {
+  color: #047857;
+  border-bottom-color: rgba(4, 120, 87, 0.6);
+}
+
+.mj-panel .mj-prose ul,
+.mj-panel .mj-prose ol {
+  padding-left: 1.25rem;
+  margin: 0.5rem 0 1rem;
+}
+
+.mj-panel .mj-prose blockquote {
+  border-left: 3px solid #059669;
+  padding-left: 1rem;
+  color: #4a5568;
+  background: rgba(5, 150, 105, 0.06);
+}
+
+/* Media inside narrative */
+.mj-panel .mj-prose img,
+.mj-panel .mj-prose video {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.mj-panel .mj-prose figure {
+  margin: 1rem 0;
+}
+
+.mj-panel .mj-prose figcaption {
+  font-size: 0.9em;
+  color: #6b7280;
+  text-align: center;
+}
+
+/* Section separators */
+.mj-panel .mj-section-separator {
+  height: 1px;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0));
+  margin: 1rem 0 1.25rem;
+}
+
+/* Subtle custom scrollbar (overlaying Tailwind scrollbar utilities) */
+.mj-panel.mj-maximized .mj-panel-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.mj-panel.mj-maximized .mj-panel-content::-webkit-scrollbar-thumb {
+  background-color: rgba(5, 150, 105, 0.35);
+  border-radius: 8px;
+  border: 2px solid #ffffff;
+}
+
+.mj-panel.mj-maximized .mj-panel-content::-webkit-scrollbar-track {
+  background: rgba(5, 150, 105, 0.06);
+}
+
+/* Mobile tweaks */
+@media (max-width: 640px) {
+  .mj-panel {
+    border-top-width: 3px;
+    box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.12);
+  }
+}
+
+/* Base split view behaviour for maximized panels (desktop + mobile landscape) */
+.mj-panel.mj-maximized .mj-split {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.mj-panel.mj-maximized .mj-split > * {
+  min-width: 0;
+  min-height: 0;
+}
+
+.mj-panel.mj-maximized .mj-split-left {
+  flex: 1 1 0;
+  background: #ffffff;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.mj-panel.mj-maximized .mj-split-right {
+  flex: 1 1 0;
+  border-left: 1px solid rgba(0, 0, 0, 0.06);
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mj-panel.mj-maximized .mj-split-right.mj-panel-content {
+  overflow-y: auto;
+}
+
+.mj-panel.mj-maximized .mj-split-left img,
+.mj-panel.mj-maximized .mj-split-left .w-full {
+  width: 100% !important;
+}
+
+@media (orientation: landscape) {
+  .mj-panel.mj-maximized {
+    border-radius: 0;
+  }
+}
+
+@media (max-width: 1023px) and (orientation: landscape) {
+  .mj-panel.mj-maximized .mj-split-right {
+    padding-top: 0;
+  }
+
+  .mj-panel.mj-maximized .mj-split-right .mj-prose {
+    padding-right: 1rem;
+  }
+}
+
+.mj-panel.mj-maximized.mj-mobile-landscape header {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  background: #ffffff;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(5, 150, 105, 0.1);
+}
+
+.mj-panel.mj-maximized.mj-mobile-landscape .mj-split-right.mj-panel-content {
+  padding-top: 72px;
+}
+
+/* Split view for maximized desktop mode */
+@media (min-width: 1024px) {
+  /* When maximized, header should only occupy the right half */
+  .mj-panel.mj-maximized header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    background: #ffffff;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(5, 150, 105, 0.1);
+  }
+  
+  /* Ensure header container and its content are above everything */
+  .mj-panel.mj-maximized header .mj-header-half-right {
+    z-index: 1000;
+  }
+  
+  /* Ensure title has higher z-index than share buttons */
+  .mj-panel.mj-maximized header h2,
+  .mj-panel.mj-maximized header .space-y-1 {
+    position: relative;
+    z-index: 1015;
+  }
+  
+  /* Share buttons should be below title but still above other page elements */
+  .mj-panel.mj-maximized header .linkSocialContainer,
+  .mj-panel.mj-maximized header .absolute.top-2,
+  .mj-panel.mj-maximized header .absolute.top-4 {
+    z-index: 1005;
+  }
+  
+  /* When maximized, constrain header content to the text half (right side in our layout) */
+  .mj-panel.mj-maximized .mj-header-half-right {
+    max-width: 100%;
+    margin-left: 0;
+  }
+
+  .mj-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    height: 100%;
+    overflow: hidden; /* left scrolls internally */
+  }
+  .mj-split > * { /* allow grid children to scroll properly */
+    min-height: 0;
+  }
+
+  .mj-split-left {
+    background: #ffffff;
+    overflow-y: auto; /* Allow scrolling for tall images */
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+  }
+
+  .mj-split-right {
+    border-left: 1px solid rgba(0, 0, 0, 0.06);
+    background: #fafafa;
+    padding: 0;
+    /* do not force overflow hidden; content div controls scrolling */
+    padding-top: 0; /* Header is absolutely positioned, so no padding needed */
+  }
+  
+  /* Add padding to content area to account for absolutely positioned header */
+  .mj-panel.mj-maximized .mj-split-right.mj-panel-content {
+    padding-top: 80px; /* Adjust based on header height */
+  }
+  
+  /* Ensure images on the left take full width */
+  .mj-split-left img,
+  .mj-split-left .w-full {
+    width: 100% !important;
+  }
+  
+  /* Desktop-only custom scrollbar for panel content (green tones) */
+  .mj-panel.mj-maximized .mj-panel-content,
+  .mj-panel.mj-maximized .mj-split-right.mj-panel-content {
+    scrollbar-width: auto; /* Firefox - ensure visible thicker bar */
+    scrollbar-color: #059669 rgba(5, 150, 105, 0.15); /* thumb track */
+  }
+
+  .mj-panel.mj-maximized .mj-panel-content::-webkit-scrollbar,
+  .mj-panel.mj-maximized .mj-split-right.mj-panel-content::-webkit-scrollbar {
+    width: 14px; /* visible width on desktop */
+  }
+
+  .mj-panel.mj-maximized .mj-panel-content::-webkit-scrollbar-thumb,
+  .mj-panel.mj-maximized .mj-split-right.mj-panel-content::-webkit-scrollbar-thumb {
+    background-color: rgba(5, 150, 105, 0.75); /* emerald-600 */
+    border-radius: 8px;
+    border: 3px solid rgba(255, 255, 255, 0.9);
+  }
+
+  .mj-panel.mj-maximized .mj-panel-content::-webkit-scrollbar-thumb:hover,
+  .mj-panel.mj-maximized .mj-split-right.mj-panel-content::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(5, 150, 105, 0.95);
+  }
+
+  .mj-panel.mj-maximized .mj-panel-content::-webkit-scrollbar-track,
+  .mj-panel.mj-maximized .mj-split-right.mj-panel-content::-webkit-scrollbar-track {
+    background: rgba(5, 150, 105, 0.12);
+    border-left: 1px solid rgba(5, 150, 105, 0.15);
+  }
+}
+
+/* General z-index rules for all panel states - ensure header is above everything */
+.mj-panel header {
+  z-index: 1000;
+}
+
+.mj-panel header .mj-header-half-right,
+.mj-panel header > div:first-child {
+  position: relative;
+  z-index: 1000;
+}
+
+/* Title should be above share buttons */
+.mj-panel header h2,
+.mj-panel header .space-y-1 {
+  position: relative;
+  z-index: 1015;
+}
+
+/* Share buttons should be below title but still above other page elements */
+.mj-panel header .linkSocialContainer,
+.mj-panel header .absolute.top-2,
+.mj-panel header .absolute.top-4 {
+  z-index: 1005;
+}
+
+

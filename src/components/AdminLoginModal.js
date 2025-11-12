@@ -17,6 +17,13 @@ const AdminLoginModal = ({ isOpen, onClose, onSuccess }) => {
       const isValid = authService.authenticateAdmin(password);
       
       if (isValid) {
+        // Garantir que as credenciais estejam armazenadas após login bem-sucedido
+        // O authenticateAdmin já faz isso automaticamente, mas garantimos aqui também
+        if (!authService.hasStoredCredentials()) {
+          // Se por algum motivo não há credenciais, criar e armazenar
+          const credentials = authService.generateDefaultAdminCredentials();
+          authService.storeAdminCredentials(credentials);
+        }
         onSuccess();
         setPassword('');
         onClose();

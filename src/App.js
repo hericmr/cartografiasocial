@@ -3,14 +3,14 @@ import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from
 import { supabase } from './supabaseClient';
 import { SearchProvider } from './contexts/SearchContext';
 import MapaSantos from "./components/MapaSantos";
+import Homepage from "./components/Homepage";
 import Navbar from "./components/Navbar";
 import PainelInformacoes from "./components/PainelInformacoes";
 import AddLocationButton from "./components/AddLocationButton";
-import ConteudoCartografia from "./components/ConteudoCartografia";
 import AdminPanel from "./components/AdminPanel";
-import WelcomePanel from "./components/WelcomePanel";
 import ImageGallery from "./components/gallery/ImageGallery";
 import GalleryDemo from "./components/GalleryDemo";
+import AboutPage from "./components/AboutPage";
 
 const LoadingScreen = () => (
   <div className="flex flex-col items-center justify-center min-h-screen bg-green-900 text-white">
@@ -28,10 +28,45 @@ const AppContent = () => {
   const [dataPoints, setDataPoints] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showWelcomePanel, setShowWelcomePanel] = useState(false);
   const [welcomePanelConfig, setWelcomePanelConfig] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
+  const isMapRoute = location?.pathname?.includes('/mapa');
+
+  // Adicionar welcome location aos dataPoints quando welcomePanelConfig mudar
+  useEffect(() => {
+    if (welcomePanelConfig && dataPoints) {
+      // Verificar se já existe welcome location
+      const hasWelcome = dataPoints.some(p => p.id === 'welcome-location');
+      if (!hasWelcome) {
+        const welcomeLocation = {
+          id: 'welcome-location',
+          titulo: welcomePanelConfig.title || 'Sobre o site',
+          descricao: 'Informações sobre a cartografia social',
+          descricao_detalhada: welcomePanelConfig.content || '',
+          imagens: [
+            "/cartografiasocial/fotos/turma.png",
+            "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG_20251021_162955.jpg",
+            "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG_20251021_163006.jpg",
+            "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG_20251021_163037.jpg",
+            "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG_20251021_163051.jpg",
+            "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0081.jpeg",
+            "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0083.jpeg",
+            "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0085.jpeg",
+            "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0087.jpeg",
+            "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0089.jpeg",
+            "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0091.jpeg"
+          ],
+          audioUrl: "/cartografiasocial/audio/intro.mp3",
+          latitude: -23.9608, // Centro de Santos
+          longitude: -46.3331,
+          tipo: 'intro',
+          links: []
+        };
+        setDataPoints([welcomeLocation, ...dataPoints]);
+      }
+    }
+  }, [welcomePanelConfig, dataPoints]);
 
   const fetchDataPoints = async () => {
     console.log("Iniciando consulta ao Supabase na tabela 'locations'...");
@@ -163,10 +198,6 @@ const AppContent = () => {
       if (data) {
         console.log('✅ [WELCOME] Painel encontrado:', data);
         setWelcomePanelConfig(data);
-        
-        // Sempre mostrar o painel quando o site é aberto
-        console.log('🎉 [WELCOME] Mostrando painel de boas-vindas sempre!');
-        setShowWelcomePanel(true);
       } else {
         console.log('❌ [WELCOME] Nenhum painel ativo encontrado');
       }
@@ -179,12 +210,6 @@ const AppContent = () => {
   const refreshWelcomeConfig = async () => {
     console.log('🔄 [WELCOME] Recarregando configurações do painel...');
     await fetchWelcomeConfig();
-  };
-
-  const closeWelcomePanel = () => {
-    console.log('🔒 [WELCOME] Fechando painel de boas-vindas');
-    setShowWelcomePanel(false);
-    localStorage.setItem('welcomePanelShown', 'true');
   };
 
 
@@ -200,10 +225,50 @@ const AppContent = () => {
         }
         dataPoints = formatData(dataPoints);
         console.log("Dados formatados:", dataPoints);
-        setDataPoints(dataPoints);
         
         // Carregar configurações do painel de boas-vindas
-        await fetchWelcomeConfig();
+        const welcomeData = await supabase
+          .from('welcome_panels')
+          .select('*')
+          .eq('is_active', true)
+          .order('updated_at', { ascending: false })
+          .limit(1)
+          .single();
+        
+        // Se houver configuração de welcome, adicionar como localização especial
+        if (welcomeData.data) {
+          setWelcomePanelConfig(welcomeData.data);
+          const welcomeLocation = {
+            id: 'welcome-location',
+            titulo: welcomeData.data.title || 'Sobre o site',
+            descricao: 'Informações sobre a cartografia social',
+            descricao_detalhada: welcomeData.data.content || '',
+            imagens: [
+              "/cartografiasocial/fotos/turma.png",
+              "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG_20251021_162955.jpg",
+              "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG_20251021_163006.jpg",
+              "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG_20251021_163037.jpg",
+              "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG_20251021_163051.jpg",
+              "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0081.jpeg",
+              "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0083.jpeg",
+              "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0085.jpeg",
+              "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0087.jpeg",
+              "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0089.jpeg",
+              "/cartografiasocial/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0091.jpeg"
+            ],
+            audioUrl: "/cartografiasocial/audio/intro.mp3",
+            latitude: -23.9608, // Centro de Santos
+            longitude: -46.3331,
+            tipo: 'intro',
+            links: []
+          };
+          dataPoints = [welcomeLocation, ...dataPoints];
+        } else {
+          // Ainda chamar fetchWelcomeConfig para manter o estado atualizado
+          await fetchWelcomeConfig();
+        }
+        
+        setDataPoints(dataPoints);
       } catch (err) {
         console.error("Erro ao buscar ou formatar dados:", err);
         setError(err.message);
@@ -227,7 +292,10 @@ const AppContent = () => {
         (payload) => {
           console.log('🔄 [WELCOME] Mudança detectada na tabela welcome_panels:', payload);
           // Recarregar configurações quando houver mudanças
-          fetchWelcomeConfig();
+          fetchWelcomeConfig().then(() => {
+            // Recarregar página para atualizar dados
+            window.location.reload();
+          });
         }
       )
       .subscribe();
@@ -235,7 +303,9 @@ const AppContent = () => {
     // Listener para evento customizado de atualização
     const handleWelcomePanelUpdate = () => {
       console.log('🔄 [WELCOME] Evento de atualização recebido, recarregando...');
-      fetchWelcomeConfig();
+      fetchWelcomeConfig().then(() => {
+        window.location.reload();
+      });
     };
 
     window.addEventListener('welcomePanelUpdated', handleWelcomePanelUpdate);
@@ -272,27 +342,23 @@ const AppContent = () => {
   return (
     <SearchProvider>
       <div className="min-h-screen flex flex-col">
-        <Navbar onConteudoClick={() => navigate('/conteudo')} />
-        
-        {/* Welcome Panel */}
-        {(() => {
-          console.log('🔍 [WELCOME] Renderizando - showWelcomePanel:', showWelcomePanel, 'welcomePanelConfig:', welcomePanelConfig);
-          return null;
-        })()}
-        {showWelcomePanel && welcomePanelConfig && (
-          <WelcomePanel 
-            isVisible={showWelcomePanel}
-            onClose={closeWelcomePanel}
-            onEdit={() => navigate('/admin?tab=welcome')}
-            config={welcomePanelConfig}
-          />
+        {!isMapRoute && (
+          <Navbar />
         )}
         
         <Routes>
           <Route 
             path="/" 
             element={
-              <main className="flex-grow">
+              <main id="main-content" className="flex-grow">
+                <Homepage dataPoints={dataPoints || []} />
+              </main>
+            } 
+          />
+          <Route 
+            path="/mapa" 
+            element={
+              <main id="main-content" className="flex-grow">
                 <MapaSantos 
                   dataPoints={dataPoints} // Mostra todos os pontos sempre
                 />
@@ -300,10 +366,6 @@ const AppContent = () => {
                 <AddLocationButton onLocationAdded={handleLocationAdded} />
               </main>
             } 
-          />
-          <Route 
-            path="/conteudo" 
-            element={<ConteudoCartografia locations={dataPoints} />} 
           />
           <Route 
             path="/admin" 
@@ -316,6 +378,10 @@ const AppContent = () => {
           <Route 
             path="/galerias" 
             element={<GalleryDemo />} 
+          />
+          <Route 
+            path="/sobre" 
+            element={<AboutPage />} 
           />
         </Routes>
       </div>

@@ -1,10 +1,24 @@
 import React, { useState, useEffect } from "react";
 import MapaBase from "./MapaBase";
-import MarcadoresSimples from "./MarcadoresSimples";
+import MarcadoresClusterizados from "./MarcadoresClusterizados";
 import Bairros from "./Bairros";
 import MenuCamadas from "./MenuCamadas";
 import PainelInformacoes from "./PainelInformacoes";
+import MapControls from "./MapControls";
 import "./MapaSantos.css";
+
+// LoadingScreen component (reused from App.js)
+const LoadingScreen = () => (
+  <div className="flex flex-col items-center justify-center min-h-screen bg-green-900 text-white">
+    <div className="relative">
+      <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <img src="/cartografiasocial/favicon.ico" alt="Ícone de carregamento" className="w-8 h-8" />
+      </div>
+    </div>
+    <p className="mt-4 text-lg font-semibold animate-pulse">Carregando mapa...</p>
+  </div>
+);
 
 // Função para converter título em slug
 const criarSlug = (texto) => {
@@ -31,6 +45,8 @@ const MapaSantos = ({ dataPoints }) => {
   }
 
   const [geojsonData, setGeojsonData] = useState(null);
+  const [mapReady, setMapReady] = useState(false);
+  const [layersMenuOpen, setLayersMenuOpen] = useState(true);
   const [visibilidade, setVisibilidade] = useState({
     bairros: false,
     bairrosLaranja: true,
@@ -191,30 +207,53 @@ const MapaSantos = ({ dataPoints }) => {
 
   return (
     <div className="relative h-screen">
-      <MapaBase>
-        {visibilidade.bairros && geojsonData && <Bairros data={geojsonData} style={geoJSONStyle} />}
-        {dataPoints && <MarcadoresSimples dataPoints={dataPoints} visibility={visibilidade} onClick={abrirPainel} />}
+      {/* Loading overlay - shown until map is ready */}
+      {!mapReady && (
+        <div className="absolute inset-0 z-[9999] bg-green-900">
+          <LoadingScreen />
+        </div>
+      )}
+
+      {/* Map - only render children when map is ready to avoid cleanup issues */}
+      <MapaBase onReady={() => setMapReady(true)}>
+        {mapReady && (
+          <>
+            {visibilidade.bairros && geojsonData && <Bairros data={geojsonData} style={geoJSONStyle} />}
+            {dataPoints && <MarcadoresClusterizados dataPoints={dataPoints} visibility={visibilidade} onClick={abrirPainel} />}
+            <MapControls 
+              onLayersToggle={() => setLayersMenuOpen(!layersMenuOpen)}
+              layersMenuOpen={layersMenuOpen}
+            />
+          </>
+        )}
       </MapaBase>
 
-      {painelInfo && <PainelInformacoes painelInfo={painelInfo} closePainel={fecharPainel} />}
-      
-      <MenuCamadas
-        estados={visibilidade}
-        acoes={{
-          toggleBairros: () => toggleVisibilidade("bairros"),
-          toggleBairrosLaranja: () => toggleVisibilidade("bairrosLaranja"),
-          toggleAssistencia: () => toggleVisibilidade("assistencia"),
-          toggleHistoricos: () => toggleVisibilidade("historicos"),
-          toggleCulturais: () => toggleVisibilidade("culturais"),
-          toggleComunidades: () => toggleVisibilidade("comunidades"),
-          toggleEducação: () => toggleVisibilidade("educação"),
-          toggleReligiao: () => toggleVisibilidade("religiao"),
-          toggleSaude: () => toggleVisibilidade("saude"),
-          toggleBairro: () => toggleVisibilidade("bairro"),
-          toggleAllPoints: (value) => toggleAllPoints(value),
-          solo: (key) => soloLayer(key),
-        }}
-      />
+      {/* Only show these when map is ready */}
+      {mapReady && (
+        <>
+          {painelInfo && <PainelInformacoes painelInfo={painelInfo} closePainel={fecharPainel} />}
+          
+          <MenuCamadas
+            estados={visibilidade}
+            menuAberto={layersMenuOpen}
+            onMenuToggle={() => setLayersMenuOpen(!layersMenuOpen)}
+            acoes={{
+              toggleBairros: () => toggleVisibilidade("bairros"),
+              toggleBairrosLaranja: () => toggleVisibilidade("bairrosLaranja"),
+              toggleAssistencia: () => toggleVisibilidade("assistencia"),
+              toggleHistoricos: () => toggleVisibilidade("historicos"),
+              toggleCulturais: () => toggleVisibilidade("culturais"),
+              toggleComunidades: () => toggleVisibilidade("comunidades"),
+              toggleEducação: () => toggleVisibilidade("educação"),
+              toggleReligiao: () => toggleVisibilidade("religiao"),
+              toggleSaude: () => toggleVisibilidade("saude"),
+              toggleBairro: () => toggleVisibilidade("bairro"),
+              toggleAllPoints: (value) => toggleAllPoints(value),
+              solo: (key) => soloLayer(key),
+            }}
+          />
+        </>
+      )}
     </div>
   );
 };

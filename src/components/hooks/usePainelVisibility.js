@@ -1,29 +1,43 @@
 import { useState, useEffect } from "react";
 
+/**
+ * Hook para controlar visibilidade do painel
+ * 
+ * @param {Object|null} painelInfo - Informações do painel a ser exibido
+ * @returns {Object} Objeto com isVisible e isMobile
+ */
 const usePainelVisibility = (painelInfo) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 640);
-    };
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    if (typeof window !== 'undefined') {
+      const checkMobile = () => {
+        setIsMobile(window.innerWidth <= 768);
+      };
+      checkMobile();
+      window.addEventListener('resize', checkMobile);
+      return () => window.removeEventListener('resize', checkMobile);
+    }
   }, []);
 
   useEffect(() => {
-    if (painelInfo) {
+    if (painelInfo && typeof painelInfo === 'object') {
       setIsVisible(true);
-      document.body.style.overflow = "hidden";
+      if (typeof document !== 'undefined') {
+        document.body.style.overflow = "hidden";
+      }
     } else {
       setIsVisible(false);
-      document.body.style.overflow = "";
+      if (typeof document !== 'undefined') {
+        document.body.style.overflow = "";
+      }
     }
 
     return () => {
-      document.body.style.overflow = "";
+      if (typeof document !== 'undefined') {
+        document.body.style.overflow = "";
+      }
     };
   }, [painelInfo]);
 
