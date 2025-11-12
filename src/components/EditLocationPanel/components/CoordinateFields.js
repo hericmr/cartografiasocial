@@ -1,5 +1,6 @@
 import React from 'react';
 import InputField from '../../AddLocationPanel/components/InputField';
+import AddressSearch from '../../AddressSearch';
 
 const CoordinateFields = ({ 
   editedLocation, 
@@ -64,9 +65,31 @@ const CoordinateFields = ({
   // Obter valores atuais das coordenadas
   const currentCoords = parseLocation(editedLocation.localizacao);
 
+  // Handler para quando um endereço é selecionado
+  const handleAddressSelect = (addressData) => {
+    setEditedLocation(prev => ({
+      ...prev,
+      latitude: addressData.latitude,
+      longitude: addressData.longitude,
+      localizacao: `${addressData.latitude},${addressData.longitude}`
+    }));
+  };
+
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
       <h3 className="text-lg font-semibold text-gray-800 mb-4">Coordenadas</h3>
+      
+      {/* Busca de endereço */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Buscar por endereço
+        </label>
+        <AddressSearch onAddressSelect={handleAddressSelect} />
+        <p className="mt-2 text-xs text-gray-500">
+          Digite um endereço para preencher automaticamente as coordenadas
+        </p>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <InputField

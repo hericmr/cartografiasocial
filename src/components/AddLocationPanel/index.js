@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import MapSection from "./components/MapSection";
 import InputField from "./components/InputField";
 import RichTextEditor from "./components/RichTextEditor";
+import AddressSearch from "../AddressSearch";
 import { opcoes } from "./constants";
 
 const AddLocationPanel = ({ newLocation, setNewLocation, onSave, onClose, isLoading }) => {
@@ -143,6 +144,26 @@ const AddLocationPanel = ({ newLocation, setNewLocation, onSave, onClose, isLoad
                   </div>
                 )}
               </div>
+            </div>
+
+            {/* Busca de endereço */}
+            <div className="bg-white rounded-lg border border-gray-200 p-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Buscar por endereço
+              </label>
+              <AddressSearch 
+                onAddressSelect={(addressData) => {
+                  setNewLocation(prev => ({
+                    ...prev,
+                    latitude: addressData.latitude,
+                    longitude: addressData.longitude,
+                    localizacao: `${addressData.latitude},${addressData.longitude}`
+                  }));
+                }} 
+              />
+              <p className="mt-2 text-xs text-gray-500">
+                Digite um endereço para preencher automaticamente as coordenadas
+              </p>
             </div>
 
             <MapSection
