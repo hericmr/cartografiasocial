@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import AddLocationButton from './AddLocationButton';
 import AdminLoginModal from './AdminLoginModal';
 import SearchModal from './SearchModal';
 import { useSearch } from '../contexts/SearchContext';
@@ -173,7 +172,6 @@ const Navbar = () => {
                       Gerenciar Locais
                     </div>
                     <div className="py-1">
-                      <AddLocationButton />
                       <button
                         onClick={() => navigate('/admin')}
                         className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 
@@ -279,7 +277,6 @@ const Navbar = () => {
                     </span>
                   </div>
                   <div className="flex flex-col space-y-2">
-                    <AddLocationButton />
                     <button
                       onClick={() => handleNavigation('/admin')}
                       className="w-full py-2.5 text-sm text-white bg-blue-800/50 hover:bg-blue-700/50 

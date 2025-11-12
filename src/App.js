@@ -6,7 +6,6 @@ import MapaSantos from "./components/MapaSantos";
 import Homepage from "./components/Homepage";
 import Navbar from "./components/Navbar";
 import PainelInformacoes from "./components/PainelInformacoes";
-import AddLocationButton from "./components/AddLocationButton";
 import AdminPanel from "./components/AdminPanel";
 import ImageGallery from "./components/gallery/ImageGallery";
 import GalleryDemo from "./components/GalleryDemo";
@@ -173,11 +172,6 @@ const AppContent = () => {
     });
     console.log("Formatação concluída. Dados formatados:", formattedData);
     return formattedData;
-  };
-
-  const handleLocationAdded = (newLocation) => {
-    const formattedLocation = formatData([newLocation])[0];
-    setDataPoints((prevDataPoints) => [...prevDataPoints, formattedLocation]);
   };
 
   const fetchWelcomeConfig = async () => {
@@ -363,7 +357,6 @@ const AppContent = () => {
                   dataPoints={dataPoints} // Mostra todos os pontos sempre
                 />
                 <PainelInformacoes dataPoints={dataPoints} />
-                <AddLocationButton onLocationAdded={handleLocationAdded} />
               </main>
             } 
           />

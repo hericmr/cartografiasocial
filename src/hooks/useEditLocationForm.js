@@ -2,11 +2,26 @@ import { useState, useRef, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 
 export const useEditLocationForm = (initialLocation) => {
+  // Se initialLocation for null ou undefined, criar objeto vazio
+  const emptyLocation = {
+    titulo: '',
+    tipo: '',
+    descricao_detalhada: '',
+    localizacao: '',
+    latitude: '',
+    longitude: '',
+    links: '',
+    imagens: '',
+    audio: '',
+  };
+
+  const location = initialLocation || emptyLocation;
+
   const [editedLocation, setEditedLocation] = useState({
-    ...initialLocation,
-    latitude: initialLocation.localizacao ? initialLocation.localizacao.split(',')[0] : '',
-    longitude: initialLocation.localizacao ? initialLocation.localizacao.split(',')[1] : '',
-    tipo: typeof initialLocation.tipo === 'string' ? initialLocation.tipo : '',
+    ...location,
+    latitude: location.localizacao ? location.localizacao.split(',')[0] : '',
+    longitude: location.localizacao ? location.localizacao.split(',')[1] : '',
+    tipo: typeof location.tipo === 'string' ? location.tipo : '',
   });
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -36,14 +51,14 @@ export const useEditLocationForm = (initialLocation) => {
 
   // Inicializa as imagens existentes
   useEffect(() => {
-    if (initialLocation.imagens) {
-      const existingImages = initialLocation.imagens.split(',').filter(url => url);
+    if (location && location.imagens) {
+      const existingImages = location.imagens.split(',').filter(url => url);
       setMediaState(prev => ({
         ...prev,
         imageUrls: existingImages
       }));
     }
-  }, [initialLocation.imagens]);
+  }, [location?.imagens]);
 
   const validateForm = () => {
     const newErrors = {};

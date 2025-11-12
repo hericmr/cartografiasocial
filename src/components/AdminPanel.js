@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
-import { Search, Filter, Edit2, Trash2, X, MapPin, Star, Settings, Map, History, Images } from 'lucide-react';
+import { Search, Filter, Edit2, Trash2, X, MapPin, Star, Settings, Map, History, Images, PlusCircle } from 'lucide-react';
 import EditLocationPanel from './EditLocationPanel';
 import WelcomePanelEditor from './admin/WelcomePanelEditor';
 import WelcomePanelHistory from './admin/WelcomePanelHistory';
@@ -51,6 +51,7 @@ const AdminPanel = () => {
   const [error, setError] = useState(null);
   const [deleteConfirmation, setDeleteConfirmation] = useState(null);
   const [editingLocation, setEditingLocation] = useState(null);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('locations');
 
@@ -140,41 +141,75 @@ const AdminPanel = () => {
 
   const handleEdit = (location) => {
     setEditingLocation(location);
+    setIsPanelOpen(true);
+  };
+
+  const handleCreateNew = () => {
+    setEditingLocation(null); // null indica modo criar
+    setIsPanelOpen(true);
+  };
+
+  const handleClosePanel = () => {
+    setEditingLocation(null);
+    setIsPanelOpen(false);
   };
 
   const handleSaveEdit = async (updatedLocation) => {
-    if (!updatedLocation || !updatedLocation.id) {
+    if (!updatedLocation) {
       setError('Dados do local inválidos. Por favor, tente novamente.');
       return;
     }
+
+    const isCreateMode = !updatedLocation.id;
 
     try {
       setIsSaving(true);
       setError(null);
 
-      const { error } = await supabase
-        .from('locations3')
-        .update({
-          titulo: updatedLocation.titulo,
-          tipo: updatedLocation.tipo,
-          descricao_detalhada: updatedLocation.descricao_detalhada,
-          localizacao: `${updatedLocation.latitude},${updatedLocation.longitude}`,
-          links: updatedLocation.links,
-          audio: updatedLocation.audio,
-          imagens: updatedLocation.imagens,
-        })
-        .eq('id', updatedLocation.id);
+      const locationData = {
+        titulo: updatedLocation.titulo,
+        tipo: updatedLocation.tipo,
+        descricao_detalhada: updatedLocation.descricao_detalhada,
+        localizacao: `${updatedLocation.latitude},${updatedLocation.longitude}`,
+        links: updatedLocation.links || null,
+        audio: updatedLocation.audio || null,
+        imagens: updatedLocation.imagens || null,
+      };
 
-      if (error) throw error;
+      if (isCreateMode) {
+        // Criar novo local
+        const { data, error } = await supabase
+          .from('locations3')
+          .insert([locationData])
+          .select();
 
-      // Atualiza a lista local com o item editado
-      setLocations(locations.map(loc => 
-        loc.id === updatedLocation.id ? updatedLocation : loc
-      ));
+        if (error) throw error;
+
+        // Adiciona o novo local à lista
+        setLocations([...locations, ...data]);
+      } else {
+        // Atualizar local existente
+        const { error } = await supabase
+          .from('locations3')
+          .update(locationData)
+          .eq('id', updatedLocation.id);
+
+        if (error) throw error;
+
+        // Atualiza a lista local com o item editado
+        setLocations(locations.map(loc => 
+          loc.id === updatedLocation.id ? { ...updatedLocation, ...locationData } : loc
+        ));
+      }
+
       setEditingLocation(null);
+      setIsPanelOpen(false);
+      
+      // Recarregar a página para atualizar os dados
+      window.location.reload();
     } catch (err) {
-      console.error('Erro ao atualizar local:', err);
-      setError('Não foi possível atualizar o local. Por favor, tente novamente.');
+      console.error('Erro ao salvar local:', err);
+      setError(`Não foi possível ${isCreateMode ? 'criar' : 'atualizar'} o local. Por favor, tente novamente.`);
     } finally {
       setIsSaving(false);
     }
@@ -242,7 +277,7 @@ const AdminPanel = () => {
           <>
             {/* Barra de ferramentas */}
             <div className="bg-white p-4 rounded-lg shadow mb-6">
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-4 items-center">
                 {/* Campo de busca */}
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -270,6 +305,17 @@ const AdminPanel = () => {
                     ))}
                   </select>
                 </div>
+
+                {/* Botão Novo Local */}
+                {!isPanelOpen && (
+                  <button
+                    onClick={handleCreateNew}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors whitespace-nowrap"
+                  >
+                    <PlusCircle className="w-4 h-4" />
+                    Novo Local
+                  </button>
+                )}
               </div>
             </div>
 
@@ -280,19 +326,19 @@ const AdminPanel = () => {
               </div>
             )}
 
-            {/* Painel de Edição Inline */}
-            {editingLocation && (
+            {/* Painel de Edição/Criação Inline */}
+            {isPanelOpen && (
               <div className="mb-6">
                 <EditLocationPanel
                   location={editingLocation}
-                  onClose={() => setEditingLocation(null)}
+                  onClose={handleClosePanel}
                   onSave={handleSaveEdit}
                 />
               </div>
             )}
 
             {/* Tabela de locais */}
-            {!editingLocation && (
+            {!isPanelOpen && (
               <div className="bg-white rounded-lg shadow overflow-hidden">
                 {loading ? (
                   <div className="p-8 text-center text-gray-500">Carregando...</div>
