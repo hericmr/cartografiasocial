@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8" />
+    <title>Cartografia Social de Santos</title>
+    <script>
+      // GitHub Pages 404.html redirect para SPA
+      // Redireciona todas as rotas para index.html preservando query params e hash
+      (function() {
+        var pathSegmentsToKeep = 1; // Manter /cartografiasocial
+        var l = window.location;
+        var redirect = l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+          '/cartografiasocial/index.html' +
+          (l.search || '') + (l.hash || '');
+        window.location.replace(redirect);
+      })();
+    </script>
+    <noscript>
+      <meta http-equiv="refresh" content="0; url=/cartografiasocial/index.html" />
+    </noscript>
+  </head>
+  <body>
+    <p>Redirecionando...</p>
+  </body>
+</html>
+
