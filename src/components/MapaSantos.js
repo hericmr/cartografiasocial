@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import MapaBase from "./MapaBase";
 import MarcadoresClusterizados from "./MarcadoresClusterizados";
 import Bairros from "./Bairros";
@@ -85,13 +85,13 @@ const MapaSantos = ({ dataPoints }) => {
     fetchGeoJSON();
   }, []);
 
-  const abrirPainel = (info) => {
+  const abrirPainel = useCallback((info) => {
     setPainelInfo(info);
-  };
+  }, []);
 
-  const fecharPainel = () => {
+  const fecharPainel = useCallback(() => {
     setPainelInfo(null);
-  };
+  }, []);
 
   const geoJSONStyle = {
     fillColor: "green",
@@ -152,8 +152,7 @@ const MapaSantos = ({ dataPoints }) => {
     }
   }, [visibilidade]);
 
-  const toggleVisibilidade = (chave) => {
-    console.log(`Alterando visibilidade: ${chave}`);
+  const toggleVisibilidade = useCallback((chave) => {
     if (chave === "bairros") {
       // Exclusividade com bairrosLaranja
       setVisibilidade((prev) => ({
@@ -173,9 +172,9 @@ const MapaSantos = ({ dataPoints }) => {
     } else {
       setVisibilidade((prev) => ({ ...prev, [chave]: !prev[chave] }));
     }
-  };
+  }, []);
 
-  const toggleAllPoints = (value) => {
+  const toggleAllPoints = useCallback((value) => {
     setVisibilidade((prev) => ({
       ...prev,
       assistencia: value,
@@ -186,11 +185,11 @@ const MapaSantos = ({ dataPoints }) => {
       religiao: value,
       saude: value,
     }));
-  };
+  }, []);
 
-  const soloLayer = (key) => {
-    const allKeys = Object.keys(visibilidade);
+  const soloLayer = useCallback((key) => {
     setVisibilidade((prev) => {
+      const allKeys = Object.keys(prev);
       const next = {};
       for (const k of allKeys) {
         next[k] = k === key ? true : false;
@@ -203,7 +202,26 @@ const MapaSantos = ({ dataPoints }) => {
       }
       return next;
     });
-  };
+  }, []);
+
+  const toggleLayersMenu = useCallback(() => {
+    setLayersMenuOpen(prev => !prev);
+  }, []);
+
+  const acoesMenu = useMemo(() => ({
+    toggleBairros: () => toggleVisibilidade("bairros"),
+    toggleBairrosLaranja: () => toggleVisibilidade("bairrosLaranja"),
+    toggleAssistencia: () => toggleVisibilidade("assistencia"),
+    toggleHistoricos: () => toggleVisibilidade("historicos"),
+    toggleCulturais: () => toggleVisibilidade("culturais"),
+    toggleComunidades: () => toggleVisibilidade("comunidades"),
+    toggleEducação: () => toggleVisibilidade("educação"),
+    toggleReligiao: () => toggleVisibilidade("religiao"),
+    toggleSaude: () => toggleVisibilidade("saude"),
+    toggleBairro: () => toggleVisibilidade("bairro"),
+    toggleAllPoints: (value) => toggleAllPoints(value),
+    solo: (key) => soloLayer(key),
+  }), [toggleVisibilidade, toggleAllPoints, soloLayer]);
 
   return (
     <div className="relative h-screen">
@@ -221,7 +239,7 @@ const MapaSantos = ({ dataPoints }) => {
             {visibilidade.bairros && geojsonData && <Bairros data={geojsonData} style={geoJSONStyle} />}
             {dataPoints && <MarcadoresClusterizados dataPoints={dataPoints} visibility={visibilidade} onClick={abrirPainel} />}
             <MapControls 
-              onLayersToggle={() => setLayersMenuOpen(!layersMenuOpen)}
+              onLayersToggle={toggleLayersMenu}
               layersMenuOpen={layersMenuOpen}
             />
           </>
@@ -236,21 +254,8 @@ const MapaSantos = ({ dataPoints }) => {
           <MenuCamadas
             estados={visibilidade}
             menuAberto={layersMenuOpen}
-            onMenuToggle={() => setLayersMenuOpen(!layersMenuOpen)}
-            acoes={{
-              toggleBairros: () => toggleVisibilidade("bairros"),
-              toggleBairrosLaranja: () => toggleVisibilidade("bairrosLaranja"),
-              toggleAssistencia: () => toggleVisibilidade("assistencia"),
-              toggleHistoricos: () => toggleVisibilidade("historicos"),
-              toggleCulturais: () => toggleVisibilidade("culturais"),
-              toggleComunidades: () => toggleVisibilidade("comunidades"),
-              toggleEducação: () => toggleVisibilidade("educação"),
-              toggleReligiao: () => toggleVisibilidade("religiao"),
-              toggleSaude: () => toggleVisibilidade("saude"),
-              toggleBairro: () => toggleVisibilidade("bairro"),
-              toggleAllPoints: (value) => toggleAllPoints(value),
-              solo: (key) => soloLayer(key),
-            }}
+            onMenuToggle={toggleLayersMenu}
+            acoes={acoesMenu}
           />
         </>
       )}

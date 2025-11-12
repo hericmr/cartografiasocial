@@ -1,12 +1,12 @@
-import React from "react";
+import React, { useMemo, useCallback } from "react";
 import { Marker, Tooltip } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
-import { motion } from "framer-motion";
 import L from "leaflet";
 import { orangeIcon, orangeBairroIcon, blackIcon, violetIcon, redIcon, blueIcon, greenIcon, yellowIcon, healthIcon } from "./CustomIcon";
 
 const MarcadoresClusterizados = ({ dataPoints, visibility, onClick }) => {
-  const DataPointType = Object.freeze({
+  // Memoizar DataPointType baseado na visibilidade
+  const DataPointType = useMemo(() => ({
     ASSISTENCIA: { icon: greenIcon, enabled: visibility.assistencia, color: '#22c55e' },
     HISTORICO: { icon: yellowIcon, enabled: visibility.historicos, color: '#eab308' },
     LAZER: { icon: blueIcon, enabled: visibility.culturais, color: '#3b82f6' },
@@ -15,10 +15,10 @@ const MarcadoresClusterizados = ({ dataPoints, visibility, onClick }) => {
     RELIGIAO: { icon: blackIcon, enabled: visibility.religiao, color: '#374151' },
     SAUDE: { icon: healthIcon, enabled: visibility.saude, color: '#10b981' },
     BAIRRO: { icon: orangeBairroIcon, enabled: visibility.bairrosLaranja, color: '#f97316' },
-  });
+  }), [visibility.assistencia, visibility.historicos, visibility.culturais, visibility.comunidades, visibility.educação, visibility.religiao, visibility.saude, visibility.bairrosLaranja]);
 
-  // Função para mapear tipos de pontos e retornar a chave da categoria
-  const getDataPointType = (tipo) => {
+  // Função para mapear tipos de pontos e retornar a chave da categoria (memoizada)
+  const getDataPointType = useCallback((tipo) => {
     const tipoLower = tipo.toLowerCase();
     
     switch (tipoLower) {
@@ -63,43 +63,36 @@ const MarcadoresClusterizados = ({ dataPoints, visibility, onClick }) => {
       case "bairro":
         return { type: DataPointType.BAIRRO, key: 'BAIRRO' };
       default:
-        console.warn(`Tipo desconhecido: ${tipo}, usando ícone de lazer como fallback.`);
         return { type: DataPointType.LAZER, key: 'LAZER' };
     }
-  };
+  }, [DataPointType]);
 
-  // Agrupar marcadores por tipo (usando string como chave)
-  const groupedMarkers = dataPoints.reduce((groups, ponto, index) => {
-    if (!ponto.tipo) {
-      console.warn(`Ponto sem tipo definido: ${ponto.titulo}`);
+  // Agrupar marcadores por tipo (usando string como chave) - MEMOIZADO
+  const groupedMarkers = useMemo(() => {
+    return dataPoints.reduce((groups, ponto, index) => {
+      if (!ponto.tipo) {
+        return groups;
+      }
+
+      const { type: dataPointType, key: tipoKey } = getDataPointType(ponto.tipo);
+      
+      if (!dataPointType.enabled) return groups;
+
+      if (isNaN(ponto.latitude) || isNaN(ponto.longitude)) {
+        return groups;
+      }
+      
+      if (!groups[tipoKey]) {
+        groups[tipoKey] = [];
+      }
+      
+      groups[tipoKey].push({ ...ponto, index, dataPointType });
       return groups;
-    }
+    }, {});
+  }, [dataPoints, getDataPointType]);
 
-    const { type: dataPointType, key: tipoKey } = getDataPointType(ponto.tipo);
-    
-    if (!dataPointType.enabled) return groups;
-
-    if (isNaN(ponto.latitude) || isNaN(ponto.longitude)) {
-      console.warn(`Coordenadas inválidas para o ponto: ${ponto.titulo}`);
-      return groups;
-    }
-    
-    if (!groups[tipoKey]) {
-      groups[tipoKey] = [];
-    }
-    
-    groups[tipoKey].push({ ...ponto, index, dataPointType });
-    return groups;
-  }, {});
-
-  // Variantes para animação
-  const markerVariants = {
-    initial: { opacity: 0, scale: 0 },
-    animate: { opacity: 1, scale: [1, 1.2, 1] }
-  };
-
-  // Configurações de cluster personalizadas por tipo
-  const clusterConfig = {
+  // Configurações de cluster personalizadas por tipo (memoizadas)
+  const clusterConfig = useMemo(() => ({
     chunkedLoading: true,
     maxClusterRadius: 50,
     spiderfyOnMaxZoom: true,
@@ -107,12 +100,12 @@ const MarcadoresClusterizados = ({ dataPoints, visibility, onClick }) => {
     zoomToBoundsOnClick: true,
     disableClusteringAtZoom: 16,
     removeOutsideVisibleBounds: true,
-    animate: true,
-    animateAddingMarkers: true,
-  };
+    animate: false, // Desabilitar animação para melhor performance
+    animateAddingMarkers: false, // Desabilitar animação para melhor performance
+  }), []);
 
-  // Função para criar ícone de cluster personalizado
-  const createClusterCustomIcon = (cluster, color) => {
+  // Função para criar ícone de cluster personalizado (memoizada)
+  const createClusterCustomIcon = useCallback((cluster, color) => {
     const count = cluster.getChildCount();
     const size = count < 10 ? 40 : count < 100 ? 50 : 60;
     
@@ -134,7 +127,7 @@ const MarcadoresClusterizados = ({ dataPoints, visibility, onClick }) => {
       iconSize: [size, size],
       iconAnchor: [size/2, size/2]
     });
-  };
+  }, []);
 
   return (
     <>
@@ -149,40 +142,30 @@ const MarcadoresClusterizados = ({ dataPoints, visibility, onClick }) => {
             iconCreateFunction={(cluster) => createClusterCustomIcon(cluster, tipo.color)}
           >
             {markers.map((ponto) => (
-              <motion.div
+              <Marker
                 key={ponto.index}
-                initial="initial"
-                animate="animate"
-                whileHover={{ scale: 1.3 }}
-                variants={markerVariants}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                position={[ponto.latitude, ponto.longitude]}
+                icon={tipo.icon}
+                eventHandlers={{
+                  click: () => {
+                    if (onClick) {
+                      onClick(ponto);
+                    }
+                  },
+                }}
               >
-                <Marker
-                  position={[ponto.latitude, ponto.longitude]}
-                  icon={tipo.icon}
-                  eventHandlers={{
-                    click: () => {
-                      if (onClick) {
-                        onClick(ponto);
-                      } else {
-                        console.warn("Nenhum handler onClick definido.");
-                      }
-                    },
-                  }}
+                <Tooltip 
+                  className="bg-white text-gray-800 font-medium p-2 rounded shadow-md"
+                  direction="top" 
+                  offset={[0, -20]} 
+                  opacity={0.9}
                 >
-                  <Tooltip 
-                    className="bg-white text-gray-800 font-medium p-2 rounded shadow-md"
-                    direction="top" 
-                    offset={[0, -20]} 
-                    opacity={0.9}
-                  >
-                    <div className="text-center">
-                      <div className="font-bold text-sm">{ponto.titulo || "Sem título"}</div>
-                      <div className="text-xs text-gray-600 capitalize">{ponto.tipo}</div>
-                    </div>
-                  </Tooltip>
-                </Marker>
-              </motion.div>
+                  <div className="text-center">
+                    <div className="font-bold text-sm">{ponto.titulo || "Sem título"}</div>
+                    <div className="text-xs text-gray-600 capitalize">{ponto.tipo}</div>
+                  </div>
+                </Tooltip>
+              </Marker>
             ))}
           </MarkerClusterGroup>
         );
@@ -191,4 +174,4 @@ const MarcadoresClusterizados = ({ dataPoints, visibility, onClick }) => {
   );
 };
 
-export default MarcadoresClusterizados;
+export default React.memo(MarcadoresClusterizados);
