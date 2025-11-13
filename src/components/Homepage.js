@@ -119,7 +119,7 @@ const HomepageSearch = ({ dataPoints, onResultClick }) => {
   return (
     <div ref={searchRef} className="relative w-full">
       <form onSubmit={handleSearch} className="relative">
-        <div className="rounded-full bg-white/90 border border-green-200 px-4 py-2 flex items-center gap-2">
+        <div className="rounded-full bg-white/90 border-2 border-black px-4 py-2 flex items-center gap-2">
           <Search className="w-5 h-5 text-green-700 flex-shrink-0" />
           <input
             ref={inputRef}
@@ -158,7 +158,7 @@ const HomepageSearch = ({ dataPoints, onResultClick }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute top-full mt-2 w-full bg-white rounded-lg shadow-xl border border-green-200 z-50 max-h-96 overflow-y-auto"
+            className="absolute top-full mt-2 w-full bg-white rounded-lg shadow-xl border-2 border-black z-50 max-h-96 overflow-y-auto"
           >
             <div className="p-2">
               <div className="space-y-1">
@@ -218,13 +218,6 @@ export default function Homepage({ dataPoints = [] }) {
     () => `${process.env.PUBLIC_URL || ''}/mapa48g.jpg`,
     []
   );
-  // Get full HTML content from welcome config
-  const heroContent = useMemo(() => {
-    if (welcomeConfig?.content) {
-      return welcomeConfig.content;
-    }
-    return '<p>Uma cartografia colaborativa que reúne territórios, memórias e lutas dos movimentos sociais em Santos.</p>';
-  }, [welcomeConfig]);
 
   const images = useMemo(
     () => [
@@ -266,6 +259,7 @@ export default function Homepage({ dataPoints = [] }) {
     fetchWelcomeConfig();
   }, []);
 
+
   // Calcular estatísticas
   const stats = {
     totalLocais: dataPoints.filter(p => p.id !== 'welcome-location').length,
@@ -284,63 +278,59 @@ export default function Homepage({ dataPoints = [] }) {
     <div className="flex-1 overflow-auto bg-white text-green-900">
       {/* Hero section com carrossel */}
       <section
-        className="relative overflow-hidden py-24 md:py-32 bg-cover bg-center min-h-[80vh] md:min-h-[85vh] flex items-center"
+        className="relative overflow-hidden h-screen bg-cover bg-center flex items-center"
         style={{ backgroundImage: `url('${heroBackgroundUrl}')` }}
       >
 
         <div className="relative container mx-auto px-6 lg:px-12">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-white space-y-6 bg-black/90 backdrop-blur-sm rounded-3xl p-8 md:p-10 shadow-2xl border border-white/10">
-              {/* Audio Section */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.05 }}
-                className="pb-6 border-b border-white/20"
-              >
-                <audio
-                  className="w-full"
-                  controls
-                  preload="none"
-                >
-                  <source src="/cartografiasocial/audio/intro.mp3" type="audio/mpeg" />
-                  Seu navegador não suporta o elemento de áudio.
-                </audio>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
-                className="prose prose-invert prose-lg max-w-none prose-headings:text-white prose-p:text-green-100/90 prose-strong:text-white prose-a:text-green-300 prose-a:hover:text-green-200 prose-a:underline prose-headings:font-semibold prose-h2:text-2xl prose-h3:text-xl leading-relaxed"
-                dangerouslySetInnerHTML={{ __html: heroContent }}
+          <div className="max-w-4xl mx-auto space-y-6">
+            {/* Logo */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.05 }}
+              className="flex justify-center"
+            >
+              <img
+                src={logoCartografiaUrl}
+                alt="Cartografia Social de Santos"
+                className="h-auto max-w-full"
+                style={{
+                  filter: 'drop-shadow(2px 0 0 rgb(15, 23, 42)) drop-shadow(-2px 0 0 rgb(15, 23, 42)) drop-shadow(0 2px 0 rgb(15, 23, 42)) drop-shadow(0 -2px 0 rgb(15, 23, 42)) drop-shadow(2px 2px 0 rgb(15, 23, 42)) drop-shadow(-2px -2px 0 rgb(15, 23, 42)) drop-shadow(2px -2px 0 rgb(15, 23, 42)) drop-shadow(-2px 2px 0 rgb(15, 23, 42))'
+                }}
               />
+            </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"
-              >
-                <div className="col-span-1">
-                  <HomepageSearch dataPoints={dataPoints} />
-                </div>
-                <div className="col-span-1 flex flex-col sm:flex-row gap-3">
-                  <Link
-                    to="/mapa"
-                    className="flex-1 rounded-full bg-green-500 text-green-950 font-semibold px-4 py-2.5 text-center hover:bg-green-400 transition transform hover:scale-105"
-                  >
-                    Explorar o mapa
-                  </Link>
-                  <Link
-                    to="/sobre"
-                    className="flex-1 rounded-full border border-white/40 text-white font-semibold px-4 py-2.5 text-center hover:bg-white/10 transition transform hover:scale-105"
-                  >
-                    Sobre o projeto
-                  </Link>
-                </div>
-              </motion.div>
-            </div>
+            {/* Search and Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full"
+            >
+              <div className="col-span-1">
+                <HomepageSearch dataPoints={dataPoints} />
+              </div>
+              <div className="col-span-1 flex flex-col sm:flex-row gap-3">
+                <Link
+                  to="/mapa"
+                  className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-500 transition-all duration-200 rounded-lg hover:shadow-md active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 text-center"
+                >
+                  Explorar o mapa
+                </Link>
+                <button
+                  onClick={() => {
+                    const aboutSection = document.getElementById('sobre-projeto');
+                    if (aboutSection) {
+                      aboutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }}
+                  className="flex-1 px-4 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-500 transition-all duration-200 rounded-lg hover:shadow-md active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 text-center"
+                >
+                  Sobre o projeto
+                </button>
+              </div>
+            </motion.div>
           </div>
         </div>
 
@@ -353,6 +343,55 @@ export default function Homepage({ dataPoints = [] }) {
       {images.length > 0 && (
         <ImageSeparator src={images[0]} alt="Registro visual 1" index={0} />
       )}
+
+      {/* About Section - Content from About Page */}
+      <section id="sobre-projeto" className="py-16 bg-white scroll-mt-16">
+        <div className="container mx-auto px-6 lg:px-12 max-w-4xl">
+          <div className="space-y-12">
+            {/* Title */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="text-3xl md:text-4xl font-bold text-green-900 mb-8"
+            >
+              {welcomeConfig?.title || 'Sobre a Cartografia Social de Santos'}
+            </motion.h1>
+
+            {/* Audio Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="pb-8 border-b border-gray-200"
+            >
+              <audio
+                className="w-full"
+                controls
+                preload="none"
+              >
+                <source src="/cartografiasocial/audio/intro.mp3" type="audio/mpeg" />
+                Seu navegador não suporta o elemento de áudio.
+              </audio>
+            </motion.div>
+
+            {/* Main Content */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="prose prose-lg max-w-none prose-headings:text-green-900 prose-p:text-gray-700 prose-strong:text-green-900 prose-a:text-green-600 prose-a:hover:text-green-700 prose-a:underline prose-headings:font-semibold prose-h2:text-2xl prose-h3:text-xl"
+              dangerouslySetInnerHTML={{ __html: welcomeConfig?.content || `
+                <p>Uma cartografia colaborativa que reúne os territórios, memórias e lutas dos movimentos sociais em Santos.</p>
+                <p>Explore o mapa e descubra histórias contadas por quem vive a cidade todos os dias.</p>
+              ` }}
+            />
+          </div>
+        </div>
+      </section>
 
       {/* Image Separator 2 */}
       {images.length > 1 && (

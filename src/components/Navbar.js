@@ -45,7 +45,7 @@ const Navbar = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 text-white shadow-lg">
       {/* Barra azul marinho escura */}
-      <div className="bg-blue-950 w-full h-16">
+      <div className="bg-blue-950 w-full h-16 border-b border-white/20">
         <nav className="container mx-auto px-4 h-full flex items-center justify-between">
         {/* Logo e Título */}
         <button
@@ -104,7 +104,16 @@ const Navbar = () => {
 
           {/* Botão Sobre */}
           <button
-            onClick={() => navigate('/sobre')}
+            onClick={() => {
+              if (isHomePage) {
+                const aboutSection = document.getElementById('sobre-projeto');
+                if (aboutSection) {
+                  aboutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              } else {
+                navigate('/sobre');
+              }
+            }}
             className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
               isSobrePage
                 ? 'bg-blue-600 text-white hover:bg-blue-500 hover:shadow-md'
@@ -228,7 +237,17 @@ const Navbar = () => {
               )}
 
               <button
-                onClick={() => handleNavigation('/sobre')}
+                onClick={() => {
+                  if (isHomePage) {
+                    const aboutSection = document.getElementById('sobre-projeto');
+                    if (aboutSection) {
+                      aboutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                    setMobileMenuOpen(false);
+                  } else {
+                    handleNavigation('/sobre');
+                  }
+                }}
                 className={`w-full py-2.5 text-sm font-medium rounded-lg transition-all duration-200 active:scale-95
                          focus:outline-none focus:ring-2 focus:ring-blue-400 ${
                            isSobrePage
