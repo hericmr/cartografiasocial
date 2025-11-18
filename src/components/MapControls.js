@@ -1,19 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
 import { useMap } from 'react-leaflet';
 
 // Reusable minimalistic button component
-const ControlButton = ({ children, onClick, href, ariaLabel, title, className = '' }) => {
+const ControlButton = ({ children, onClick, ariaLabel, title, className = '' }) => {
   const baseClasses = "w-10 h-10 rounded-lg bg-white/90 hover:bg-white backdrop-blur-sm shadow-md flex items-center justify-center transition-all duration-200 hover:shadow-lg active:scale-95";
   const classes = `${baseClasses} ${className}`;
-  
-  if (href) {
-    return (
-      <Link to={href} className={classes} aria-label={ariaLabel} title={title}>
-        {children}
-      </Link>
-    );
-  }
   
   return (
     <button type="button" onClick={onClick} className={classes} aria-label={ariaLabel} title={title}>
@@ -40,7 +31,7 @@ const MapControlsInternal = ({ onZoomChange }) => {
 };
 
 // Main controls component
-const MapControls = ({ onLayersToggle, layersMenuOpen }) => {
+const MapControls = ({ onLayersToggle, layersMenuOpen, onWelcomeClick }) => {
   const [textScale, setTextScale] = useState(() => {
     const stored = typeof window !== 'undefined' ? localStorage.getItem('cartografiasocial:textScale') : null;
     return stored ? parseFloat(stored) : 1;
@@ -74,15 +65,19 @@ const MapControls = ({ onLayersToggle, layersMenuOpen }) => {
       <MapControlsInternal onZoomChange={zoomChangeRef} />
       
       <div className="fixed top-4 left-4 z-[1000] flex flex-col gap-2 pointer-events-auto">
-        <ControlButton
-          href="/"
-          ariaLabel="Sair do mapa"
-          title="Sair do mapa"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-700">
-            <path d="M16 17L21 12L16 7M21 12H9M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9" />
-          </svg>
-        </ControlButton>
+        {onWelcomeClick && (
+          <ControlButton
+            onClick={onWelcomeClick}
+            ariaLabel="Sobre o site"
+            title="Sobre o site"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-700">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 16v-4" />
+              <path d="M12 8h.01" />
+            </svg>
+          </ControlButton>
+        )}
 
         <ControlButton
           onClick={toggleTextScale}

@@ -124,7 +124,7 @@ const WelcomePanel = ({ isVisible, onClose, onEdit, config }) => {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999] flex items-center justify-center">
         <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
           <div className="p-8 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
@@ -137,7 +137,7 @@ const WelcomePanel = ({ isVisible, onClose, onEdit, config }) => {
 
   if (error) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+      <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999] flex items-center justify-center">
         <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
           <div className="p-8 text-center">
             <div className="text-red-500 mb-4">
@@ -158,7 +158,7 @@ const WelcomePanel = ({ isVisible, onClose, onEdit, config }) => {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-[9999] flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
@@ -258,7 +258,7 @@ const WelcomePanel = ({ isVisible, onClose, onEdit, config }) => {
       {/* Modal de visualização de imagem */}
       {selectedImage && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-90 z-60 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black bg-opacity-90 z-[10000] flex items-center justify-center p-4"
           onClick={closeImageModal}
         >
           <div className="relative max-w-7xl max-h-full">

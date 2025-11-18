@@ -29,9 +29,7 @@ const Navbar = () => {
     setShowLoginModal(false);
   };
 
-  const isMapaPage = location.pathname === '/mapa';
-  const isSobrePage = location.pathname === '/sobre';
-  const isHomePage = location.pathname === '/';
+  const isMapaPage = location.pathname === '/mapa' || location.pathname === '/';
   
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -101,28 +99,6 @@ const Navbar = () => {
               Ver Mapa
             </button>
           )}
-
-          {/* Botão Sobre */}
-          <button
-            onClick={() => {
-              if (isHomePage) {
-                const aboutSection = document.getElementById('sobre-projeto');
-                if (aboutSection) {
-                  aboutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-              } else {
-                navigate('/sobre');
-              }
-            }}
-            className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-              isSobrePage
-                ? 'bg-blue-600 text-white hover:bg-blue-500 hover:shadow-md'
-                : 'text-white bg-blue-800/50 hover:bg-blue-700/50 hover:shadow-md'
-            }`}
-          >
-            Sobre o projeto
-          </button>
-
 
           {/* Logo Unifesp */}
           <a 
@@ -235,29 +211,6 @@ const Navbar = () => {
                   Ver Mapa
                 </button>
               )}
-
-              <button
-                onClick={() => {
-                  if (isHomePage) {
-                    const aboutSection = document.getElementById('sobre-projeto');
-                    if (aboutSection) {
-                      aboutSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                    setMobileMenuOpen(false);
-                  } else {
-                    handleNavigation('/sobre');
-                  }
-                }}
-                className={`w-full py-2.5 text-sm font-medium rounded-lg transition-all duration-200 active:scale-95
-                         focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-                           isSobrePage
-                             ? 'text-white bg-blue-600 hover:bg-blue-500'
-                             : 'text-white bg-blue-800/50 hover:bg-blue-700/50'
-                         }`}
-              >
-                Sobre o projeto
-              </button>
-
               
               <div className="flex items-center justify-center py-2">
                 <a 

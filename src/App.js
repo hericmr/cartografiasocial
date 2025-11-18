@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { supabase } from './supabaseClient';
 import { SearchProvider } from './contexts/SearchContext';
 import MapaSantos from "./components/MapaSantos";
-import Homepage from "./components/Homepage";
 import Navbar from "./components/Navbar";
 import PainelInformacoes from "./components/PainelInformacoes";
 import AdminPanel from "./components/AdminPanel";
 import ImageGallery from "./components/gallery/ImageGallery";
 import GalleryDemo from "./components/GalleryDemo";
-import AboutPage from "./components/AboutPage";
 
 const LoadingScreen = () => (
   <div className="flex flex-col items-center justify-center min-h-screen bg-green-900 text-white">
@@ -28,9 +26,8 @@ const AppContent = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [welcomePanelConfig, setWelcomePanelConfig] = useState(null);
-  const navigate = useNavigate();
   const location = useLocation();
-  const isMapRoute = location?.pathname?.includes('/mapa');
+  const isMapRoute = location?.pathname?.includes('/mapa') || location?.pathname === '/';
 
   // Adicionar welcome location aos dataPoints quando welcomePanelConfig mudar
   useEffect(() => {
@@ -345,7 +342,11 @@ const AppContent = () => {
             path="/" 
             element={
               <main id="main-content" className="flex-grow">
-                <Homepage dataPoints={dataPoints || []} />
+                <MapaSantos 
+                  dataPoints={dataPoints} // Mostra todos os pontos sempre
+                  welcomePanelConfig={welcomePanelConfig}
+                />
+                <PainelInformacoes dataPoints={dataPoints} />
               </main>
             } 
           />
@@ -355,6 +356,7 @@ const AppContent = () => {
               <main id="main-content" className="flex-grow">
                 <MapaSantos 
                   dataPoints={dataPoints} // Mostra todos os pontos sempre
+                  welcomePanelConfig={welcomePanelConfig}
                 />
                 <PainelInformacoes dataPoints={dataPoints} />
               </main>
@@ -371,10 +373,6 @@ const AppContent = () => {
           <Route 
             path="/galerias" 
             element={<GalleryDemo />} 
-          />
-          <Route 
-            path="/sobre" 
-            element={<AboutPage />} 
           />
         </Routes>
       </div>

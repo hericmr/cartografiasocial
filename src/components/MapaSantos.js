@@ -6,6 +6,7 @@ import Bairros from "./Bairros";
 import MenuCamadas from "./MenuCamadas";
 import PainelInformacoes from "./PainelInformacoes";
 import MapControls from "./MapControls";
+import WelcomePanel from "./WelcomePanel";
 import "./MapaSantos.css";
 
 // LoadingScreen component (reused from App.js)
@@ -26,7 +27,7 @@ const criarSlug = (texto) => {
   return slugify(texto, { lower: true, remove: /[*+~.()'"!:@]/g });
 };
 
-const MapaSantos = ({ dataPoints }) => {
+const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
   console.log("DataPoints recebidos:", dataPoints); // Verifique os dados recebidos
 
   const [geojsonData, setGeojsonData] = useState(null);
@@ -45,6 +46,7 @@ const MapaSantos = ({ dataPoints }) => {
     bairro: true,
   });
   const [painelInfo, setPainelInfo] = useState(null);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   useEffect(() => {
     const fetchGeoJSON = async () => {
@@ -272,6 +274,7 @@ const MapaSantos = ({ dataPoints }) => {
             <MapControls 
               onLayersToggle={toggleLayersMenu}
               layersMenuOpen={layersMenuOpen}
+              onWelcomeClick={() => setShowWelcomeModal(true)}
             />
           </>
         )}
@@ -287,6 +290,12 @@ const MapaSantos = ({ dataPoints }) => {
             menuAberto={layersMenuOpen}
             onMenuToggle={toggleLayersMenu}
             acoes={acoesMenu}
+          />
+
+          <WelcomePanel
+            isVisible={showWelcomeModal}
+            onClose={() => setShowWelcomeModal(false)}
+            config={welcomePanelConfig}
           />
         </>
       )}
