@@ -1,29 +1,72 @@
 import React, { useMemo, useCallback } from "react";
-import { Marker, Tooltip } from "react-leaflet";
-import MarkerClusterGroup from "react-leaflet-cluster";
-import L from "leaflet";
-import { orangeIcon, orangeBairroIcon, blackIcon, violetIcon, redIcon, blueIcon, greenIcon, yellowIcon, healthIcon } from "./CustomIcon";
+import { Marker } from 'react-map-gl/maplibre';
+
+// Componente de marcador estilizado com SVG
+const StyledMarker = ({ color, onClick, title }) => {
+  return (
+    <div
+      className="custom-marker"
+      onClick={onClick}
+      style={{
+        cursor: 'pointer',
+        filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))',
+        transformOrigin: 'bottom center',
+        animation: 'markerBounce 3s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+      }}
+      title={title}
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="32" height="32">
+        <path 
+          fill={color} 
+          d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
+        />
+        <circle 
+          cx="12" 
+          cy="9" 
+          r="3" 
+          fill="white" 
+          style={{
+            animation: 'markerPulse 2s cubic-bezier(0.4, 0, 0.2, 1) infinite',
+          }}
+        />
+      </svg>
+      <style>{`
+        @keyframes markerBounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-2px); }
+        }
+        @keyframes markerPulse {
+          0%, 100% { opacity: 0.9; }
+          50% { opacity: 0.7; }
+        }
+        .custom-marker:hover {
+          transform: scale(1.15) translateY(-2px);
+          filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+        }
+      `}</style>
+    </div>
+  );
+};
 
 const MarcadoresClusterizados = ({ dataPoints, visibility, onClick }) => {
   // Memoizar DataPointType baseado na visibilidade
   const DataPointType = useMemo(() => ({
-    ASSISTENCIA: { icon: greenIcon, enabled: visibility.assistencia, color: '#22c55e' },
-    HISTORICO: { icon: yellowIcon, enabled: visibility.historicos, color: '#eab308' },
-    LAZER: { icon: blueIcon, enabled: visibility.culturais, color: '#3b82f6' },
-    COMUNIDADES: { icon: redIcon, enabled: visibility.comunidades, color: '#ef4444' },
-    EDUCACAO: { icon: violetIcon, enabled: visibility.educação, color: '#8b5cf6' },
-    RELIGIAO: { icon: blackIcon, enabled: visibility.religiao, color: '#374151' },
-    SAUDE: { icon: healthIcon, enabled: visibility.saude, color: '#10b981' },
-    BAIRRO: { icon: orangeBairroIcon, enabled: visibility.bairrosLaranja, color: '#f97316' },
-  }), [visibility.assistencia, visibility.historicos, visibility.culturais, visibility.comunidades, visibility.educação, visibility.religiao, visibility.saude, visibility.bairrosLaranja]);
+    ASSISTENCIA: { enabled: visibility.assistencia, color: '#22c55e' },
+    HISTORICO: { enabled: visibility.historicos, color: '#eab308' },
+    LAZER: { enabled: visibility.culturais, color: '#3b82f6' },
+    COMUNIDADES: { enabled: visibility.comunidades, color: '#ef4444' },
+    EDUCACAO: { enabled: visibility.educação, color: '#8b5cf6' },
+    RELIGIAO: { enabled: visibility.religiao, color: '#374151' },
+    SAUDE: { enabled: visibility.saude, color: '#10b981' },
+    BAIRRO: { enabled: visibility.bairrosLaranja, color: '#f97316' },
+  }), [visibility]);
 
-  // Função para mapear tipos de pontos e retornar a chave da categoria (memoizada)
+  // Função para mapear tipos de pontos
   const getDataPointType = useCallback((tipo) => {
-    const tipoLower = tipo.toLowerCase();
+    const tipoLower = tipo?.toLowerCase() || '';
     
     switch (tipoLower) {
-      case "assistencia":
-        return { type: DataPointType.ASSISTENCIA, key: 'ASSISTENCIA' };
+      case "assistencia": return { type: DataPointType.ASSISTENCIA, key: 'ASSISTENCIA' };
       case "historico":
       case "histórico":
       case "patrimônio histórico":
@@ -67,109 +110,54 @@ const MarcadoresClusterizados = ({ dataPoints, visibility, onClick }) => {
     }
   }, [DataPointType]);
 
-  // Agrupar marcadores por tipo (usando string como chave) - MEMOIZADO
-  const groupedMarkers = useMemo(() => {
-    return dataPoints.reduce((groups, ponto, index) => {
-      if (!ponto.tipo) {
-        return groups;
-      }
-
-      const { type: dataPointType, key: tipoKey } = getDataPointType(ponto.tipo);
-      
-      if (!dataPointType.enabled) return groups;
-
-      if (isNaN(ponto.latitude) || isNaN(ponto.longitude)) {
-        return groups;
-      }
-      
-      if (!groups[tipoKey]) {
-        groups[tipoKey] = [];
-      }
-      
-      groups[tipoKey].push({ ...ponto, index, dataPointType });
-      return groups;
-    }, {});
+  // Filtrar e processar marcadores
+  const filteredMarkers = useMemo(() => {
+    if (!dataPoints || !Array.isArray(dataPoints) || dataPoints.length === 0) {
+      return [];
+    }
+    
+    return dataPoints
+      .map((ponto, index) => {
+        if (!ponto.tipo) return null;
+        
+        const { type: dataPointType } = getDataPointType(ponto.tipo);
+        if (!dataPointType.enabled) return null;
+        
+        const lat = parseFloat(ponto.latitude);
+        const lng = parseFloat(ponto.longitude);
+        
+        if (isNaN(lat) || isNaN(lng)) return null;
+        
+        return {
+          ...ponto,
+          id: ponto.id || index,
+          latitude: lat,
+          longitude: lng,
+          color: dataPointType.color
+        };
+      })
+      .filter(Boolean);
   }, [dataPoints, getDataPointType]);
 
-  // Configurações de cluster personalizadas por tipo (memoizadas)
-  const clusterConfig = useMemo(() => ({
-    chunkedLoading: true,
-    maxClusterRadius: 50,
-    spiderfyOnMaxZoom: true,
-    showCoverageOnHover: false,
-    zoomToBoundsOnClick: true,
-    disableClusteringAtZoom: 16,
-    removeOutsideVisibleBounds: true,
-    animate: false, // Desabilitar animação para melhor performance
-    animateAddingMarkers: false, // Desabilitar animação para melhor performance
-  }), []);
-
-  // Função para criar ícone de cluster personalizado (memoizada)
-  const createClusterCustomIcon = useCallback((cluster, color) => {
-    const count = cluster.getChildCount();
-    const size = count < 10 ? 40 : count < 100 ? 50 : 60;
-    
-    return L.divIcon({
-      html: `<div style="
-        background-color: ${color};
-        width: ${size}px;
-        height: ${size}px;
-        border-radius: 50%;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-        font-size: ${count < 100 ? '14px' : '12px'};
-      ">${count}</div>`,
-      className: 'custom-cluster-icon',
-      iconSize: [size, size],
-      iconAnchor: [size/2, size/2]
-    });
-  }, []);
+  console.log('✅ [MarcadoresClusterizados] Marcadores processados:', filteredMarkers.length);
 
   return (
     <>
-      {Object.entries(groupedMarkers).map(([tipoKey, markers]) => {
-        const tipo = markers[0]?.dataPointType;
-        if (!tipo || markers.length === 0) return null;
-
-        return (
-          <MarkerClusterGroup
-            key={tipoKey}
-            {...clusterConfig}
-            iconCreateFunction={(cluster) => createClusterCustomIcon(cluster, tipo.color)}
-          >
-            {markers.map((ponto) => (
-              <Marker
-                key={ponto.index}
-                position={[ponto.latitude, ponto.longitude]}
-                icon={tipo.icon}
-                eventHandlers={{
-                  click: () => {
-                    if (onClick) {
-                      onClick(ponto);
-                    }
-                  },
-                }}
-              >
-                <Tooltip 
-                  className="bg-white text-gray-800 font-medium p-2 rounded shadow-md"
-                  direction="top" 
-                  offset={[0, -20]} 
-                  opacity={0.9}
-                >
-                  <div className="text-center">
-                    <div className="font-bold text-sm">{ponto.titulo || "Sem título"}</div>
-                    <div className="text-xs text-gray-600 capitalize">{ponto.tipo}</div>
-                  </div>
-                </Tooltip>
-              </Marker>
-            ))}
-          </MarkerClusterGroup>
-        );
-      })}
+      {filteredMarkers.map((ponto) => (
+        <Marker
+          key={ponto.id}
+          longitude={ponto.longitude}
+          latitude={ponto.latitude}
+          anchor="bottom"
+          onClick={() => onClick && onClick(ponto)}
+        >
+          <StyledMarker
+            color={ponto.color}
+            onClick={() => onClick && onClick(ponto)}
+            title={ponto.titulo || 'Sem título'}
+          />
+        </Marker>
+      ))}
     </>
   );
 };

@@ -1,6 +1,5 @@
 // Exportações principais do sistema de ícones
 export { default as IconWrapper } from './IconWrapper';
-export { createPhosphorLeafletIcon, createLocationIcon } from './SimpleLeafletIcon';
 export {
   LOCATION_TYPE_ICONS,
   ACTION_ICONS,

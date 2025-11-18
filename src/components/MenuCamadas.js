@@ -52,14 +52,14 @@ const MenuCamadas = ({ estados, acoes, menuAberto: externalMenuAberto, onMenuTog
   // Mapeamento de ícones para cada tipo de camada
   const getLayerIcon = (label) => {
     const iconMap = {
-      "Limites dos Bairros": { name: "Map", variant: "regular", color: "#9CA3AF" },
+      "Limites dos Bairros": { name: "MapTrifold", variant: "regular", color: "#9CA3AF" },
       "Bairros": { name: "MapPin", variant: "fill", color: "#FF5722" },
       "Assistência": { name: "HandsClapping", variant: "fill", color: "#10B981" },
       "Históricos": { name: "Clock", variant: "fill", color: "#FBBF24" },
       "Lazer": { name: "GameController", variant: "fill", color: "#3B82F6" },
       "Comunidades": { name: "Users", variant: "fill", color: "#EF4444" },
       "Educação": { name: "GraduationCap", variant: "fill", color: "#8B5CF6" },
-      "Religião": { name: "Church", variant: "fill", color: "#4B5563" },
+      "Religião": { name: "Buildings", variant: "fill", color: "#4B5563" },
       "Saúde": { name: "FirstAid", variant: "fill", color: "#00BCD4" }
     };
     

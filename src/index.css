@@ -14,9 +14,7 @@ code {
     monospace;
 }
 
-@import "~leaflet/dist/leaflet.css";
-@import "~react-leaflet-cluster/dist/assets/MarkerCluster.css";
-@import "~react-leaflet-cluster/dist/assets/MarkerCluster.Default.css";
+@import 'maplibre-gl/dist/maplibre-gl.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -40,20 +38,40 @@ code {
   overflow: auto !important;
 }
 
-.tailwind-popup .leaflet-popup-content-wrapper {
-  border-radius: 0.5rem; /* Rounded corners */
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Tailwind-like shadow */
-}
 
 
-/* Estilos para marcadores */
-.leaflet-marker-icon {
+/* Estilos para marcadores customizados (MapLibre) */
+.custom-marker {
   transition: all 0.3s ease;
+  cursor: pointer;
+  animation: bounce 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-.leaflet-marker-icon:hover {
+.custom-marker:hover {
   transform: scale(1.1);
   z-index: 1000;
+}
+
+.marker-pulse {
+  animation: pulse 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.custom-popup {
+  background: white;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Animações para marcadores */
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.9; }
+  50% { opacity: 0.7; }
 }
 
 /* Animação fade-in para tabs */

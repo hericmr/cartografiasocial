@@ -7,6 +7,7 @@ import MenuCamadas from "./MenuCamadas";
 import PainelInformacoes from "./PainelInformacoes";
 import MapControls from "./MapControls";
 import WelcomePanel from "./WelcomePanel";
+import AdminAccessButton from "./AdminAccessButton";
 import "./MapaSantos.css";
 
 // LoadingScreen component (reused from App.js)
@@ -28,7 +29,8 @@ const criarSlug = (texto) => {
 };
 
 const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
-  console.log("DataPoints recebidos:", dataPoints); // Verifique os dados recebidos
+  console.log("🔵 [MapaSantos] Componente renderizado");
+  console.log("🔵 [MapaSantos] DataPoints recebidos:", dataPoints?.length || 0, dataPoints);
 
   const [geojsonData, setGeojsonData] = useState(null);
   const [mapReady, setMapReady] = useState(false);
@@ -126,12 +128,24 @@ const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
     window.history.pushState({}, '', newUrl);
   }, []);
 
-  const geoJSONStyle = {
-    fillColor: "green",
-    color: "white",
-    weight: 1,
-    fillOpacity: 0.4,
+
+  // Mapeamento de códigos curtos para chaves completas
+  const layerCodeMap = {
+    'b': 'bairros',
+    'bl': 'bairrosLaranja',
+    'a': 'assistencia',
+    'h': 'historicos',
+    'c': 'culturais',
+    'co': 'comunidades',
+    'e': 'educação',
+    'r': 'religiao',
+    's': 'saude',
+    'br': 'bairro'
   };
+  
+  const layerKeyToCode = Object.fromEntries(
+    Object.entries(layerCodeMap).map(([code, key]) => [key, code])
+  );
 
   // Carregar visibilidade de URL/localStorage
   useEffect(() => {
@@ -142,7 +156,13 @@ const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
       let initial = null;
 
       if (layersParam) {
-        const onKeys = new Set(layersParam.split(',').map(s => s.trim()).filter(Boolean));
+        // Decodificar códigos curtos (suporta tanto códigos curtos quanto nomes completos para compatibilidade)
+        const codes = layersParam.split(',').map(s => s.trim()).filter(Boolean);
+        const onKeys = new Set(codes.map(code => {
+          // Se é um código curto, converter; senão usar como está (compatibilidade com URLs antigas)
+          return layerCodeMap[code] || code;
+        }));
+        
         initial = {
           bairros: onKeys.has('bairros'),
           bairrosLaranja: onKeys.has('bairrosLaranja') || (!onKeys.has('bairros') && !onKeys.has('bairrosLaranja') ? true : false),
@@ -175,15 +195,25 @@ const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
   useEffect(() => {
     try {
       const onKeys = Object.keys(visibilidade).filter(k => visibilidade[k] === true);
+      // Converter para códigos curtos
+      const codes = onKeys.map(key => layerKeyToCode[key] || key).filter(Boolean);
+      
       const params = new URLSearchParams(window.location.search);
-      params.set('layers', onKeys.join(','));
-      const newUrl = `${window.location.pathname}?${params.toString()}`;
+      if (codes.length > 0) {
+        params.set('layers', codes.join(','));
+      } else {
+        params.delete('layers');
+      }
+      
+      const newUrl = params.toString() 
+        ? `${window.location.pathname}?${params.toString()}`
+        : window.location.pathname;
       window.history.replaceState({}, '', newUrl);
       localStorage.setItem('layersVisibility', JSON.stringify(visibilidade));
     } catch (e) {
       // ignore
     }
-  }, [visibilidade]);
+  }, [visibilidade, layerKeyToCode]);
 
   const toggleVisibilidade = useCallback((chave) => {
     if (chave === "bairros") {
@@ -266,18 +296,37 @@ const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
       )}
 
       {/* Map - only render children when map is ready to avoid cleanup issues */}
-      <MapaBase onReady={() => setMapReady(true)}>
-        {mapReady && (
-          <>
-            {visibilidade.bairros && geojsonData && <Bairros data={geojsonData} style={geoJSONStyle} />}
-            {dataPoints && <MarcadoresClusterizados dataPoints={dataPoints} visibility={visibilidade} onClick={abrirPainel} />}
+      <MapaBase onReady={() => {
+        console.log('🟢 [MapaSantos] Mapa pronto!');
+        setMapReady(true);
+      }}>
+        {mapReady && (() => {
+          console.log('🟢 [MapaSantos] Renderizando componentes do mapa...');
+          console.log('🟢 [MapaSantos] dataPoints disponível?', !!dataPoints, 'length:', dataPoints?.length);
+          console.log('🟢 [MapaSantos] visibilidade:', visibilidade);
+          
+          return (
+            <>
+              {visibilidade.bairros && geojsonData && <Bairros data={geojsonData} />}
+              
+              {dataPoints && dataPoints.length > 0 ? (
+                <MarcadoresClusterizados 
+                  dataPoints={dataPoints} 
+                  visibility={visibilidade} 
+                  onClick={abrirPainel} 
+                />
+              ) : (
+                console.warn('⚠️ [MapaSantos] Sem dataPoints para renderizar marcadores') || null
+              )}
+            
             <MapControls 
               onLayersToggle={toggleLayersMenu}
               layersMenuOpen={layersMenuOpen}
               onWelcomeClick={() => setShowWelcomeModal(true)}
             />
-          </>
-        )}
+            </>
+          );
+        })()}
       </MapaBase>
 
       {/* Only show these when map is ready */}
@@ -297,6 +346,9 @@ const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
             onClose={() => setShowWelcomeModal(false)}
             config={welcomePanelConfig}
           />
+
+          {/* Botão de acesso administrativo */}
+          <AdminAccessButton />
         </>
       )}
     </div>

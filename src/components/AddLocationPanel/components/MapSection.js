@@ -1,9 +1,11 @@
 import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
-import { greenIcon, blueIcon, yellowIcon, redIcon, violetIcon, blackIcon, orangeIcon } from "../../CustomIcon";
-import MapClickHandler from "../../MapClickHandler";
-import { crosshairColorMap } from "../constants";
+import Map from 'react-map-gl/maplibre';
+import maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import CustomMarker, { getColorByType } from '../../CustomMarker';
+import MapClickHandler from '../../MapClickHandler';
+import { crosshairColorMap } from '../constants';
 import { Loader2, Upload, X, Mic, Square, Play, Pause } from 'lucide-react';
 import { supabase } from '../../../supabaseClient';
 
@@ -47,17 +49,28 @@ const MapSection = ({ newLocation, setNewLocation, error }) => {
   const successButtonStyles = `${buttonBaseStyles} bg-green-500 text-white hover:bg-green-600`;
   const disabledButtonStyles = `${buttonBaseStyles} bg-gray-400 cursor-not-allowed text-white`;
 
-  const getIconByType = (tipo) => {
-    const iconMap = {
-      assistencia: greenIcon,
-      lazer: blueIcon,
-      historico: yellowIcon,
-      comunidades: redIcon,
-      educação: violetIcon,
-      religiao: blackIcon,
-      bairro: orangeIcon
-    };
-    return iconMap[tipo?.toLowerCase()] || greenIcon;
+  // Estilo customizado usando tiles do OpenStreetMap
+  const customStyle = {
+    version: 8,
+    sources: {
+      'raster-tiles': {
+        type: 'raster',
+        tiles: [
+          'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+        ],
+        tileSize: 256,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }
+    },
+    layers: [
+      {
+        id: 'simple-tiles',
+        type: 'raster',
+        source: 'raster-tiles',
+        minzoom: 0,
+        maxzoom: 19
+      }
+    ]
   };
 
   const handleGetCurrentLocation = () => {
@@ -269,6 +282,18 @@ const MapSection = ({ newLocation, setNewLocation, error }) => {
     }
   };
 
+  // Coordenadas padrão (centro de Santos)
+  const defaultLongitude = -46.332818;
+  const defaultLatitude = -23.976769;
+
+  // Coordenadas do mapa
+  const mapLongitude = newLocation.longitude 
+    ? parseFloat(newLocation.longitude) 
+    : defaultLongitude;
+  const mapLatitude = newLocation.latitude 
+    ? parseFloat(newLocation.latitude) 
+    : defaultLatitude;
+
   return (
     <div className="space-y-6">
       {/* Seção do Mapa */}
@@ -312,12 +337,11 @@ const MapSection = ({ newLocation, setNewLocation, error }) => {
         </button>
 
         <div className="relative mt-2">
-          <MapContainer
-            center={
-              newLocation.latitude && newLocation.longitude
-                ? [newLocation.latitude, newLocation.longitude]
-                : [-23.976769, -46.332818]
-            }
+          <Map
+            id="add-location-map"
+            mapLib={maplibregl}
+            longitude={mapLongitude}
+            latitude={mapLatitude}
             zoom={10}
             style={{
               height: "200px",
@@ -325,18 +349,21 @@ const MapSection = ({ newLocation, setNewLocation, error }) => {
               borderRadius: "8px",
               border: "1px solid #ddd",
             }}
+            mapStyle={customStyle}
+            minZoom={8}
+            maxZoom={19}
           >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             {newLocation.latitude && newLocation.longitude && (
-              <Marker 
-                position={[newLocation.latitude, newLocation.longitude]} 
-                icon={getIconByType(newLocation.tipo)} 
+              <CustomMarker
+                longitude={parseFloat(newLocation.longitude)}
+                latitude={parseFloat(newLocation.latitude)}
+                color={getColorByType(newLocation.tipo)}
               />
             )}
-            <MapClickHandler setNewLocation={setNewLocation} />
-          </MapContainer>
+            <MapClickHandler setNewLocation={setNewLocation} mapId="add-location-map" />
+          </Map>
           <div
-            className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-6 w-6 border-2 rounded-full pointer-events-none"
+            className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-6 w-6 border-2 rounded-full pointer-events-none z-10"
             style={{ borderColor: crosshairColorMap[newLocation.tipo] || "#D1D5DB" }}
           />
         </div>
@@ -522,4 +549,4 @@ MapSection.propTypes = {
   error: PropTypes.string,
 };
 
-export default MapSection; 
+export default MapSection;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useMap } from 'react-leaflet';
+import { useMap } from 'react-map-gl/maplibre';
 
 // Reusable minimalistic button component
 const ControlButton = ({ children, onClick, ariaLabel, title, className = '' }) => {
@@ -15,14 +15,14 @@ const ControlButton = ({ children, onClick, ariaLabel, title, className = '' }) 
 
 // Internal component for map connection
 const MapControlsInternal = ({ onZoomChange }) => {
-  const map = useMap();
+  const { 'main-map': map } = useMap();
   
   useEffect(() => {
     if (onZoomChange && map) {
       onZoomChange.current = (delta) => {
         const currentZoom = map.getZoom();
         const newZoom = currentZoom + delta;
-        map.setZoom(newZoom, { animate: true, duration: 0.2 });
+        map.zoomTo(newZoom, { duration: 200 });
       };
     }
   }, [map, onZoomChange]);

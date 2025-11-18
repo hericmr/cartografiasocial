@@ -1,47 +1,38 @@
-import { greenIcon, blueIcon, yellowIcon, redIcon, violetIcon, blackIcon, orangeIcon } from "../CustomIcon";
-
 export const opcoes = [
   {
     value: "assistencia",
     label: "Assistência Social",
-    cor: "hover:bg-green-100",
-    icone: greenIcon
+    cor: "hover:bg-green-100"
   },
   {
     value: "lazer",
     label: "Lazer",
-    cor: "hover:bg-blue-100",
-    icone: blueIcon
+    cor: "hover:bg-blue-100"
   },
   {
     value: "historico",
     label: "Histórico",
-    cor: "hover:bg-yellow-100",
-    icone: yellowIcon
+    cor: "hover:bg-yellow-100"
   },
   {
     value: "comunidades",
     label: "Comunidades",
-    cor: "hover:bg-red-100",
-    icone: redIcon
+    cor: "hover:bg-red-100"
   },
   {
     value: "educação",
     label: "Educação",
-    cor: "hover:bg-purple-100",
-    icone: violetIcon
+    cor: "hover:bg-purple-100"
   },
   {
     value: "religiao",
     label: "Religião",
-    cor: "hover:bg-gray-100",
-    icone: blackIcon
+    cor: "hover:bg-gray-100"
   },
   {
     value: "bairro",
     label: "Bairro",
-    cor: "hover:bg-orange-100",
-    icone: orangeIcon
+    cor: "hover:bg-orange-100"
   }
 ];
 
