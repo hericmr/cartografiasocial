@@ -35,6 +35,7 @@ const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
   const [geojsonData, setGeojsonData] = useState(null);
   const [mapReady, setMapReady] = useState(false);
   const [layersMenuOpen, setLayersMenuOpen] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
   const [visibilidade, setVisibilidade] = useState({
     bairros: false,
     bairrosLaranja: true,
@@ -314,6 +315,7 @@ const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
                   dataPoints={dataPoints} 
                   visibility={visibilidade} 
                   onClick={abrirPainel} 
+                  searchQuery={searchQuery}
                 />
               ) : (
                 console.warn('⚠️ [MapaSantos] Sem dataPoints para renderizar marcadores') || null
@@ -323,6 +325,8 @@ const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
               onLayersToggle={toggleLayersMenu}
               layersMenuOpen={layersMenuOpen}
               onWelcomeClick={() => setShowWelcomeModal(true)}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
             />
             </>
           );

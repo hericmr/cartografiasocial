@@ -48,7 +48,7 @@ const StyledMarker = ({ color, onClick, title }) => {
   );
 };
 
-const MarcadoresClusterizados = ({ dataPoints, visibility, onClick }) => {
+const MarcadoresClusterizados = ({ dataPoints, visibility, onClick, searchQuery }) => {
   // Memoizar DataPointType baseado na visibilidade
   const DataPointType = useMemo(() => ({
     ASSISTENCIA: { enabled: visibility.assistencia, color: '#22c55e' },
@@ -123,6 +123,13 @@ const MarcadoresClusterizados = ({ dataPoints, visibility, onClick }) => {
         const { type: dataPointType } = getDataPointType(ponto.tipo);
         if (!dataPointType.enabled) return null;
         
+        if (searchQuery && typeof ponto.titulo === 'string') {
+          const query = searchQuery.toLowerCase().trim();
+          if (query && !ponto.titulo.toLowerCase().includes(query)) {
+            return null;
+          }
+        }
+        
         const lat = parseFloat(ponto.latitude);
         const lng = parseFloat(ponto.longitude);
         
@@ -137,7 +144,7 @@ const MarcadoresClusterizados = ({ dataPoints, visibility, onClick }) => {
         };
       })
       .filter(Boolean);
-  }, [dataPoints, getDataPointType]);
+  }, [dataPoints, getDataPointType, searchQuery]);
 
   console.log('✅ [MarcadoresClusterizados] Marcadores processados:', filteredMarkers.length);
 
