@@ -1,16 +1,18 @@
 {
   "files": {
-    "main.css": "/cartografiasocial/static/css/main.e8c895b2.css",
-    "main.js": "/cartografiasocial/static/js/main.9b55680a.js",
-    "static/js/488.0c132454.chunk.js": "/cartografiasocial/static/js/488.0c132454.chunk.js",
+    "main.css": "/cartografiasocial/static/css/main.ccbcc747.css",
+    "main.js": "/cartografiasocial/static/js/main.42e33f42.js",
+    "static/js/198.06b54d5b.chunk.js": "/cartografiasocial/static/js/198.06b54d5b.chunk.js",
+    "static/js/488.507c0173.chunk.js": "/cartografiasocial/static/js/488.507c0173.chunk.js",
     "static/media/Mistake Note.otf": "/cartografiasocial/static/media/Mistake Note.0c0fbd07e2ca12e8369d.otf",
     "index.html": "/cartografiasocial/index.html",
-    "main.e8c895b2.css.map": "/cartografiasocial/static/css/main.e8c895b2.css.map",
-    "main.9b55680a.js.map": "/cartografiasocial/static/js/main.9b55680a.js.map",
-    "488.0c132454.chunk.js.map": "/cartografiasocial/static/js/488.0c132454.chunk.js.map"
+    "main.ccbcc747.css.map": "/cartografiasocial/static/css/main.ccbcc747.css.map",
+    "main.42e33f42.js.map": "/cartografiasocial/static/js/main.42e33f42.js.map",
+    "198.06b54d5b.chunk.js.map": "/cartografiasocial/static/js/198.06b54d5b.chunk.js.map",
+    "488.507c0173.chunk.js.map": "/cartografiasocial/static/js/488.507c0173.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e8c895b2.css",
-    "static/js/main.9b55680a.js"
+    "static/css/main.ccbcc747.css",
+    "static/js/main.42e33f42.js"
   ]
 }
