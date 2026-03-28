@@ -49,7 +49,10 @@ const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
     bairro: true,
   });
   const [painelInfo, setPainelInfo] = useState(null);
-  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return !urlParams.get('panel');
+  });
 
   useEffect(() => {
     const fetchGeoJSON = async () => {
