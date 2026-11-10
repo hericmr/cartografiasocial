@@ -37,6 +37,7 @@ const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
 
   const [geojsonData, setGeojsonData] = useState(null);
   const [mapReady, setMapReady] = useState(false);
+  const marcarMapaPronto = useCallback(() => setMapReady(true), []);
   // No celular o menu cobriria metade do mapa: começa fechado
   const [layersMenuOpen, setLayersMenuOpen] = useState(() => window.innerWidth > 768);
   const [searchQuery, setSearchQuery] = useState('');
@@ -286,7 +287,7 @@ const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
       )}
 
       {/* Map - only render children when map is ready to avoid cleanup issues */}
-      <MapaBase onReady={() => setMapReady(true)}>
+      <MapaBase onReady={marcarMapaPronto}>
         {mapReady && (
             <>
               {visibilidade.bairros && geojsonData && <Bairros data={geojsonData} />}

@@ -29,7 +29,9 @@ const MAX_WIDTH = 1600;
 const DESCRICAO_MINIMA = 150;
 const CHECK = process.argv.includes("--check");
 
-const COLUNAS = ["id", "titulo", "tipo", "latitude", "longitude", "descricao", "imagens", "audio", "video", "links"];
+const COLUNAS = ["id", "titulo", "tipo", "latitude", "longitude", "descricao", "imagens", "creditos", "audio", "video", "links"];
+// Colunas acrescentadas depois: podem faltar em CSVs antigos
+const OPCIONAIS = ["creditos"];
 
 // Mesmo mapeamento de src/components/categorias.js (tipos aceitos no CSV)
 const TIPOS = {
@@ -51,8 +53,15 @@ const slugArquivo = (titulo) => slugify(titulo, { lower: true, strict: true }).s
 const erros = [];
 const avisos = [];
 
-async function baixar(url) {
-  const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 (cartografiasocial)" } });
+async function baixar(url, tentativa = 1) {
+  const res = await fetch(url, {
+    headers: { "User-Agent": "cartografiasocial/1.0 (https://github.com/hericmr/cartografiasocial)" },
+  });
+  // Wikimedia limita downloads seguidos: espera e tenta de novo
+  if (res.status === 429 && tentativa <= 4) {
+    await new Promise((r) => setTimeout(r, 5000 * tentativa));
+    return baixar(url, tentativa + 1);
+  }
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return Buffer.from(await res.arrayBuffer());
 }
@@ -101,6 +110,7 @@ async function processarImagem(entrada, ponto) {
 function parseLinks(celula) {
   return lista(celula).map((item) => {
     const [a, b] = item.split("|").map((s) => s.trim());
+    if (!b && !/^https?:\/\//.test(a)) return { texto: a, url: "" };
     const url = b || a;
     const texto = b ? a : new URL(url).hostname.replace(/^www\./, "");
     return { texto, url };
@@ -110,7 +120,7 @@ function parseLinks(celula) {
 const csvTexto = fs.readFileSync(CSV, "utf8");
 const linhas = parse(csvTexto, { columns: true, bom: true, skip_empty_lines: true, trim: true });
 
-const faltando = COLUNAS.filter((c) => !(c in (linhas[0] || {})));
+const faltando = COLUNAS.filter((c) => !OPCIONAIS.includes(c) && !(c in (linhas[0] || {})));
 if (faltando.length) {
   console.error(`Colunas faltando em pontos.csv: ${faltando.join(", ")}`);
   process.exit(1);
@@ -146,10 +156,12 @@ for (const linha of linhas) {
   linha.imagens = imagens.join(" ; ");
 
   let links = [];
+  let creditos = [];
   try {
     links = parseLinks(linha.links);
+    creditos = parseLinks(linha.creditos);
   } catch {
-    erros.push(`#${linha.id} ${linha.titulo}: link inválido em "${linha.links}"`);
+    erros.push(`#${linha.id} ${linha.titulo}: link inválido em "${linha.links}" ou "${linha.creditos}"`);
   }
 
   if (linha.audio && !fs.existsSync(path.join(PUBLIC, linha.audio))) {
@@ -165,6 +177,7 @@ for (const linha of linhas) {
     audioUrl: linha.audio ? `${BASE}/${linha.audio}` : "",
     video: linha.video || "",
     links,
+    creditos,
     latitude: lat,
     longitude: lng,
   });

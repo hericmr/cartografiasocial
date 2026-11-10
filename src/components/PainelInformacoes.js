@@ -37,6 +37,24 @@ const PainelMediaContent = memo(({ imagens, video, titulo, audioUrl, descricao_d
   );
 });
 
+// Atribuição exigida pelas licenças das fotos (ex.: Creative Commons)
+const Creditos = ({ creditos }) => (
+  <p className="mt-6 text-xs text-gray-500 leading-relaxed">
+    {creditos.map((c, i) => (
+      <span key={i}>
+        {i > 0 && " · "}
+        {c.url ? (
+          <a href={c.url} target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-700">
+            {c.texto}
+          </a>
+        ) : (
+          c.texto
+        )}
+      </span>
+    ))}
+  </p>
+);
+
 const ShareSection = memo(({ copiarLink, compartilhar }) => (
   <div className="mt-8 flex justify-center space-x-4">
     <ShareButton onClick={copiarLink} onShare={compartilhar} />
@@ -112,6 +130,8 @@ const PainelInformacoes = ({ painelInfo, closePainel, refreshKey = 0 }) => {
         />
         
         <ShareSection copiarLink={copiarLink} compartilhar={compartilhar} />
+
+        {painelInfo.creditos?.length > 0 && <Creditos creditos={painelInfo.creditos} />}
       </div>
     );
   };

@@ -18,11 +18,14 @@ const PainelContainer = ({
 }) => {
   const [scrollProgress, setScrollProgress] = useState(0);
   const { isVisible, isMobile } = usePainelVisibility(painelInfo);
-  const painelDimensions = usePainelDimensions(isMobile, isMaximized);
+  // Sem fotos, a coluna de imagens do modo maximizado ficaria vazia: ignora o modo
+  const temImagens = (painelInfo?.imagens || []).length > 0;
+  const maximizado = isMaximized && temImagens;
+  const painelDimensions = usePainelDimensions(isMobile, maximizado);
   const isMobileLandscape = painelDimensions.isMobileLandscape;
   const isMobilePortrait = isMobile && !isMobileLandscape;
   const shouldUseDesktopLayout = !isMobilePortrait;
-  const useSplitLayout = shouldUseDesktopLayout && (isMaximized || isMobileLandscape);
+  const useSplitLayout = shouldUseDesktopLayout && (maximizado || (isMobileLandscape && temImagens));
 
   if (!painelInfo) return null;
 
@@ -83,8 +86,8 @@ const PainelContainer = ({
         titulo={painelInfo.titulo} 
         tipo={painelInfo.tipo}
         closePainel={closePainel}
-        toggleMaximize={onToggleMaximize}
-        isMaximized={isMaximized}
+        toggleMaximize={temImagens ? onToggleMaximize : undefined}
+        isMaximized={maximizado}
         shareUrl={shareUrl}
         shareTitle={shareTitle}
       />

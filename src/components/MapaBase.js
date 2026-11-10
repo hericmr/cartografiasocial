@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useCallback } from 'react';
 import Map, { AttributionControl } from 'react-map-gl/maplibre';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -35,14 +35,24 @@ const MAP_STYLE = {
 };
 
 const MapaBase = ({ children, onReady }) => {
+  // Avisa assim que a instância do mapa existe, sem esperar os tiles de satélite
+  // (o evento load só dispara depois deles e segurava a tela de carregamento)
+  const avisado = useRef(false);
+  const mapRef = useCallback((map) => {
+    if (map && !avisado.current) {
+      avisado.current = true;
+      onReady?.();
+    }
+  }, [onReady]);
+
   return (
     <div className="h-screen w-screen overflow-hidden">
       {/* Mapa não controlado: mover/zoom não re-renderiza a árvore React */}
       <Map
         id="main-map"
+        ref={mapRef}
         mapLib={maplibregl}
         initialViewState={INITIAL_VIEW}
-        onLoad={onReady}
         style={{ width: '100%', height: '100%' }}
         mapStyle={MAP_STYLE}
         minZoom={2}
