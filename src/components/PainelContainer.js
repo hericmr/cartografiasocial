@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import PainelHeader from './PainelHeader';
 import SidebarMediaViewer from './SidebarMediaViewer';
 import usePainelVisibility from './hooks/usePainelVisibility';
@@ -61,7 +61,6 @@ const PainelContainer = ({
     <div
       role="dialog"
       aria-labelledby="painel-titulo"
-      aria-describedby="painel-descricao"
       aria-modal="true"
       className={`${baseClasses} ${visibilityClasses}${isMobilePortrait ? ' painel-informacoes-mobile' : ''}${useSplitLayout ? ' mj-maximized' : ''}${useSplitLayout && isMobileLandscape ? ' mj-mobile-landscape' : ''}`}
       style={{

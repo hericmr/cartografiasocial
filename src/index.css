@@ -1,77 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Removido overflow: hidden para permitir rolagem no painel admin */
+  background: #052e16;
 }
-
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
 
-@import 'maplibre-gl/dist/maplibre-gl.css';
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Fonte personalizada Mistake Note */
-@font-face {
-  font-family: 'Mistake Note';
-  src: url('./Mistake Note.otf') format('opentype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Garantir que a rolagem funcione no painel admin */
-.admin-panel {
-  overflow-y: auto !important;
-  height: 100vh;
-}
-
-.admin-panel body {
-  overflow: auto !important;
-}
-
-
-
-/* Estilos para marcadores customizados (MapLibre) */
+/* Marcadores do mapa (MapLibre) */
 .custom-marker {
-  transition: all 0.3s ease;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
   cursor: pointer;
-  animation: bounce 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+  transform-origin: bottom center;
+  transition: transform 0.15s ease, filter 0.15s ease;
 }
 
-.custom-marker:hover {
-  transform: scale(1.1);
-  z-index: 1000;
+.custom-marker:hover,
+.custom-marker:focus-visible {
+  transform: scale(1.2);
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45));
+  outline: none;
 }
 
-.marker-pulse {
-  animation: pulse 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-.custom-popup {
-  background: white;
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* Animações para marcadores */
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 0.9; }
-  50% { opacity: 0.7; }
+.maplibregl-marker:hover,
+.maplibregl-marker:focus-within {
+  z-index: 2;
 }
 
 /* Animação fade-in para tabs */
@@ -88,4 +54,13 @@ code {
 
 .animate-fade-in {
   animation: fade-in 0.2s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

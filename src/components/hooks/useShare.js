@@ -14,7 +14,6 @@ export const useShare = (painelInfo) => {
     const url = gerarLinkCustomizado();
     try {
       await navigator.clipboard.writeText(url);
-      alert("Link copiado!");
     } catch (err) {
       const input = document.createElement("input");
       input.value = url;
@@ -22,20 +21,19 @@ export const useShare = (painelInfo) => {
       input.select();
       document.execCommand("copy");
       document.body.removeChild(input);
-      alert("Link copiado!");
     }
   };
 
   const compartilhar = () => {
     const url = gerarLinkCustomizado();
-    const texto = `Confira este painel: ${painelInfo.titulo}`;
+    const texto = `${painelInfo.titulo} — Cartografia Social de Santos`;
     
     if (navigator.share) {
       navigator.share({
         title: painelInfo.titulo,
         text: texto,
         url: url,
-      });
+      }).catch(() => {});
     } else {
       window.open(
         `https://twitter.com/intent/tweet?text=${encodeURIComponent(texto)}&url=${encodeURIComponent(url)}`,

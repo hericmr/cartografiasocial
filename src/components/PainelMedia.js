@@ -17,6 +17,8 @@ const PainelMedia = ({ imagens = [], video, titulo, descricao_detalhada }) => {
       return (
         <div className="flex justify-center">
           <img
+              loading="lazy"
+              decoding="async"
             src={imagensParaGaleria[0]}
             alt={`${titulo} - 2`}
             className="max-w-full max-h-96 object-contain rounded-lg shadow-md transition-transform duration-300 ease-in-out hover:scale-105 cursor-pointer"
@@ -30,6 +32,8 @@ const PainelMedia = ({ imagens = [], video, titulo, descricao_detalhada }) => {
         <div className="grid grid-cols-2 gap-4">
           {imagensParaGaleria.map((img, index) => (
             <img
+              loading="lazy"
+              decoding="async"
               key={index}
               src={img}
               alt={`${titulo} - ${index + 2}`}
@@ -45,6 +49,8 @@ const PainelMedia = ({ imagens = [], video, titulo, descricao_detalhada }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           {imagensParaGaleria.map((img, index) => (
             <img
+              loading="lazy"
+              decoding="async"
               key={index}
               src={img}
               alt={`${titulo} - ${index + 2}`}
@@ -68,6 +74,8 @@ const PainelMedia = ({ imagens = [], video, titulo, descricao_detalhada }) => {
       >
         <div className="relative" onClick={(e) => e.stopPropagation()}>
           <img
+              loading="lazy"
+              decoding="async"
             src={zoomedImage}
             alt="Imagem ampliada"
             className="max-w-full max-h-screen object-contain rounded-lg shadow-lg transition-all duration-500 ease-in-out"

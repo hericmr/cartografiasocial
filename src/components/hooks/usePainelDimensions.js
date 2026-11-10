@@ -1,18 +1,18 @@
 import { useState, useEffect, useMemo } from 'react';
 
+// Breakpoints para responsividade
+const breakpoints = {
+  sm: 640,
+  md: 768,
+  lg: 1024,
+  xl: 1280,
+  '2xl': 1536
+};
+
 export const usePainelDimensions = (isMobile, isMaximized) => {
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
   const [windowHeight, setWindowHeight] = useState(typeof window !== 'undefined' ? window.innerHeight : 768);
   
-  // Breakpoints para responsividade
-  const breakpoints = {
-    sm: 640,
-    md: 768,
-    lg: 1024,
-    xl: 1280,
-    '2xl': 1536
-  };
-
   // Detectar mudanças no tamanho da janela
   useEffect(() => {
     if (typeof window === 'undefined') return;

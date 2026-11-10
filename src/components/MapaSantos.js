@@ -7,34 +7,38 @@ import MenuCamadas from "./MenuCamadas";
 import PainelInformacoes from "./PainelInformacoes";
 import MapControls from "./MapControls";
 import WelcomePanel from "./WelcomePanel";
-import AdminAccessButton from "./AdminAccessButton";
+import LoadingScreen from "./LoadingScreen";
 import "./MapaSantos.css";
-
-// LoadingScreen component (reused from App.js)
-const LoadingScreen = () => (
-  <div className="flex flex-col items-center justify-center min-h-screen bg-green-900 text-white">
-    <div className="relative">
-      <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-      <div className="absolute inset-0 flex items-center justify-center">
-        <img src="/cartografiasocial/favicon.ico" alt="Ícone de carregamento" className="w-8 h-8" />
-      </div>
-    </div>
-    <p className="mt-4 text-lg font-semibold animate-pulse">Carregando mapa...</p>
-  </div>
-);
 
 // Função para converter título em slug (usando a mesma função do useShare para consistência)
 const criarSlug = (texto) => {
   return slugify(texto, { lower: true, remove: /[*+~.()'"!:@]/g });
 };
 
+// Mapeamento de códigos curtos (usados na URL ?layers=) para chaves completas
+const layerCodeMap = {
+  'b': 'bairros',
+  'bl': 'bairrosLaranja',
+  'a': 'assistencia',
+  'h': 'historicos',
+  'c': 'culturais',
+  'co': 'comunidades',
+  'e': 'educação',
+  'r': 'religiao',
+  's': 'saude',
+  'br': 'bairro'
+};
+
+const layerKeyToCode = Object.fromEntries(
+  Object.entries(layerCodeMap).map(([code, key]) => [key, code])
+);
+
 const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
-  console.log("🔵 [MapaSantos] Componente renderizado");
-  console.log("🔵 [MapaSantos] DataPoints recebidos:", dataPoints?.length || 0, dataPoints);
 
   const [geojsonData, setGeojsonData] = useState(null);
   const [mapReady, setMapReady] = useState(false);
-  const [layersMenuOpen, setLayersMenuOpen] = useState(true);
+  // No celular o menu cobriria metade do mapa: começa fechado
+  const [layersMenuOpen, setLayersMenuOpen] = useState(() => window.innerWidth > 768);
   const [searchQuery, setSearchQuery] = useState('');
   const [visibilidade, setVisibilidade] = useState({
     bairros: false,
@@ -57,26 +61,16 @@ const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
   useEffect(() => {
     const fetchGeoJSON = async () => {
       try {
-        // Tenta carregar do arquivo local primeiro (funciona em produção)
-        const response = await fetch("/bairros.geojson");
-        if (!response.ok) {
-          // Fallback para URL externa se o arquivo local não estiver disponível
-          const fallbackResponse = await fetch(
-            "https://raw.githubusercontent.com/hericmr/gps/main/public/bairros.geojson"
-          );
-          if (!fallbackResponse.ok) throw new Error(`Erro ao carregar GeoJSON: HTTP status ${fallbackResponse.status}`);
-          const data = await fallbackResponse.json();
-          setGeojsonData(data);
-        } else {
-          const data = await response.json();
-          setGeojsonData(data);
-        }
+        const response = await fetch(`${process.env.PUBLIC_URL}/bairros.geojson`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        setGeojsonData(await response.json());
       } catch (error) {
         console.error("Erro ao carregar GeoJSON:", error);
       }
     };
-    fetchGeoJSON();
-  }, []);
+    // Só baixa o GeoJSON quando a camada de limites for ligada
+    if (visibilidade.bairros && !geojsonData) fetchGeoJSON();
+  }, [visibilidade.bairros, geojsonData]);
 
   // Função para abrir painel baseado no parâmetro da URL
   const abrirPainelDaURL = useCallback(() => {
@@ -132,24 +126,6 @@ const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
     window.history.pushState({}, '', newUrl);
   }, []);
 
-
-  // Mapeamento de códigos curtos para chaves completas
-  const layerCodeMap = {
-    'b': 'bairros',
-    'bl': 'bairrosLaranja',
-    'a': 'assistencia',
-    'h': 'historicos',
-    'c': 'culturais',
-    'co': 'comunidades',
-    'e': 'educação',
-    'r': 'religiao',
-    's': 'saude',
-    'br': 'bairro'
-  };
-  
-  const layerKeyToCode = Object.fromEntries(
-    Object.entries(layerCodeMap).map(([code, key]) => [key, code])
-  );
 
   // Carregar visibilidade de URL/localStorage
   useEffect(() => {
@@ -217,7 +193,17 @@ const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
     } catch (e) {
       // ignore
     }
-  }, [visibilidade, layerKeyToCode]);
+  }, [visibilidade]);
+
+  // Esc fecha o painel aberto
+  useEffect(() => {
+    if (!painelInfo) return;
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') fecharPainel();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [painelInfo, fecharPainel]);
 
   const toggleVisibilidade = useCallback((chave) => {
     if (chave === "bairros") {
@@ -300,31 +286,21 @@ const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
       )}
 
       {/* Map - only render children when map is ready to avoid cleanup issues */}
-      <MapaBase onReady={() => {
-        console.log('🟢 [MapaSantos] Mapa pronto!');
-        setMapReady(true);
-      }}>
-        {mapReady && (() => {
-          console.log('🟢 [MapaSantos] Renderizando componentes do mapa...');
-          console.log('🟢 [MapaSantos] dataPoints disponível?', !!dataPoints, 'length:', dataPoints?.length);
-          console.log('🟢 [MapaSantos] visibilidade:', visibilidade);
-          
-          return (
+      <MapaBase onReady={() => setMapReady(true)}>
+        {mapReady && (
             <>
               {visibilidade.bairros && geojsonData && <Bairros data={geojsonData} />}
-              
-              {dataPoints && dataPoints.length > 0 ? (
-                <MarcadoresClusterizados 
-                  dataPoints={dataPoints} 
-                  visibility={visibilidade} 
-                  onClick={abrirPainel} 
+
+              {dataPoints && dataPoints.length > 0 && (
+                <MarcadoresClusterizados
+                  dataPoints={dataPoints}
+                  visibility={visibilidade}
+                  onClick={abrirPainel}
                   searchQuery={searchQuery}
                 />
-              ) : (
-                console.warn('⚠️ [MapaSantos] Sem dataPoints para renderizar marcadores') || null
               )}
             
-            <MapControls 
+            <MapControls
               onLayersToggle={toggleLayersMenu}
               layersMenuOpen={layersMenuOpen}
               onWelcomeClick={() => setShowWelcomeModal(true)}
@@ -332,8 +308,7 @@ const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
               onSearchChange={setSearchQuery}
             />
             </>
-          );
-        })()}
+        )}
       </MapaBase>
 
       {/* Only show these when map is ready */}
@@ -354,8 +329,6 @@ const MapaSantos = ({ dataPoints, welcomePanelConfig }) => {
             config={welcomePanelConfig}
           />
 
-          {/* Botão de acesso administrativo */}
-          <AdminAccessButton />
         </>
       )}
     </div>

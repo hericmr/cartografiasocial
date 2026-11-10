@@ -10,7 +10,7 @@ const PainelLinks = ({ links }) => {
 
   return (
     <div className="mt-8 space-y-4">
-      <h3 className="text-lg font-semibold text-gray-900 mb-3">Links Relacionados</h3>
+      <h3 className="text-lg font-semibold text-gray-900 mb-3">Saiba mais</h3>
       <div className="rounded-lg divide-y divide-green-100/30">
         {links.map((link, index) => (
           <a
@@ -42,10 +42,6 @@ PainelLinks.propTypes = {
       texto: PropTypes.string.isRequired,
     })
   ).isRequired,
-};
-
-PainelLinks.defaultProps = {
-  links: [],
 };
 
 export default PainelLinks;

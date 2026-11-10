@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { IconWrapper } from "./icons";
+import { CATEGORIAS } from "./categorias";
 
 const MenuCamadas = ({ estados, acoes, menuAberto: externalMenuAberto, onMenuToggle }) => {
   const [internalMenuAberto, setInternalMenuAberto] = useState(true);
@@ -32,37 +33,33 @@ const MenuCamadas = ({ estados, acoes, menuAberto: externalMenuAberto, onMenuTog
   }, []);
 
   const menuClasses = `
-    bg-green-900/30 backdrop-blur-md p-3 rounded-lg shadow-lg transition-all duration-300 text-white
+    bg-white/95 backdrop-blur-md p-3 shadow-xl text-gray-800
     ${isMobile
-      ? `fixed bottom-0 left-0 right-0 mx-2 mb-6 transition-transform duration-300 ${
-          menuAberto ? 'translate-y-0' : 'translate-y-full'
-        }`
-      : "mt-2 w-64"
+      ? "fixed bottom-0 left-0 right-0 rounded-t-2xl pb-5 max-h-[70vh] overflow-y-auto"
+      : "w-64 rounded-xl max-h-[calc(100vh-2rem)] overflow-y-auto"
     }
   `;
 
   const switchClasses = (ativo) => `
-    w-full h-10 flex items-center justify-between gap-2 px-3 rounded-lg transition-colors duration-200 mb-1.5
-    ${ativo
-      ? "bg-green-600 text-white hover:bg-green-600"
-      : "bg-green-800/90 text-white hover:bg-green-700/90"}
-    focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-50
+    w-full h-10 flex items-center justify-between gap-2 px-2 rounded-lg transition-colors duration-150
+    hover:bg-gray-100 ${ativo ? "" : "opacity-60"}
+    focus:outline-none focus-visible:ring-2 focus-visible:ring-green-600
   `;
 
-  // Mapeamento de ícones para cada tipo de camada
+  // Ícone e cor de cada camada (cores iguais às dos marcadores no mapa)
   const getLayerIcon = (label) => {
     const iconMap = {
-      "Limites dos Bairros": { name: "MapTrifold", variant: "regular", color: "#9CA3AF" },
-      "Bairros": { name: "MapPin", variant: "fill", color: "#FF5722" },
-      "Assistência": { name: "HandsClapping", variant: "fill", color: "#10B981" },
-      "Históricos": { name: "Clock", variant: "fill", color: "#FBBF24" },
-      "Lazer": { name: "GameController", variant: "fill", color: "#3B82F6" },
-      "Comunidades": { name: "Users", variant: "fill", color: "#EF4444" },
-      "Educação": { name: "GraduationCap", variant: "fill", color: "#8B5CF6" },
-      "Religião": { name: "Buildings", variant: "fill", color: "#4B5563" },
-      "Saúde": { name: "FirstAid", variant: "fill", color: "#00BCD4" }
+      "Limites dos Bairros": { name: "MapTrifold", variant: "regular", color: "#d1d5db" },
+      "Bairros": { name: "MapPin", variant: "fill", color: CATEGORIAS.bairro.cor },
+      "Assistência": { name: "HandsClapping", variant: "fill", color: CATEGORIAS.assistencia.cor },
+      "Históricos": { name: "Clock", variant: "fill", color: CATEGORIAS.historico.cor },
+      "Lazer e cultura": { name: "GameController", variant: "fill", color: CATEGORIAS.lazer.cor },
+      "Comunidades": { name: "Users", variant: "fill", color: CATEGORIAS.comunidades.cor },
+      "Educação": { name: "GraduationCap", variant: "fill", color: CATEGORIAS.educacao.cor },
+      "Religião": { name: "Buildings", variant: "fill", color: CATEGORIAS.religiao.cor },
+      "Saúde": { name: "FirstAid", variant: "fill", color: CATEGORIAS.saude.cor }
     };
-    
+
     return iconMap[label] || { name: "MapPin", variant: "regular", color: "#6B7280" };
   };
 
@@ -71,7 +68,7 @@ const MenuCamadas = ({ estados, acoes, menuAberto: externalMenuAberto, onMenuTog
     { id: 'bairrosLaranja', acao: acoes.toggleBairrosLaranja, estado: estados.bairrosLaranja, color: "#FF5722", label: "Bairros" },
     { id: 'assistencia', acao: acoes.toggleAssistencia, estado: estados.assistencia, color: "#10B981", label: "Assistência" },
     { id: 'historicos', acao: acoes.toggleHistoricos, estado: estados.historicos, color: "#FBBF24", label: "Históricos" },
-    { id: 'culturais', acao: acoes.toggleCulturais, estado: estados.culturais, color: "#3B82F6", label: "Lazer" },
+    { id: 'culturais', acao: acoes.toggleCulturais, estado: estados.culturais, color: "#3B82F6", label: "Lazer e cultura" },
     { id: 'comunidades', acao: acoes.toggleComunidades, estado: estados.comunidades, color: "#EF4444", label: "Comunidades" },
     { id: 'educação', acao: acoes.toggleEducação, estado: estados.educação, color: "#8B5CF6", label: "Educação" },
     { id: 'religiao', acao: acoes.toggleReligiao, estado: estados.religiao, color: "#4B5563", label: "Religião" },
@@ -82,13 +79,13 @@ const MenuCamadas = ({ estados, acoes, menuAberto: externalMenuAberto, onMenuTog
   const pointIds = ["assistencia", "historicos", "culturais", "comunidades", "educação", "religiao", "saude"];
 
   return (
-    <div className={`fixed ${isMobile ? "bottom-0 left-0 right-0" : "top-64 left-3"} z-10`}>
+    <div className={`fixed ${isMobile ? "bottom-0 left-0 right-0" : "top-4 left-[4.5rem]"} z-10`}>
       {/* Menu de camadas */}
       {menuAberto && (
         <div className={menuClasses}>
           {/* Grupo Base */}
           <div className="mb-2">
-            <div className="text-xs uppercase tracking-wide text-green-200/90 mb-1 px-1">Base</div>
+            <div className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mb-1 px-2">Base</div>
             {opcoes.filter(o => baseIds.includes(o.id)).map(({ id, acao, estado, label }) => {
               const iconConfig = getLayerIcon(label);
               return (
@@ -113,9 +110,9 @@ const MenuCamadas = ({ estados, acoes, menuAberto: externalMenuAberto, onMenuTog
                       color={iconConfig.color}
                       size="md"
                     />
-                    <span className="text-sm font-medium text-white">{label}</span>
+                    <span className="text-sm font-semibold">{label}</span>
                   </div>
-                  <span aria-hidden="true" className={`inline-block w-9 h-5 rounded-full transition-colors ${estado ? 'bg-green-300' : 'bg-gray-500'}`}>
+                  <span aria-hidden="true" className={`inline-flex items-center px-0.5 w-9 h-5 rounded-full transition-colors ${estado ? 'bg-green-600' : 'bg-gray-300'}`}>
                     <span className={`block w-4 h-4 bg-white rounded-full transform transition-transform ${estado ? 'translate-x-5' : 'translate-x-0'}`} />
                   </span>
                 </button>
@@ -125,22 +122,22 @@ const MenuCamadas = ({ estados, acoes, menuAberto: externalMenuAberto, onMenuTog
 
           {/* Grupo Pontos */}
           <div>
-            <div className="flex items-center justify-between mb-1 px-1">
-              <div className="text-xs uppercase tracking-wide text-green-200/90">Pontos</div>
+            <div className="flex items-center justify-between mb-1 px-2 pt-2 border-t border-gray-200">
+              <div className="text-[11px] font-bold uppercase tracking-wider text-gray-500">Pontos</div>
               <div className="flex gap-1">
                 <button
                   onClick={() => acoes.toggleAllPoints && acoes.toggleAllPoints(true)}
-                  className="text-[11px] px-2 py-1 rounded bg-green-700/90 hover:bg-green-600/90"
+                  className="text-[11px] font-semibold px-2 py-1 rounded text-green-800 hover:bg-green-50"
                   title="Mostrar todas as camadas de pontos"
                 >
-                  Mostrar todos
+                  Todos
                 </button>
                 <button
                   onClick={() => acoes.toggleAllPoints && acoes.toggleAllPoints(false)}
-                  className="text-[11px] px-2 py-1 rounded bg-green-800/90 hover:bg-green-700/90"
+                  className="text-[11px] font-semibold px-2 py-1 rounded text-gray-600 hover:bg-gray-100"
                   title="Ocultar todas as camadas de pontos"
                 >
-                  Ocultar todos
+                  Nenhum
                 </button>
               </div>
             </div>
@@ -169,9 +166,9 @@ const MenuCamadas = ({ estados, acoes, menuAberto: externalMenuAberto, onMenuTog
                       color={iconConfig.color}
                       size="md"
                     />
-                    <span className="text-sm font-medium text-white">{label}</span>
+                    <span className="text-sm font-semibold">{label}</span>
                   </div>
-                  <span aria-hidden="true" className={`inline-block w-9 h-5 rounded-full transition-colors ${estado ? 'bg-green-300' : 'bg-gray-500'}`}>
+                  <span aria-hidden="true" className={`inline-flex items-center px-0.5 w-9 h-5 rounded-full transition-colors ${estado ? 'bg-green-600' : 'bg-gray-300'}`}>
                     <span className={`block w-4 h-4 bg-white rounded-full transform transition-transform ${estado ? 'translate-x-5' : 'translate-x-0'}`} />
                   </span>
                 </button>
@@ -183,7 +180,7 @@ const MenuCamadas = ({ estados, acoes, menuAberto: externalMenuAberto, onMenuTog
           {isMobile && menuAberto && (
             <button
               onClick={() => setMenuAberto(false)}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 bg-green-700/90 hover:bg-green-600/90 col-span-2 mt-2 text-sm text-white"
+              className="w-full flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg bg-green-700 hover:bg-green-800 mt-3 text-sm text-white"
               aria-label="Minimizar menu"
             >
               <IconWrapper
@@ -192,7 +189,7 @@ const MenuCamadas = ({ estados, acoes, menuAberto: externalMenuAberto, onMenuTog
                 size="sm"
                 color="white"
               />
-              <span className="font-medium">Minimizar</span>
+              <span className="font-semibold">Ver o mapa</span>
             </button>
           )}
         </div>
@@ -202,15 +199,16 @@ const MenuCamadas = ({ estados, acoes, menuAberto: externalMenuAberto, onMenuTog
       {isMobile && !menuAberto && (
         <button
           onClick={() => setMenuAberto(true)}
-          className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-800 text-white p-3 rounded-full shadow-lg hover:bg-green-700 hover:shadow-xl transition-all duration-200 z-20 text-sm"
-          aria-label="Abrir menu"
+          className="fixed bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-white text-gray-800 font-semibold px-5 py-3 rounded-full shadow-xl hover:bg-gray-50 z-20 text-sm"
+          aria-label="Abrir camadas do mapa"
         >
           <IconWrapper
             name="List"
             variant="regular"
             size="md"
-            color="white"
+            color="#166534"
           />
+          Camadas
         </button>
       )}
     </div>

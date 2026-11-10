@@ -3,13 +3,10 @@
   <head>
     <meta charset="utf-8" />
     <!-- Content Security Policy - Permitir imagens de qualquer origem -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src * data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https: wss: ws:; frame-src 'self' https://drive.google.com https://docs.google.com https://www.youtube.com https://youtube.com;" />
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src * data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https:; worker-src 'self' blob:; frame-src 'self' https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com;" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#052e16" />
     <meta
       name="description"
       content="Cartografia social que busca mapear territorialidades, lutas e conquistas da população da cidade de Santos."
@@ -18,7 +15,7 @@
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Cinzel:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     <title>Cartografia Social de Santos</title>
     <style>
       /* Critical CSS */
@@ -33,7 +30,7 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: transparent;
+        background: #052e16;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -42,8 +39,8 @@
       .loading-spinner {
         width: 50px;
         height: 50px;
-        border: 5px solid #f3f3f3;
-        border-top: 5px solid #3498db;
+        border: 5px solid rgba(255,255,255,0.2);
+        border-top: 5px solid #4ade80;
         border-radius: 50%;
         animation: spin 1s linear infinite;
       }
@@ -120,17 +117,17 @@
           <br>
           <h2>Galeria de Imagens:</h2>
           <div class="noscript-gallery">
-            <img src="%PUBLIC_URL%/fotos/turma.png" alt="Turma de estudantes" />
-            <img src="%PUBLIC_URL%/fotos/cartografiasocial-1-001/cartografiasocial/IMG_20251021_162955.jpg" alt="Cartografia Social 1" />
-            <img src="%PUBLIC_URL%/fotos/cartografiasocial-1-001/cartografiasocial/IMG_20251021_163006.jpg" alt="Cartografia Social 2" />
-            <img src="%PUBLIC_URL%/fotos/cartografiasocial-1-001/cartografiasocial/IMG_20251021_163037.jpg" alt="Cartografia Social 3" />
-            <img src="%PUBLIC_URL%/fotos/cartografiasocial-1-001/cartografiasocial/IMG_20251021_163051.jpg" alt="Cartografia Social 4" />
-            <img src="%PUBLIC_URL%/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0081.jpeg" alt="Cartografia Social 5" />
-            <img src="%PUBLIC_URL%/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0083.jpeg" alt="Cartografia Social 6" />
-            <img src="%PUBLIC_URL%/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0085.jpeg" alt="Cartografia Social 7" />
-            <img src="%PUBLIC_URL%/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0087.jpeg" alt="Cartografia Social 8" />
-            <img src="%PUBLIC_URL%/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0089.jpeg" alt="Cartografia Social 9" />
-            <img src="%PUBLIC_URL%/fotos/cartografiasocial-1-001/cartografiasocial/IMG-20251021-WA0091.jpeg" alt="Cartografia Social 10" />
+            <img loading="lazy" src="%PUBLIC_URL%/media/turma-d3daef.webp" alt="Turma de estudantes" />
+            <img loading="lazy" src="%PUBLIC_URL%/media/IMG_20251021_162955-4f0300.webp" alt="Cartografia Social 1" />
+            <img loading="lazy" src="%PUBLIC_URL%/media/IMG_20251021_163006-1b269e.webp" alt="Cartografia Social 2" />
+            <img loading="lazy" src="%PUBLIC_URL%/media/IMG_20251021_163037-a55cbc.webp" alt="Cartografia Social 3" />
+            <img loading="lazy" src="%PUBLIC_URL%/media/IMG_20251021_163051-4556be.webp" alt="Cartografia Social 4" />
+            <img loading="lazy" src="%PUBLIC_URL%/media/IMG-20251021-WA0081-3b745e.webp" alt="Cartografia Social 5" />
+            <img loading="lazy" src="%PUBLIC_URL%/media/IMG-20251021-WA0083-95ebae.webp" alt="Cartografia Social 6" />
+            <img loading="lazy" src="%PUBLIC_URL%/media/IMG-20251021-WA0085-b5e641.webp" alt="Cartografia Social 7" />
+            <img loading="lazy" src="%PUBLIC_URL%/media/IMG-20251021-WA0087-e0392a.webp" alt="Cartografia Social 8" />
+            <img loading="lazy" src="%PUBLIC_URL%/media/IMG-20251021-WA0089-a8885b.webp" alt="Cartografia Social 9" />
+            <img loading="lazy" src="%PUBLIC_URL%/media/IMG-20251021-WA0091-9cdd5e.webp" alt="Cartografia Social 10" />
           </div>
         </div>
       </div>

@@ -96,8 +96,7 @@ const SidebarMediaViewer = ({ imagens = [], scrollProgress = 0 }) => {
                 minHeight: isTallImage ? '100%' : 'auto',
                 maxWidth: '100%', 
                 display: 'block',
-                objectPosition: isTallImage ? 'top center' : 'center center',
-                filter: 'saturate(1.3)'
+                objectPosition: isTallImage ? 'top center' : 'center center'
               }}
               loading="eager"
               fetchPriority="high"
