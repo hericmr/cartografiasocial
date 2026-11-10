@@ -1,0 +1,4 @@
+Coloque aqui as fotos originais (jpg, png, heic...) e escreva o nome do arquivo
+na coluna "imagens" de conteudo/pontos.csv. Ao rodar npm run conteudo, elas são
+convertidas para WebP em public/media/ e o CSV passa a apontar para o arquivo gerado.
+Os originais nesta pasta não vão para o Git.
